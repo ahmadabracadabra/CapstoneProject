@@ -1,16 +1,17 @@
 USE Project390DB;
 -- Dumping data for table `Users`
 INSERT INTO `Users` (`UserID`, `Username`, `Email`, `PasswordHash`, `FirstName`, `LastName`, `PasswordSalt`, `PasswordDate`) VALUES
-(1, 'dior123', 'christian.dior@example.com', 'hashedpassword1', 'Christian', 'Dior', 'salt1', '2025-01-20'),
-(2, 'chanel007', 'coco.chanel@example.com', 'hashedpassword2', 'Coco', 'Chanel', 'salt2', '2025-01-21'),
-(3, 'versace82', 'gianni.versace@example.com', 'hashedpassword3', 'Gianni', 'Versace', 'salt3', '2025-01-22'),
-(4, 'gaultierX', 'jeanpaul.gaultier@example.com', 'hashedpassword4', 'Jean-Paul', 'Gaultier', 'salt4', '2025-01-23'),
-(5, 'vuitton21', 'louis.vuitton@example.com', 'hashedpassword5', 'Louis', 'Vuitton', 'salt5', '2025-01-24'),
-(6, 'lagerfeld45', 'karl.lagerfeld@example.com', 'hashedpassword6', 'Karl', 'Lagerfeld', 'salt6', '2025-01-25'),
-(7, 'stella.mcc', 'stella.mccartney@example.com', 'hashedpassword7', 'Stella', 'McCartney', 'salt7', '2025-01-26'),
-(8, 'yves123', 'yves.saintlaurent@example.com', 'hashedpassword8', 'Yves', 'Saint Laurent', 'salt8', '2025-01-27'),
-(9, 'calvin.k', 'calvin.klein@example.com', 'hashedpassword9', 'Calvin', 'Klein', 'salt9', '2025-01-28'),
-(10, 'balenciaga001', 'cristobal.balenciaga@example.com', 'hashedpassword10', 'Cristobal', 'Balenciaga', 'salt10', '2025-01-29');
+(1, 'dior123', 'christian.dior@example.com', SHA2(CONCAT('hashedpassword1', 'salt1'), 256), 'Christian', 'Dior', 'salt1', '2025-01-20'),
+(2, 'chanel007', 'coco.chanel@example.com', SHA2(CONCAT('hashedpassword2', 'salt2'), 256), 'Coco', 'Chanel', 'salt2', '2025-01-21'),
+(3, 'versace82', 'gianni.versace@example.com', SHA2(CONCAT('hashedpassword3', 'salt3'), 256), 'Gianni', 'Versace', 'salt3', '2025-01-22'),
+(4, 'gaultierX', 'jeanpaul.gaultier@example.com', SHA2(CONCAT('hashedpassword4', 'salt4'), 256), 'Jean-Paul', 'Gaultier', 'salt4', '2025-01-23'),
+(5, 'vuitton21', 'louis.vuitton@example.com', SHA2(CONCAT('hashedpassword5', 'salt5'), 256), 'Louis', 'Vuitton', 'salt5', '2025-01-24'),
+(6, 'lagerfeld45', 'karl.lagerfeld@example.com', SHA2(CONCAT('hashedpassword6', 'salt6'), 256), 'Karl', 'Lagerfeld', 'salt6', '2025-01-25'),
+(7, 'stella.mcc', 'stella.mccartney@example.com', SHA2(CONCAT('hashedpassword7', 'salt7'), 256), 'Stella', 'McCartney', 'salt7', '2025-01-26'),
+(8, 'yves123', 'yves.saintlaurent@example.com', SHA2(CONCAT('hashedpassword8', 'salt8'), 256), 'Yves', 'Saint Laurent', 'salt8', '2025-01-27'),
+(9, 'calvin.k', 'calvin.klein@example.com', SHA2(CONCAT('hashedpassword9', 'salt9'), 256), 'Calvin', 'Klein', 'salt9', '2025-01-28'),
+(10, 'balenciaga001', 'cristobal.balenciaga@example.com', SHA2(CONCAT('hashedpassword10', 'salt10'), 256), 'Cristobal', 'Balenciaga', 'salt10', '2025-01-29');
+
 
 -- Dumping data for table `Assignments`
 INSERT INTO `Assignments` (`AssignmentID`, `Title`, `Class`, `DueDate`, `DateCreated`, `Type`, `Status`, `Points_Possible`, `UserID`) VALUES
