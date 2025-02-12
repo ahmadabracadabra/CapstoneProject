@@ -1,0 +1,126 @@
+/* General body and layout styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* FAQ Section Styles */
+.faq-question {
+    background-color: gray;
+    color: #fff;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.faq-question:hover {
+    background-color: #0056b3;
+}
+
+.faq-answer {
+    display: none;
+    padding: 10px;
+    background-color: #f1f1f1;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    border-left: 3px solid #007bff;
+}
+
+/* Contact Form Styling */
+form {
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+form .form-label {
+    font-weight: 600;
+}
+
+form .form-control {
+    margin-bottom: 15px;
+}
+
+form .btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+}
+
+form .btn:hover {
+    background-color: #0056b3;
+}
+
+/* Student Reviews Section Styling */
+.container h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #333;
+}
+
+/* Card styles for reviews */
+.card {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-text {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #555;
+    flex-grow: 1;
+}
+
+.blockquote-footer {
+    font-size: 0.9rem;
+    text-align: right;
+    color: #888;
+    font-style: italic;
+}
+
+/* Card Hover effect */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure all review cards are equal height and aligned */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.col-md-4, .col-lg-4 {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* Makes sure all cards have the same height */
+    margin-bottom: 20px;
+    padding: 0 15px;
+}
+
+.card {
+    flex: 1; /* Makes sure all cards take the same space */
+}

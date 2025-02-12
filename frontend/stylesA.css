@@ -1,0 +1,31 @@
+
+      .about-bar {
+        background-color: #6c757d; 
+        padding: 100px 60px; 
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Image Styling */
+      .about-bar img {
+        width: 600px; 
+        height: auto; 
+        border-radius: 15%;
+        margin-left: 30px; 
+        object-fit: cover; 
+      }
+
+      /* Text Styling */
+      .about-bar h2 {
+        color: white;
+        margin-bottom: 0;
+        font-size: 36px; 
+      }
+
+      /* Section Heading */
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+      }
