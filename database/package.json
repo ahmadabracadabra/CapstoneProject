@@ -1,0 +1,22 @@
+{
+  "name": "cmpsc-390-group-4",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "database.js",
+  "scripts": {
+    "dev": "npx nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv":"^16.4.7",
+    "express":"^4.21.2",
+    "mysql2":"^3.12.0"
+  },
+  "devDependencies": {
+    "nodemon":"^3.1.9"
+  }
+}
