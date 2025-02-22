@@ -3,10 +3,8 @@ To run the server, type "npm run dev" in the terminal
 if you dont have the packages to do this, type "npm install"
 and it should install all the packages
 */
-
-
 import express from 'express';
-//import cors from 'cors';
+import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { 
@@ -40,12 +38,25 @@ const app = express();
 /* AWS will require this to be configured in order for the website to appear,
 if you do inspect element on the webpage and there is a CORS error, this is what
 it wants you to fill out, you just need to edit the origin.
+*/
+const allowedOrigins = [
+    'http://127.0.0.1:5500',   // Local
+    'https://websitename.com'  // AWS Link
+];
+
 app.use(cors({
-    origin: 'https://.com',  // change this to your frontend's domain
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: ['Content-Type'],
 }));
-*/
+
+
 
 app.use(express.static(path.join(__dirname, '../frontend')));
 

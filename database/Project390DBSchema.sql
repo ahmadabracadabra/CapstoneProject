@@ -213,7 +213,6 @@ CREATE TABLE `Users` (
   `PasswordHash` varchar(4000) NOT NULL,
   `FirstName` varchar(100) NOT NULL,
   `LastName` varchar(100) NOT NULL,
-  `PasswordSalt` varchar(4000) NOT NULL,
   `PasswordDate` date NOT NULL,
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `Username` (`Username`)
