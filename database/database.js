@@ -1,7 +1,7 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
-
+import bcrypt from 'bcrypt';
 /*
 Create a .env file in the database folder and follow this format,
 .env files dont push to github (i think), so you need to make your own,
@@ -245,6 +245,24 @@ export async function addMeetingParticipant(meetingId, userId, joinedAt, leftAt)
     );
     console.log("Meeting participant added with MeetingID:", meetingId, "and UserID:", userId);
   } catch (error) {
+    console.error("Database query error:", error);
+  }
+}
+//login
+export async function loginUser (email, password) {
+  try {
+    const [rows] = await pool.query("SELECT * FROM users WHERE Email = ?", [email]);
+    if (rows.length == 0 ) {
+      return {success: false, message: "Try a different Username" };
+    }
+    const user = rows [0];
+    const isPasswordCorrect = await bcrypt.compare (password, user.PasswordHash);
+    if (!isPassswordCorrect) {
+      return {success: false, message: "Try a different Password"};
+    }
+      return {success: true, user}; 
+   }
+    catch (error) {
     console.error("Database query error:", error);
   }
 }

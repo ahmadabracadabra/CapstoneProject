@@ -265,6 +265,26 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
+//login
+app.post('/login', async (req, res) => {
+    const {email, password } = req.body;
+    try {
+
+    const [rows] = await db.query ('SELECT * FROM users WHERE email + ?', [email] );
+    if (rows.length == 0) {
+        res.status(404).json({ error: "User not found" });
+    }
+        const user = rows [0];
+        const isPassswordCorrect = await bcrypt.comapre (password, user.PasswordHash);
+        if (!isPassswordCorrect) {
+            res.status(401).json({ error: "Password is invalid" });
+        }
+      
+    }
+      catch (error) {
+            res.status(500).json({ error: "Failed to fetch users" });
+      } 
+});
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
