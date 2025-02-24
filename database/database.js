@@ -1,7 +1,8 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
-dotenv.config();
 import bcrypt from 'bcrypt';
+dotenv.config();
+
 /*
 Create a .env file in the database folder and follow this format,
 .env files dont push to github (i think), so you need to make your own,
@@ -35,13 +36,18 @@ export async function fetchUsers() {
 }
 
 export async function fetchUserByEmail(email) {
-    try {
-      const [rows] = await pool.query("SELECT * FROM users WHERE Email = ?", [email]);
-      return rows[0];  // Return the first matching user
-    } catch (error) {
+  try {
+      const [rows] = await pool.query("SELECT * FROM Users WHERE Email = ?", [email]);
+      if (rows.length === 0) {
+          return null; // Return null if no user is found
+      }
+      return rows[0]; // Return the first matching user
+  } catch (error) {
       console.error("Database query error:", error);
-    }
+      throw new Error("Database query failed"); // Ensure caller knows an error occurred
   }
+}
+
 
   export async function fetchUserById(userId) {
     try {
@@ -53,17 +59,37 @@ export async function fetchUserByEmail(email) {
   }
 
 // Create a new user
-export async function createUser(username, email, passwordHash, firstName, lastName, passwordSalt, passwordDate) {
+export async function createUser(username, email, passwordHash, firstName, lastName) {
   try {
     const [result] = await pool.query(
-      "INSERT INTO users (Username, Email, PasswordHash, FirstName, LastName, PasswordSalt, PasswordDate) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [username, email, passwordHash, firstName, lastName, passwordSalt, passwordDate]
+      "INSERT INTO users (Username, Email, PasswordHash, FirstName, LastName) VALUES (?, ?, ?, ?, ?)",
+      [username, email, passwordHash, firstName, lastName]
     );
     console.log("User created with ID:", result.insertId);
   } catch (error) {
     console.error("Database query error:", error);
   }
 }
+
+//login
+export async function loginUser (email, password) {
+  try {
+    const [rows] = await pool.query("SELECT * FROM users WHERE Email = ?", [email]);
+    if (rows.length == 0 ) {
+      return {success: false, message: "Try a different Username" };
+    }
+    const user = rows [0];
+    const isPasswordCorrect = await bcrypt.compare (password, user.PasswordHash);
+    if (!isPassswordCorrect) {
+      return {success: false, message: "Try a different Password"};
+    }
+      return {success: true, user}; 
+   }
+    catch (error) {
+    console.error("Database query error:", error);
+  }
+}
+
 
 // Fetch all assignments
 export async function fetchAssignments() {
@@ -248,21 +274,4 @@ export async function addMeetingParticipant(meetingId, userId, joinedAt, leftAt)
     console.error("Database query error:", error);
   }
 }
-//login
-export async function loginUser (email, password) {
-  try {
-    const [rows] = await pool.query("SELECT * FROM users WHERE Email = ?", [email]);
-    if (rows.length == 0 ) {
-      return {success: false, message: "Try a different Username" };
-    }
-    const user = rows [0];
-    const isPasswordCorrect = await bcrypt.compare (password, user.PasswordHash);
-    if (!isPassswordCorrect) {
-      return {success: false, message: "Try a different Password"};
-    }
-      return {success: true, user}; 
-   }
-    catch (error) {
-    console.error("Database query error:", error);
-  }
-}
+

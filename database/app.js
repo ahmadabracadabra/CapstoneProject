@@ -6,6 +6,7 @@ and it should install all the packages
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import bcrypt from 'bcrypt';
 import { fileURLToPath } from 'url';
 import { 
     fetchUsers, 
@@ -34,6 +35,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
 
 /* AWS will require this to be configured in order for the website to appear,
 if you do inspect element on the webpage and there is a CORS error, this is what
@@ -89,15 +91,61 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 
-app.post('/users', async (req, res) => {
+  app.post('/signup', async (req, res) => {
     try {
-        const { username, email, passwordHash, firstName, lastName, passwordSalt, passwordDate } = req.body;
-        const newUser = await createUser(username, email, passwordHash, firstName, lastName, passwordSalt, passwordDate);
-        res.status(201).json(newUser);
+        const { username, email, password, firstName, lastName } = req.body;
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        const newUser = await createUser(username, email, passwordHash, firstName, lastName, new Date());
+        res.status(201).json({
+            message: 'User created successfully',
+        });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Failed to create user" });
     }
 });
+
+  //login
+  //for next sprint we do tokens. PERIOD!
+  // const jwt = require('jsonwebtoken');
+  //const SECRET_KEY = "your_secret_key"; // Store in env variable
+  
+  app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    try {
+        const user = await fetchUserByEmail(email);
+
+        if (!user) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+
+        console.log("User fetched from database:", user); //checking if it worked, prob delete later
+
+        const isMatch = await bcrypt.compare(password, user.PasswordHash);
+
+        if (!isMatch) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+
+        res.json({ message: "Login successful" });
+
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+  
+  app.get("/login", (req, res) => {
+    res.status(405).json({ error: "Use POST /login instead" });
+});
+
 
 // Routes for Assignments
 app.get('/assignments', async (req, res) => {
@@ -265,26 +313,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-//login
-app.post('/login', async (req, res) => {
-    const {email, password } = req.body;
-    try {
-
-    const [rows] = await db.query ('SELECT * FROM users WHERE email + ?', [email] );
-    if (rows.length == 0) {
-        res.status(404).json({ error: "User not found" });
-    }
-        const user = rows [0];
-        const isPassswordCorrect = await bcrypt.comapre (password, user.PasswordHash);
-        if (!isPassswordCorrect) {
-            res.status(401).json({ error: "Password is invalid" });
-        }
-      
-    }
-      catch (error) {
-            res.status(500).json({ error: "Failed to fetch users" });
-      } 
-});
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
