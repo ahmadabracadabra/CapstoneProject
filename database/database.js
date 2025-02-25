@@ -71,25 +71,6 @@ export async function createUser(username, email, passwordHash, firstName, lastN
   }
 }
 
-//login
-export async function loginUser (email, password) {
-  try {
-    const [rows] = await pool.query("SELECT * FROM users WHERE Email = ?", [email]);
-    if (rows.length == 0 ) {
-      return {success: false, message: "Try a different Username" };
-    }
-    const user = rows [0];
-    const isPasswordCorrect = await bcrypt.compare (password, user.PasswordHash);
-    if (!isPasswordCorrect) {
-      return {success: false, message: "Try a different Password"};
-    }
-      return {success: true, user}; 
-   }
-    catch (error) {
-    console.error("Database query error:", error);
-  }
-}
-
 
 // Fetch all assignments
 export async function fetchAssignments() {
