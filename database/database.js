@@ -80,7 +80,7 @@ export async function loginUser (email, password) {
     }
     const user = rows [0];
     const isPasswordCorrect = await bcrypt.compare (password, user.PasswordHash);
-    if (!isPassswordCorrect) {
+    if (!isPasswordCorrect) {
       return {success: false, message: "Try a different Password"};
     }
       return {success: true, user}; 
