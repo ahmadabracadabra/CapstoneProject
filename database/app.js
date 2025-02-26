@@ -3,6 +3,8 @@ To run the server, type "npm run dev" in the terminal
 if you dont have the packages to do this, type "npm install"
 and it should install all the packages
 */
+
+//Hello
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
