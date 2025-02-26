@@ -3,8 +3,6 @@ To run the server, type "npm run dev" in the terminal
 if you dont have the packages to do this, type "npm install"
 and it should install all the packages
 */
-
-//Hello
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
@@ -45,7 +43,7 @@ it wants you to fill out, you just need to edit the origin.
 */
 const allowedOrigins = [
     'http://127.0.0.1:5500',   // Local
-    'https://websitename.com'  // AWS Link
+    'http://35.174.153.248:8080'  // AWS Link
 ];
 
 app.use(cors({
