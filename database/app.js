@@ -7,6 +7,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import { 
     fetchUsers, 
@@ -43,7 +44,8 @@ it wants you to fill out, you just need to edit the origin.
 */
 const allowedOrigins = [
     'http://127.0.0.1:5500',   // Local
-    'http://35.174.153.248:8080'  // AWS Link
+    'http://35.174.153.248:8080',  // AWS Link
+    'http://localhost:8080/dashboard' //Dashboard CORS
 ];
 
 app.use(cors({
@@ -55,7 +57,7 @@ app.use(cors({
         }
     },
     methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders: ['Content-Type'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 
@@ -106,12 +108,13 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 
-  //login
-  //for next sprint we do tokens. PERIOD!
-  // const jwt = require('jsonwebtoken');
-  //const SECRET_KEY = "your_secret_key"; // Store in env variable
-  
-  app.post('/login', async (req, res) => {
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+const SECRET_KEY = process.env.SECRET_KEY  // ATTENTION!!! Store in .env with your local database info
+
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -125,7 +128,7 @@ app.get('/users/:id', async (req, res) => {
             return res.status(401).json({ error: "Invalid email or password" });
         }
 
-        console.log("User fetched from database:", user); //checking if it worked, prob delete later
+        console.log("User fetched from database:", user); // Debugging 
 
         const isMatch = await bcrypt.compare(password, user.PasswordHash);
 
@@ -133,7 +136,14 @@ app.get('/users/:id', async (req, res) => {
             return res.status(401).json({ error: "Invalid email or password" });
         }
 
-        res.json({ message: "Login successful" });
+        // Generate JWT
+        const token = jwt.sign(
+            { id: user.UserID, email: user.Email }, 
+            SECRET_KEY, 
+            { expiresIn: "1h" } // Token expiration
+        );
+
+        res.json({ message: "Login successful", token });
 
     } catch (error) {
         console.error("Login error:", error);
@@ -141,10 +151,34 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 
+
   
   app.get("/login", (req, res) => {
     res.status(405).json({ error: "Use POST /login instead" });
 });
+
+const authenticateToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+        return res.status(403).json({ error: "Access denied. No token provided." });
+    }
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) {
+            return res.status(401).json({ error: "Invalid token." });
+        }
+        req.user = user; // Attach decoded user data to request
+        next();
+    });
+};
+
+
+app.get('/dashboard', authenticateToken, (req, res) => {
+    res.json({ email: req.user.email, message: "Welcome to your dashboard!" });
+});
+
+
 
 
 // Routes for Assignments

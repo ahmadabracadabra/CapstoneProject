@@ -616,13 +616,13 @@
         </aside>
     
         <main class="p-4 md:ml-64 h-auto pt-20">
-          <div class="">
+          <div id="welcomeMessage" class="">
             <div class="w-full p-8 text-center bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-              <h5 class="mb-2 text-3xl font-bold text-gray-900 dark:text-white">Welcome Back SpongeBob</h5>
+              <h5 id="welcomeText" class="mb-2 text-3xl font-bold text-gray-900 dark:text-white"></h5>
               <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">Are you ready to get your day started?</p>
               <div class="items-center justify-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">       
               </div>
-          </div>
+            </div>
 
           <div class="mt-6   w-full bg-gray-800 p-6 rounded-lg shadow-lg">
             <div class="flex justify-between items-center mb-4">
@@ -756,7 +756,56 @@
           </div>
         </main>
       </div>
-
+      <script>
+        // Function to get the logged-in user's email from the API
+        async function getUserEmail() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';  // Redirect to login page if no token is found
+                return;
+            }
+    
+            try {
+              //const response = await fetch('http://35.174.153.248:8080/dashboard', {
+                const response = await fetch('http://localhost:8080/dashboard', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                const data = await response.json();
+                
+                if (data.email) {
+                    return data.email;  // Return the email from the API response
+                } else {
+                    console.error("Failed to retrieve email from API.");
+                    return 'user@example.com';  // Fallback email if API fails
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                return 'Failed to load user email.';  // Fallback email in case of error
+            }
+        }
+    
+        // Set the welcome message dynamically based on the fetched email
+        async function setWelcomeMessage() {
+            const userEmail = await getUserEmail(); // Await the email fetch
+            const welcomeText = document.getElementById("welcomeText");
+            welcomeText.textContent = `Welcome Back, ${userEmail}`;
+        }
+    
+        // Set the welcome message when the page loads
+        window.onload = setWelcomeMessage;  // Call function on page load
+    </script>
+    
+    
+    
+      
  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>   
+
+
+
+
 </body>
 </html>
