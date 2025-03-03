@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 9.0.1, for macos14.4 (arm64)
+-- MySQL dump 10.13  Distrib 9.2.0, for macos15.2 (arm64)
 --
 -- Host: localhost    Database: Project390DB
 -- ------------------------------------------------------
--- Server version	9.0.1
+-- Server version	9.2.0
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -27,7 +27,7 @@ CREATE TABLE `Assignments` (
   `Title` varchar(255) NOT NULL,
   `Class` varchar(100) NOT NULL,
   `DueDate` date NOT NULL,
-  `DateCreated` date NOT NULL,
+  `DateCreated` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `Type` varchar(100) NOT NULL,
   `Status` enum('Unstarted','In Progress','Done') NOT NULL,
   `Points_Possible` int NOT NULL,
@@ -36,6 +36,55 @@ CREATE TABLE `Assignments` (
   KEY `UserID` (`UserID`),
   CONSTRAINT `assignments_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Contact`
+--
+
+DROP TABLE IF EXISTS `Contact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Contact` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `DailyQuote`
+--
+
+DROP TABLE IF EXISTS `DailyQuote`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `DailyQuote` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `quote` text NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `date` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Event`
+--
+
+DROP TABLE IF EXISTS `Event`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Event` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `event_date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,7 +137,7 @@ CREATE TABLE `MeetingMessages` (
   `MeetingID` int NOT NULL,
   `SenderID` int NOT NULL,
   `MessageText` text NOT NULL,
-  `Timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`MessageID`),
   KEY `MeetingID` (`MeetingID`),
   KEY `SenderID` (`SenderID`),
@@ -128,7 +177,7 @@ CREATE TABLE `MeetingRecordings` (
   `MeetingID` int NOT NULL,
   `RecordedBy` int NOT NULL,
   `RecordingURL` varchar(255) NOT NULL,
-  `CreatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CreatedAt` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`RecordingID`),
   KEY `MeetingID` (`MeetingID`),
   KEY `RecordedBy` (`RecordedBy`),
@@ -148,7 +197,7 @@ CREATE TABLE `Meetings` (
   `MeetingID` int NOT NULL AUTO_INCREMENT,
   `HostID` int NOT NULL,
   `GroupID` int DEFAULT NULL,
-  `StartTime` datetime NOT NULL,
+  `StartTime` datetime DEFAULT CURRENT_TIMESTAMP,
   `EndTime` datetime DEFAULT NULL,
   `Status` enum('Scheduled','Ongoing','Ended') NOT NULL DEFAULT 'Scheduled',
   `MeetingLink` varchar(255) NOT NULL,
@@ -173,7 +222,7 @@ CREATE TABLE `Message` (
   `SenderID` int NOT NULL,
   `MessageText` text NOT NULL,
   `GroupID` int DEFAULT NULL,
-  `CreatedAt` datetime NOT NULL,
+  `CreatedAt` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`MessageID`),
   KEY `SenderID` (`SenderID`),
   KEY `GroupID` (`GroupID`),
@@ -200,6 +249,38 @@ CREATE TABLE `MessageRecipient` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Notification`
+--
+
+DROP TABLE IF EXISTS `Notification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Notification` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` enum('message','missed_call','other') NOT NULL,
+  `content` text NOT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Task`
+--
+
+DROP TABLE IF EXISTS `Task`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Task` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `task` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Users`
 --
 
@@ -213,10 +294,10 @@ CREATE TABLE `Users` (
   `PasswordHash` varchar(4000) NOT NULL,
   `FirstName` varchar(100) NOT NULL,
   `LastName` varchar(100) NOT NULL,
-  `PasswordDate` date NOT NULL,
+  `PasswordDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `Username` (`Username`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -228,4 +309,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-09 23:10:01
+-- Dump completed on 2025-03-02 22:31:25
