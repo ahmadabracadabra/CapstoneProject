@@ -30,7 +30,9 @@ import {
     addMeetingParticipant,
     fetchUserById,
     fetchUserByEmail,
-    createContact 
+    createContact,
+    createTask,
+    deleteTask 
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
