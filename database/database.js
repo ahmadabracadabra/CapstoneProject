@@ -72,6 +72,81 @@ export async function createUser(username, email, passwordHash, firstName, lastN
 }
 
 
+export async function fetchAllContacts() {
+    try {
+      const [rows] = await pool.query("SELECT * FROM Contact");
+      return rows;
+    } catch (error) {
+      console.error("Database query error:", error);
+    }
+  }
+
+  export async function fetchContactById(contactId) {
+    try {
+      const [rows] = await pool.query("SELECT * FROM Contact WHERE id = ?", [contactId]);
+      return rows[0];
+    } catch (error) {
+      console.error("Database query error:", error);
+    }
+  }
+  
+  export async function createContact(name, email, message) {
+    try {
+      const [result] = await pool.query("INSERT INTO Contact (name, email, message) VALUES (?, ?, ?)", [name, email, message]);
+      return result.insertId;
+    } catch (error) {
+      console.error("Database query error:", error);
+    }
+  }
+  
+  export async function deleteContact(contactId) {
+    try {
+      const [result] = await pool.query("DELETE FROM Contact WHERE id = ?", [contactId]);
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error("Database query error:", error);
+    }
+  }
+  
+  //tasks
+  export async function fetchAllTasks() {
+    try {
+      const [rows] = await pool.query("SELECT * FROM Task");
+      return rows;
+    } catch (error) {
+      console.error("Database query error:", error);
+    }
+  }
+  
+ 
+  export async function fetchTaskById(taskId) {
+    try {
+      const [rows] = await pool.query("SELECT * FROM Task WHERE id = ?", [taskId]);
+      return rows[0];
+    } catch (error) {
+      console.error("Database query error:", error);
+    }
+  }
+  
+  export async function createTask(task) {
+    try {
+      const [result] = await pool.query("INSERT INTO Task (task) VALUES (?)", [task]);
+      return result.insertId;
+    } catch (error) {
+      console.error("Database query error:", error);
+    }
+  }
+
+  export async function deleteTask(taskId) {
+    try {
+      const [result] = await pool.query("DELETE FROM Task WHERE id = ?", [taskId]);
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error("Database query error:", error);
+    }
+  }
+
+
 // Fetch all assignments
 export async function fetchAssignments() {
   try {

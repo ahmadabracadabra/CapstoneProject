@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SADAS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="stylesC.css">
   </head>
   <body>
 
-     <!-- NavBar start-->
-     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+    <!-- NavBar start-->
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
       <div class="container-fluid">
         <a class="navbar-brand px-4" href="#"><img src="Images/graduating-student.png" width="55" height="50"> SADAS</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,23 +19,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 px-3">
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="landingpage.html">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="features.html">Features</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="aboutus.html">About Us</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="contactus.html">Contact Us</a>
-            </li>
-            <ul class="nav nav-pills mb-2 mb-lg-0 px-3">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="login.html">Sign In</a>
-              </li>
-            </ul>
+            <li class="nav-item"><a class="nav-link" href="landingpage.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
+            <li class="nav-item"><a class="nav-link" href="aboutus.html">About Us</a></li>
+            <li class="nav-item"><a class="nav-link active" href="contactus.html">Contact Us</a></li>
+            <li class="nav-item"><a class="nav-link active" href="login.html">Sign In</a></li>
           </ul>
         </div>
       </div>
@@ -63,7 +51,7 @@
         <!-- Contact Form -->
         <div class="col-lg-6">
           <h2>Contact Us</h2>
-          <form action="contact.php" method="post">
+          <form id="contactForm">
             <div class="mb-3">
               <label for="name" class="form-label">Name:</label>
               <input type="text" id="name" name="name" class="form-control" required>
@@ -77,84 +65,83 @@
               <textarea id="message" name="message" class="form-control" rows="4" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Send Message</button>
+            <div id="responseMessage" class="mt-3"></div>
           </form>
         </div>
       </div>
     </div>
 
     <!-- Student Reviews Section -->
-<div class="container my-5">
-  <h2>What Students Are Saying</h2>
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">"This app has helped me organize my studies so much better. I highly recommend it!"</p>
-          <footer class="blockquote-footer">Jose Martinez, Student</footer>
+    <div class="container my-5">
+      <h2>What Students Are Saying</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">"This app has helped me organize my studies so much better. I highly recommend it!"</p>
+              <footer class="blockquote-footer">Jose Martinez, Student</footer>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">"The features are intuitive and easy to use. It's been a game-changer for my workflow."</p>
+              <footer class="blockquote-footer">James Miller, Student</footer>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">"I was able to track my assignments more efficiently and stay on top of deadlines!"</p>
+              <footer class="blockquote-footer">Alice Brown, Student</footer>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">"The features are intuitive and easy to use. It's been a game-changer for my workflow."</p>
-          <footer class="blockquote-footer">James Miller, Student</footer>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">"I was able to track my assignments more efficiently and stay on top of deadlines!"</p>
-          <footer class="blockquote-footer">Alice Brown, Student</footer>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">"This platform has been a game-changer for my academic success. The resources are incredibly helpful!"</p>
-          <footer class="blockquote-footer">John Doe, Student</footer>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">"I love the user interface. It's intuitive and easy to navigate. Definitely recommend it to my peers."</p>
-          <footer class="blockquote-footer">Jane Smith, Graduate</footer>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">"The support team was super helpful when I had an issue. Their quick response saved me a lot of time!"</p>
-          <footer class="blockquote-footer">Michael Brown, Undergrad</footer>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
+    <!-- FAQ Toggle Script -->
     <script>
-        function toggleFAQ(index) {
-            var answers = document.querySelectorAll('.faq-answer');
-            if (answers[index].style.display === "block") {
-                answers[index].style.display = "none";
-            } else {
-                answers[index].style.display = "block";
-            }
+      function toggleFAQ(index) {
+        var answers = document.querySelectorAll('.faq-answer');
+        answers[index].style.display = answers[index].style.display === "block" ? "none" : "block";
+      }
+
+      document.getElementById("contactForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const message = document.getElementById("message").value;
+        const responseMessage = document.getElementById("responseMessage");
+
+        try {
+         //const response = await fetch('http://35.174.153.248:8080/contact', {
+          const response = await fetch('http://localhost:8080/contact', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, message })
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+             responseMessage.innerHTML = `<div class="alert alert-success">Success! Message has been sent. </div>`;
+             document.getElementById("contactForm").reset();
+          } else {
+  responseMessage.innerHTML = `<div class="alert alert-danger">Error: Message not sent</div>`;
+}
+        } catch (error) {
+          responseMessage.innerHTML = `<div class="alert alert-danger">Something went wrong. Please try again.</div>`;
         }
+      });
     </script>
 
     <!-- Footer -->
-<footer class="bg-dark text-light text-center py-3 mt-4">
-  &copy; 2025 SADAS. All Rights Reserved.
-</footer>
+    <footer class="bg-dark text-light text-center py-3 mt-4">
+      &copy; 2025 SADAS. All Rights Reserved.
+    </footer>
 
-    </body>
+  </body>
 </html>

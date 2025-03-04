@@ -29,7 +29,8 @@ import {
     fetchMeetingParticipants, 
     addMeetingParticipant,
     fetchUserById,
-    fetchUserByEmail 
+    fetchUserByEmail,
+    createContact 
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -179,9 +180,118 @@ app.get('/dashboard', authenticateToken, (req, res) => {
 });
 
 
+// Get all contacts
+app.get('/contact', async (req, res) => {
+    try {
+      const contacts = await fetchAllContacts();
+      res.json(contacts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contacts" });
+    }
+  });
+  
+  // Get a single contact by ID
+  app.get('/contact/:id', async (req, res) => {
+    try {
+      const contact = await fetchContactById(req.params.id);
+      if (contact) {
+        res.json(contact);
+      } else {
+        res.status(404).json({ error: "Contact not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contact" });
+    }
+  });
+  
+  // Create a new contact
+  app.post('/contact', async (req, res) => {
+    try {
+        const { name, email, message } = req.body;
+        console.log("Received:", { name, email, message });
+
+        if (!name || !email || !message) {
+            return res.status(400).json({ error: "Missing fields" });
+        }
+
+        const contactId = await createContact(name, email, message);
+        console.log("Contact created:", contactId);
+
+        res.status(201).json({ id: contactId, name, email, message });
+    } catch (error) {
+        console.error("Error in /contacts route:", error);
+        res.status(500).json({ error: "Failed to create contact" });
+    }
+});
+
+  
+  // Delete a contact
+  app.delete('/contact/:id', async (req, res) => {
+    try {
+      const success = await deleteContact(req.params.id);
+      if (success) {
+        res.json({ message: "Contact deleted successfully" });
+      } else {
+        res.status(404).json({ error: "Contact not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete contact" });
+    }
+  });
+  
+  
+  // Get all tasks
+  app.get('/tasks', async (req, res) => {
+    try {
+      const tasks = await fetchAllTasks();
+      res.json(tasks);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch tasks" });
+    }
+  });
+  
+  // Get a single task by ID
+  app.get('/tasks/:id', async (req, res) => {
+    try {
+      const task = await fetchTaskById(req.params.id);
+      if (task) {
+        res.json(task);
+      } else {
+        res.status(404).json({ error: "Task not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch task" });
+    }
+  });
+  
+  // Create a new task
+  app.post('/tasks', async (req, res) => {
+    try {
+      const { task } = req.body;
+      const taskId = await createTask(task);
+      res.status(201).json({ id: taskId, task });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create task" });
+    }
+  });
+  
+  // Delete a task
+  app.delete('/tasks/:id', async (req, res) => {
+    try {
+      const success = await deleteTask(req.params.id);
+      if (success) {
+        res.json({ message: "Task deleted successfully" });
+      } else {
+        res.status(404).json({ error: "Task not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete task" });
+    }
+  });
+  
 
 
-// Routes for Assignments
+//Assignments
 app.get('/assignments', async (req, res) => {
     try {
         const assignments = await fetchAssignments();
