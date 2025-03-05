@@ -48,7 +48,6 @@ it wants you to fill out, you just need to edit the origin.
 const allowedOrigins = [
     'http://127.0.0.1:5500',   // Local
     'http://35.174.153.248:8080',  // AWS Link
-    'http://35.174.153.248:8080/login', // Login 
     'http://35.174.153.248:8080/dashboard' //Dashboard CORS
 ];
 
