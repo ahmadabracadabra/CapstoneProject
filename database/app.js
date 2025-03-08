@@ -32,7 +32,9 @@ import {
     fetchUserByEmail,
     createContact,
     createTask,
-    deleteTask 
+    deleteTask,
+    fetchAllTasks,
+    fetchTaskById 
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,7 +50,7 @@ it wants you to fill out, you just need to edit the origin.
 const allowedOrigins = [
     'http://127.0.0.1:5500',   // Local
     'http://35.174.153.248:8080',  // AWS Link
-    'http://35.174.153.248:8080/dashboard' //Dashboard CORS
+    'http://35.174.153.248:8080/dashboard' //Dashboard CORS (Prob not needed)
 ];
 
 app.use(cors({
@@ -171,7 +173,7 @@ const authenticateToken = (req, res, next) => {
         if (err) {
             return res.status(401).json({ error: "Invalid token." });
         }
-        req.user = user; // Attach decoded user data to request
+        req.user = user; 
         next();
     });
 };
@@ -241,57 +243,55 @@ app.get('/contact', async (req, res) => {
     }
   });
   
-  
-  // Get all tasks
-  app.get('/tasks', async (req, res) => {
+  // Tasks
+  app.get('/tasks', authenticateToken, async (req, res) => {
     try {
-      const tasks = await fetchAllTasks();
-      res.json(tasks);
+        const tasks = await fetchAllTasks(req.user.id); 
+        res.json(tasks);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch tasks" });
+        res.status(500).json({ error: "Failed to fetch tasks" });
     }
-  });
-  
-  // Get a single task by ID
-  app.get('/tasks/:id', async (req, res) => {
-    try {
-      const task = await fetchTaskById(req.params.id);
-      if (task) {
-        res.json(task);
-      } else {
-        res.status(404).json({ error: "Task not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch task" });
-    }
-  });
-  
-  // Create a new task
-  app.post('/tasks', async (req, res) => {
-    try {
-      const { task } = req.body;
-      const taskId = await createTask(task);
-      res.status(201).json({ id: taskId, task });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create task" });
-    }
-  });
-  
-  // Delete a task
-  app.delete('/tasks/:id', async (req, res) => {
-    try {
-      const success = await deleteTask(req.params.id);
-      if (success) {
-        res.json({ message: "Task deleted successfully" });
-      } else {
-        res.status(404).json({ error: "Task not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to delete task" });
-    }
-  });
-  
+});
 
+app.get('/tasks/:id', authenticateToken, async (req, res) => {
+    const taskId = req.params.id;
+    try {
+        const task = await fetchTaskById(taskId, req.user.id); 
+        if (!task) {
+            return res.status(404).json({ error: "Task not found" });
+        }
+        res.json(task);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch task" });
+    }
+});
+
+app.post('/tasks', authenticateToken, async (req, res) => {
+    const { task } = req.body;
+    if (!task) {
+        return res.status(400).json({ error: "Task is required" });
+    }
+
+    try {
+        const taskId = await createTask(task, req.user.id);
+        res.status(201).json({ id: taskId, task });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to create task" });
+    }
+});
+
+app.delete('/tasks/:id', authenticateToken, async (req, res) => {
+    const taskId = req.params.id;
+    try {
+        const success = await deleteTask(taskId, req.user.id); 
+        if (!success) {
+            return res.status(404).json({ error: "Task not found or unauthorized" });
+        }
+        res.status(200).json({ message: "Task deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete task" });
+    }
+});
 
 //Assignments
 app.get('/assignments', async (req, res) => {

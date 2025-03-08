@@ -624,53 +624,25 @@
               </div>
             </div>
 
-          <div class="mt-6   w-full bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl text-white font-semibold">Tasks List</h3>
-                <button class="bg-gray-800 text-white text-sm px-3 py-1 rounded cursor-pointer">Urgent</button>
-            </div>
-            <p class="text-gray-500 mb-3">Hello, here are your task for the day</p>
-            
-            <ul class="space-y-3">
-                <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
-                    <span class="line-through text-gray-400">Go to class</span>
-                    <button class="text-gray-500 hover:text-red-500">
-                      <svg class="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                      </svg>
-                      
-                    </button>
-                </li>
-                <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
-                    <span class="line-through text-gray-400">Do the homework</span>
-                    <button class="text-gray-500 hover:text-red-500">
-                      <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                      </svg>
-                      
-                    </button>
-                </li>
-                <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
-                    <span>Study for finals</span>
-                    <button class="text-gray-500 hover:text-red-500">
-                      <svg class="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                      </svg>
-                      
-                    </button>
-                </li>
-                <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
-                    <span>work on project</span>
-                    <button class="text-gray-500 hover:text-red-500">
-                      <svg class="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                    </svg>
-                    </button>
-                </li>
-            </ul>
-    
-            <p class="text-xs text-gray-400 text-right mt-4">Last updated 12 minutes ago</p>
-        </div>
+            <div class="mt-6 w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-lg">
+              <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-xl font-semibold text-white">Tasks List</h3>
+                  <button class="bg-gray-700 text-white text-sm px-3 py-1 rounded cursor-pointer">Urgent</button>
+              </div>
+              <p class="text-gray-400 mb-3">Hello, here are your tasks for the day:</p>
+      
+              <!-- Form to add tasks -->
+              <form id="task-form" class="mb-4 flex">
+                  <input type="text" id="task-input" class="p-2 border rounded-l w-full text-black" placeholder="New Task">
+                  <button type="submit" class="bg-blue-500 text-white p-2 rounded-r">Add</button>
+              </form>
+              <!-- Task list -->
+              <ul id="task-list" class="space-y-3">
+                  <!-- Tasks added here -->
+              </ul>
+             <!-- <p class="text-xs text-gray-400 text-right mt-4">Last updated <span id="last-updated">just now</span></p> -->
+          </div>
+      
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
           <!-- Upcoming Events -->
           <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
@@ -757,11 +729,11 @@
         </main>
       </div>
       <script>
-        // Function to get the logged-in user's email from the API
+        // get the logged-in user's email 
         async function getUserEmail() {
             const token = localStorage.getItem('token');
             if (!token) {
-                window.location.href = '/login';  // Redirect to login page if no token is found
+                window.location.href = '/login';  
                 return;
             }
     
@@ -777,28 +749,158 @@
                 const data = await response.json();
                 
                 if (data.email) {
-                    return data.email;  // Return the email from the API response
+                    return data.email;  
                 } else {
                     console.error("Failed to retrieve email from API.");
-                    return 'user@example.com';  // Fallback email if API fails
+                    return 'user@example.com';  
                 }
             } catch (error) {
                 console.error('Error:', error);
-                return 'Failed to load user email.';  // Fallback email in case of error
+                return 'Failed to load user email.';  
             }
         }
     
-        // Set the welcome message dynamically based on the fetched email
+        // Set the welcome message  
         async function setWelcomeMessage() {
-            const userEmail = await getUserEmail(); // Await the email fetch
+            const userEmail = await getUserEmail(); 
             const welcomeText = document.getElementById("welcomeText");
             welcomeText.textContent = `Welcome Back, ${userEmail}`;
         }
     
-        // Set the welcome message when the page loads
-        window.onload = setWelcomeMessage;  // Call function on page load
+       
+        window.onload = setWelcomeMessage;  
     </script>
     
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const taskForm = document.getElementById('task-form');
+        const taskList = document.getElementById('task-list');
+    
+        if (taskForm) {
+            taskForm.addEventListener('submit', addTask);
+        } else {
+            console.error("task-form not found in DOM.");
+        }
+    
+        if (taskList) {
+            fetchAllTasks();
+        } else {
+            console.error("task-list not found in DOM.");
+        }
+      });
+    
+      // fetch and display tasks
+      async function fetchAllTasks() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error("No token found in localStorage");
+            return;
+        }
+    
+        try {
+          //const response = await fetch('http://35.174.153.248:8080/tasks', {
+            const response = await fetch('http://localhost:8080/tasks', {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!response.ok) throw new Error("Failed to fetch tasks");
+    
+            const tasks = await response.json();
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
+    
+            tasks.forEach(task => {
+                taskList.appendChild(createTaskElement(task));
+            });
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
+        }
+      }
+    
+      // add a new task
+      async function addTask(event) {
+        event.preventDefault();
+        const taskInput = document.getElementById('task-input');
+        const taskText = taskInput.value.trim();
+        const token = localStorage.getItem('token');
+    
+        if (!taskText || !token) return;
+    
+        try {
+          // const response = await fetch('http://35.174.153.248:8080/tasks', {
+            const response = await fetch('http://localhost:8080/tasks', {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ task: taskText })
+            });
+    
+            if (!response.ok) throw new Error("Failed to create task");
+    
+            const newTask = await response.json();
+            document.getElementById('task-list').appendChild(createTaskElement(newTask));
+            taskInput.value = '';
+        } catch (error) {
+            console.error("Error creating task:", error);
+        }
+      }
+    
+      // remove a task
+      async function removeTask(taskId, taskElement) {
+        const token = localStorage.getItem('token');
+    
+        try {
+          // const response = await fetch(`http://35.174.153.248:8080/tasks/${taskId}`, {
+            const response = await fetch(`http://localhost:8080/tasks/${taskId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+    
+            if (!response.ok) throw new Error("Failed to delete task");
+    
+            taskElement.remove();
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+      }
+    
+      // Function to create a task element
+      function createTaskElement(task) {
+        if (!task.id) {
+            console.error("Task ID missing:", task);
+            return;
+        }
+    
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item flex items-center justify-between p-3 bg-gray-100 rounded';
+        taskItem.dataset.id = task.id;
+    
+        const taskText = document.createElement('span');
+        taskText.className = 'task-text text-gray-800';
+        taskText.textContent = task.task || task.task_text; 
+    
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-task text-gray-500 hover:text-red-500';
+        deleteButton.innerHTML = `
+            <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+            </svg>
+        `;
+    
+        deleteButton.addEventListener('click', () => removeTask(task.id, taskItem));
+    
+        taskItem.appendChild(taskText);
+        taskItem.appendChild(deleteButton);
+    
+        return taskItem;
+      }
+    </script>
     
     
       
