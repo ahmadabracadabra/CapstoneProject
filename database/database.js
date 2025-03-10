@@ -110,7 +110,7 @@ export async function fetchAllContacts() {
   //tasks
   export async function fetchAllTasks(userId) {
     try {
-        const [rows] = await pool.query("SELECT * FROM Task WHERE user_id = ?", [userId]);
+        const [rows] = await pool.query("SELECT * FROM Task WHERE UserID = ?", [userId]);
         return rows;
     } catch (error) {
         console.error("Database query error:", error);
@@ -121,7 +121,7 @@ export async function fetchAllContacts() {
 // Fetch a specific task by ID
 export async function fetchTaskById(taskId, userId) {
     try {
-        const [rows] = await pool.query("SELECT * FROM Task WHERE id = ? AND user_id = ?", [taskId, userId]);
+        const [rows] = await pool.query("SELECT * FROM Task WHERE id = ? AND UserID = ?", [taskId, userId]);
         return rows[0];
     } catch (error) {
         console.error("Database query error:", error);
@@ -132,7 +132,7 @@ export async function fetchTaskById(taskId, userId) {
 // Create a new task 
 export async function createTask(task, userId) {
     try {
-        const [result] = await pool.query("INSERT INTO Task (task, user_id) VALUES (?, ?)", [task, userId]);
+        const [result] = await pool.query("INSERT INTO Task (task, UserID) VALUES (?, ?)", [task, userId]);
         return result.insertId;
     } catch (error) {
         console.error("Database query error:", error);
@@ -143,7 +143,7 @@ export async function createTask(task, userId) {
 // Delete a task 
 export async function deleteTask(taskId, userId) {
     try {
-        const [result] = await pool.query("DELETE FROM Task WHERE id = ? AND user_id = ?", [taskId, userId]);
+        const [result] = await pool.query("DELETE FROM Task WHERE id = ? AND UserID = ?", [taskId, userId]);
         return result.affectedRows > 0;
     } catch (error) {
         console.error("Database query error:", error);
