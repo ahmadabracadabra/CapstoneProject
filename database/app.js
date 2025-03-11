@@ -459,6 +459,70 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
+
+//calendar 
+app.post('/calendar events', async (req, res) => {
+    try{
+    const {title, description, date, time} = req.body;
+    const event = await createEvent (title, description, date, time);
+    res.status(201).json(event);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed" });
+    }
+});
+//read
+app.get('/calendar/events', async (req, res) => {
+    try{
+        const events = await fetchEvents();
+        res.json(events);
+    }
+    catch (error) {
+        res.status(500).json({error: "Failed"});
+    }
+
+});
+
+app.get('/calendar/events/:id', async (req, res) => {
+    try {
+        const event = await fetchEventById(req.params.id);
+        if (!event) {
+            return res.status(404).json ({error: "Invalid ID"});
+        }
+        res.json(event);
+     }
+     catch (error) {
+        res.status(500).json ({error: "Failed"});
+     }
+});
+//update
+app.put('/calendar/events/:id', async (req, res) => {
+        try {
+            const {title, description, date, time} = req.body;
+            const updatedEvent = await updateEvent(req.params.id);
+        if (!updatedEvent) {
+            return res.status(404).json({ error: "No Event Found" });
+        }
+        res.json(updatedEvent);
+    }
+        catch (error) {
+            res.status(500).json({ error: "Failed to update" });
+        }
+});
+//delete
+app.delete('/calendar/events/:id', async (req, res) => {
+    try {
+        const success = await deleteEvent(req.params.id);
+        if (!success) {
+            return res.status(404).json ({error: "No event found"});
+        }
+        res.json ({message: "Delete was successful"});
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to delete " });
+    }
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
