@@ -461,7 +461,8 @@ app.use((err, req, res, next) => {
 
 
 //calendar 
-app.post('/calendar events', async (req, res) => {
+
+app.post('/calendar events', authenticateToken, async (req, res) => {
     try{
     const {title, description, date, time} = req.body;
     const event = await createEvent (title, description, date, time);
@@ -472,7 +473,7 @@ app.post('/calendar events', async (req, res) => {
     }
 });
 //read
-app.get('/calendar/events', async (req, res) => {
+app.get('/calendar/events', authenticateToken, async (req, res) => {
     try{
         const events = await fetchEvents();
         res.json(events);
@@ -483,7 +484,7 @@ app.get('/calendar/events', async (req, res) => {
 
 });
 
-app.get('/calendar/events/:id', async (req, res) => {
+app.get('/calendar/events/:id', authenticateToken, async (req, res) => {
     try {
         const event = await fetchEventById(req.params.id);
         if (!event) {
@@ -496,7 +497,7 @@ app.get('/calendar/events/:id', async (req, res) => {
      }
 });
 //update
-app.put('/calendar/events/:id', async (req, res) => {
+app.put('/calendar/events/:id', authenticateToken, async (req, res) => {
         try {
             const {title, description, date, time} = req.body;
             const updatedEvent = await updateEvent(req.params.id);
@@ -510,7 +511,7 @@ app.put('/calendar/events/:id', async (req, res) => {
         }
 });
 //delete
-app.delete('/calendar/events/:id', async (req, res) => {
+app.delete('/calendar/events/:id',authenticateToken, async (req, res) => {
     try {
         const success = await deleteEvent(req.params.id);
         if (!success) {
