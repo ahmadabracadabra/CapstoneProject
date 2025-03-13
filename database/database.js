@@ -1,6 +1,5 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
 dotenv.config();
 
 /*
@@ -149,6 +148,60 @@ export async function deleteTask(taskId, userId) {
         console.error("Database query error:", error);
         throw error;
     }
+}
+
+//events
+export async function createEvent(name, event_date, UserID) {
+  try {
+      const query = 'INSERT INTO Event (name, event_date, UserID) VALUES (?, ?, ?)';
+      const [result] = await db.execute(query, [name, event_date, UserID]);
+      return { id: result.insertId, name, event_date, UserID };
+  } catch (error) {
+      throw error;
+  }
+}
+
+export async function updateEvent(id, name, event_date, UserID) {
+  try {
+      const query = 'UPDATE Event SET name = ?, event_date = ? WHERE id = ? AND UserID = ?';
+      const [result] = await db.execute(query, [name, event_date, id, UserID]);
+      if (result.affectedRows === 0) {
+          return null;
+      }
+      return { id, name, event_date, UserID };
+  } catch (error) {
+      throw error;
+  }
+}
+
+export async function deleteEvent(id) {
+  try {
+      const query = 'DELETE FROM Event WHERE id = ?';
+      const [result] = await db.execute(query, [id]);
+      return result.affectedRows > 0;
+  } catch (error) {
+      throw error;
+  }
+}
+
+export async function fetchEvents() {
+  try {
+      const query = 'SELECT * FROM Event';
+      const [events] = await db.execute(query);
+      return events;
+  } catch (error) {
+      throw error;
+  }
+}
+
+export async function fetchEventById(id) {
+  try {
+      const query = 'SELECT * FROM Event WHERE id = ?';
+      const [event] = await db.execute(query, [id]);
+      return event[0];  // Assuming the query returns an array.
+  } catch (error) {
+      throw error;
+  }
 }
 
 // Fetch all assignments
