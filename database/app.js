@@ -8,6 +8,7 @@ import cors from 'cors';
 import path from 'path';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { 
     fetchUsers, 
@@ -119,7 +120,6 @@ app.get('/users/:id', async (req, res) => {
 });
 
 
-import dotenv from 'dotenv';
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY  // ATTENTION!!! Store in .env with your local database info
@@ -298,6 +298,76 @@ app.delete('/tasks/:id', authenticateToken, async (req, res) => {
     }
 });
 
+//calendar 
+app.post('/events', authenticateToken, async (req, res) => {
+    const { name, event_date } = req.body;
+
+    if (!name || !event_date) {
+        return res.status(400).json({ error: "Name and event_date are required" });
+    }
+
+    try {
+        const event = await createEvent(name, event_date, req.user.id);
+        res.status(201).json({ id: event.id, name: event.name, event_date: event.event_date });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to create event' });
+    }
+});
+
+// Update event
+app.put('/events/:id', authenticateToken, async (req, res) => {
+    const { name, event_date } = req.body;
+
+    if (!name || !event_date) {
+        return res.status(400).json({ error: "Name and event_date are required" });
+    }
+
+    try {
+        const updatedEvent = await updateEvent(req.params.id, name, event_date, req.user.id);
+        if (!updatedEvent) {
+            return res.status(404).json({ error: 'No event found or you do not have permission to update this event' });
+        }
+        res.json(updatedEvent);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update event' });
+    }
+});
+
+app.delete('/events/:id', authenticateToken, async (req, res) => {
+    try {
+        const success = await deleteEvent(req.params.id);
+        if (!success) {
+            return res.status(404).json({ error: 'No event found' });
+        }
+        res.json({ message: 'Event deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete event' });
+    }
+});
+
+// Get all events
+app.get('/events', authenticateToken, async (req, res) => {
+    try {
+        const events = await fetchEvents();
+        res.json(events);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch events' });
+    }
+});
+
+// Get event by ID
+app.get('/events/:id', authenticateToken, async (req, res) => {
+    try {
+        const event = await fetchEventById(req.params.id);
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+        res.json(event);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch event' });
+    }
+});
+
 //Assignments
 app.get('/assignments', async (req, res) => {
     try {
@@ -464,76 +534,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-
-//calendar 
-app.post('/events', authenticateToken, async (req, res) => {
-    const { name, event_date } = req.body;
-
-    if (!name || !event_date) {
-        return res.status(400).json({ error: "Name and event_date are required" });
-    }
-
-    try {
-        const event = await createEvent(name, event_date, req.user.id);
-        res.status(201).json({ id: event.id, name: event.name, event_date: event.event_date });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to create event' });
-    }
-});
-
-// Update event
-app.put('/events/:id', authenticateToken, async (req, res) => {
-    const { name, event_date } = req.body;
-
-    if (!name || !event_date) {
-        return res.status(400).json({ error: "Name and event_date are required" });
-    }
-
-    try {
-        const updatedEvent = await updateEvent(req.params.id, name, event_date, req.user.id);
-        if (!updatedEvent) {
-            return res.status(404).json({ error: 'No event found or you do not have permission to update this event' });
-        }
-        res.json(updatedEvent);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to update event' });
-    }
-});
-
-app.delete('/events/:id', authenticateToken, async (req, res) => {
-    try {
-        const success = await deleteEvent(req.params.id);
-        if (!success) {
-            return res.status(404).json({ error: 'No event found' });
-        }
-        res.json({ message: 'Event deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to delete event' });
-    }
-});
-
-// Get all events
-app.get('/events', authenticateToken, async (req, res) => {
-    try {
-        const events = await fetchEvents();
-        res.json(events);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch events' });
-    }
-});
-
-// Get event by ID
-app.get('/events/:id', authenticateToken, async (req, res) => {
-    try {
-        const event = await fetchEventById(req.params.id);
-        if (!event) {
-            return res.status(404).json({ error: 'Event not found' });
-        }
-        res.json(event);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch event' });
-    }
-});
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
