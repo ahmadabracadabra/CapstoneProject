@@ -7,7 +7,7 @@
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
   }
-  /* nice scroll bar */
+  
   ::-webkit-scrollbar {
     width: 5px;
   }

@@ -37,24 +37,6 @@ const months = [
   "December",
 ];
 
-// const eventsArr = [
-//   {
-//     day: 13,
-//     month: 11,
-//     year: 2022,
-//     events: [
-//       {
-//         title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
-//         time: "10:00 AM",
-//       },
-//       {
-//         title: "Event 2",
-//         time: "11:00 AM",
-//       },
-//     ],
-//   },
-// ];
-
 const eventsArr = [];
 getEvents();
 console.log(eventsArr);
@@ -455,3 +437,27 @@ function convertTime(time) {
   time = timeHour + ":" + timeMin + " " + timeFormat;
   return time;
 }
+
+// Function to format time input
+function formatTimeInput(input) {
+    let value = input.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+  
+    if (value.length > 4) {
+      value = value.slice(0, 4); 
+    }
+  
+    if (value.length >= 3) {
+      value = value.slice(0, 2) + ":" + value.slice(2); // Insert colon after HH
+    }
+  
+    input.value = value; // Update the input field
+  }
+  
+  // Event listeners for both time inputs
+  addEventFrom.addEventListener("input", (e) => {
+    formatTimeInput(e.target);
+  });
+  
+  addEventTo.addEventListener("input", (e) => {
+    formatTimeInput(e.target);
+  });
