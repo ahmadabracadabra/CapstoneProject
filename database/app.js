@@ -40,7 +40,8 @@ import {
     updateEvent,
     deleteEvent,
     fetchEvents,
-    fetchEventById 
+    fetchEventById,
+    getQuoteOfTheDay 
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -365,6 +366,19 @@ app.get('/events/:id', authenticateToken, async (req, res) => {
         res.json(event);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch event' });
+    }
+});
+
+//quote
+app.get('/quote', authenticateToken, async (req, res) => {
+    try {
+        const quote = await getQuoteOfTheDay();
+        if (!quote) {
+            return res.status(404).json({ error: 'Quote not found for today.' });
+        }
+        res.json({ quote });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch the quote' });
     }
 });
 

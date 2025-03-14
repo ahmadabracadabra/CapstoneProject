@@ -154,7 +154,7 @@ export async function deleteTask(taskId, userId) {
 export async function createEvent(name, event_date, UserID) {
   try {
       const query = 'INSERT INTO Event (name, event_date, UserID) VALUES (?, ?, ?)';
-      const [result] = await db.execute(query, [name, event_date, UserID]);
+      const [result] = await pool.query(query, [name, event_date, UserID]);
       return { id: result.insertId, name, event_date, UserID };
   } catch (error) {
       throw error;
@@ -164,7 +164,7 @@ export async function createEvent(name, event_date, UserID) {
 export async function updateEvent(id, name, event_date, UserID) {
   try {
       const query = 'UPDATE Event SET name = ?, event_date = ? WHERE id = ? AND UserID = ?';
-      const [result] = await db.execute(query, [name, event_date, id, UserID]);
+      const [result] = await pool.query(query, [name, event_date, id, UserID]);
       if (result.affectedRows === 0) {
           return null;
       }
@@ -177,7 +177,7 @@ export async function updateEvent(id, name, event_date, UserID) {
 export async function deleteEvent(id) {
   try {
       const query = 'DELETE FROM Event WHERE id = ?';
-      const [result] = await db.execute(query, [id]);
+      const [result] = await pool.query(query, [id]);
       return result.affectedRows > 0;
   } catch (error) {
       throw error;
@@ -187,7 +187,7 @@ export async function deleteEvent(id) {
 export async function fetchEvents() {
   try {
       const query = 'SELECT * FROM Event';
-      const [events] = await db.execute(query);
+      const [events] = await pool.query(query);
       return events;
   } catch (error) {
       throw error;
@@ -197,12 +197,23 @@ export async function fetchEvents() {
 export async function fetchEventById(id) {
   try {
       const query = 'SELECT * FROM Event WHERE id = ?';
-      const [event] = await db.execute(query, [id]);
+      const [event] = await pool.query(query, [id]);
       return event[0];  // Assuming the query returns an array.
   } catch (error) {
       throw error;
   }
 }
+
+export async function getQuoteOfTheDay() {
+  try {
+      const query = 'SELECT quote FROM DailyQuote WHERE date = CURDATE() LIMIT 1';
+      const [rows] = await pool.query(query);
+      return rows.length ? rows[0].quote : null;
+  } catch (error) {
+      throw error;
+  }
+}
+
 
 // Fetch all assignments
 export async function fetchAssignments() {
