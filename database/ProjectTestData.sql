@@ -1,5 +1,30 @@
 USE Project390DB;
+
+INSERT INTO DailyQuote (quote, date) VALUES
+('The only way to do great work is to love what you do.', '2025-03-13'),
+('Success is not final, failure is not fatal: It is the courage to continue that counts.', '2025-03-14'),
+('Believe you can and you’re halfway there.', '2025-03-15'),
+('Act as if what you do makes a difference. It does.', '2025-03-16'),
+('Success usually comes to those who are too busy to be looking for it.', '2025-03-17'),
+('Don’t watch the clock; do what it does. Keep going.', '2025-03-18'),
+('The harder you work for something, the greater you’ll feel when you achieve it.', '2025-03-19'),
+('Dream big and dare to fail.', '2025-03-20'),
+('Don’t be afraid to give up the good to go for the great.', '2025-03-21'),
+('It always seems impossible until it’s done.', '2025-03-22'),
+('Opportunities don''t happen, you create them.', '2025-03-23'),
+('Do not wait to strike till the iron is hot, but make it hot by striking.', '2025-03-24'),
+('Everything you can imagine is real.', '2025-03-25'),
+('What we think, we become.', '2025-03-26'),
+('The future belongs to those who believe in the beauty of their dreams.', '2025-03-27'),
+('Success is not how high you have climbed, but how you make a positive difference to the world.', '2025-03-28'),
+('If you want to lift yourself up, lift up someone else.', '2025-03-29'),
+('You are never too old to set another goal or to dream a new dream.', '2025-03-30'),
+('It does not matter how slowly you go as long as you do not stop.', '2025-03-31');
+--ATTENTION!!! Most of this is outdated because of all the changes we did to the database, so these won't all work. 
+--Ill edit this eventually to be up-to-date. For now everything ABOVE this comment should be inserted because its required for a feature to work
+--So far its just Daily Quote that needs data to start. (Probably the only thing!)
 -- Dumping data for table `Users`
+
 INSERT INTO `Users` (`UserID`, `Username`, `Email`, `PasswordHash`, `FirstName`, `LastName`, `PasswordSalt`, `PasswordDate`) VALUES
 (1, 'dior123', 'christian.dior@example.com', SHA2(CONCAT('hashedpassword1', 'salt1'), 256), 'Christian', 'Dior', 'salt1', '2025-01-20'),
 (2, 'chanel007', 'coco.chanel@example.com', SHA2(CONCAT('hashedpassword2', 'salt2'), 256), 'Coco', 'Chanel', 'salt2', '2025-01-21'),
