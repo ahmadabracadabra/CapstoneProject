@@ -151,28 +151,29 @@ export async function deleteTask(taskId, userId) {
 }
 
 //events
-export async function createEvent(name, event_date, UserID) {
+export async function createEvent(name, event_date, start_time, end_time, UserID) {
   try {
-      const query = 'INSERT INTO Event (name, event_date, UserID) VALUES (?, ?, ?)';
-      const [result] = await pool.query(query, [name, event_date, UserID]);
-      return { id: result.insertId, name, event_date, UserID };
+      const query = 'INSERT INTO Event (name, event_date, start_time, end_time, UserID) VALUES (?, ?, ?, ?, ?)';
+      const [result] = await pool.query(query, [name, event_date, start_time, end_time, UserID]);
+      return { id: result.insertId, name, event_date, start_time, end_time, UserID };
   } catch (error) {
       throw error;
   }
 }
 
-export async function updateEvent(id, name, event_date, UserID) {
+export async function updateEvent(id, name, event_date, start_time, end_time, UserID) {
   try {
-      const query = 'UPDATE Event SET name = ?, event_date = ? WHERE id = ? AND UserID = ?';
-      const [result] = await pool.query(query, [name, event_date, id, UserID]);
+      const query = 'UPDATE Event SET name = ?, event_date = ?, start_time = ?, end_time = ? WHERE id = ? AND UserID = ?';
+      const [result] = await pool.query(query, [name, event_date, start_time, end_time, id, UserID]);
       if (result.affectedRows === 0) {
           return null;
       }
-      return { id, name, event_date, UserID };
+      return { id, name, event_date, start_time, end_time, UserID };
   } catch (error) {
       throw error;
   }
 }
+
 
 export async function deleteEvent(id) {
   try {

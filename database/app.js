@@ -301,15 +301,15 @@ app.delete('/tasks/:id', authenticateToken, async (req, res) => {
 
 //calendar 
 app.post('/events', authenticateToken, async (req, res) => {
-    const { name, event_date } = req.body;
+    const { name, event_date, start_time, end_time } = req.body;
 
-    if (!name || !event_date) {
-        return res.status(400).json({ error: "Name and event_date are required" });
+    if (!name || !event_date || !start_time || !end_time) {
+        return res.status(400).json({ error: "Name, event_date, start_time, and end_time are required" });
     }
 
     try {
-        const event = await createEvent(name, event_date, req.user.id);
-        res.status(201).json({ id: event.id, name: event.name, event_date: event.event_date });
+        const event = await createEvent(name, event_date, start_time, end_time, req.user.id);
+        res.status(201).json({ id: event.id, name: event.name, event_date: event.event_date, start_time: event.start_time, end_time: event.end_time });
     } catch (error) {
         res.status(500).json({ error: 'Failed to create event' });
     }
@@ -317,22 +317,23 @@ app.post('/events', authenticateToken, async (req, res) => {
 
 // Update event
 app.put('/events/:id', authenticateToken, async (req, res) => {
-    const { name, event_date } = req.body;
+    const { name, event_date, start_time, end_time } = req.body;
 
-    if (!name || !event_date) {
-        return res.status(400).json({ error: "Name and event_date are required" });
+    if (!name || !event_date || !start_time || !end_time) {
+        return res.status(400).json({ error: "Name, event_date, start_time, and end_time are required" });
     }
 
     try {
-        const updatedEvent = await updateEvent(req.params.id, name, event_date, req.user.id);
+        const updatedEvent = await updateEvent(req.params.id, name, event_date, start_time, end_time, req.user.id);
         if (!updatedEvent) {
-            return res.status(404).json({ error: 'No event found or you do not have permission to update this event' });
+            return res.status(404).json({ error: 'No event found or permission error' });
         }
         res.json(updatedEvent);
     } catch (error) {
         res.status(500).json({ error: 'Failed to update event' });
     }
 });
+
 
 app.delete('/events/:id', authenticateToken, async (req, res) => {
     try {
