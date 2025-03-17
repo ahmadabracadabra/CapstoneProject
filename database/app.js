@@ -149,7 +149,7 @@ app.post('/login', async (req, res) => {
 
         // Generate JWT
         const token = jwt.sign(
-            { id: user.UserID, email: user.Email }, 
+            { id: user.UserID, email: user.Email, username: user.Username }, 
             SECRET_KEY, 
             { expiresIn: "1h" } // Token expiration
         );
@@ -186,8 +186,13 @@ const authenticateToken = (req, res, next) => {
 
 
 app.get('/dashboard', authenticateToken, (req, res) => {
-    res.json({ email: req.user.email, message: "Welcome to your dashboard!" });
-});
+    res.json({ 
+      username: req.user.username,  
+      email: req.user.email,        
+      message: "Welcome to your dashboard!" 
+    });
+  });
+  
 
 
 
