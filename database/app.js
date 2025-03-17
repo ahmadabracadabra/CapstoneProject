@@ -190,7 +190,7 @@ app.get('/dashboard', authenticateToken, (req, res) => {
 });
 
 
-// Get all contacts
+
 app.get('/contact', async (req, res) => {
     try {
       const contacts = await fetchAllContacts();
@@ -200,7 +200,7 @@ app.get('/contact', async (req, res) => {
     }
   });
   
-  // Get a single contact by ID
+
   app.get('/contact/:id', async (req, res) => {
     try {
       const contact = await fetchContactById(req.params.id);
@@ -302,18 +302,20 @@ app.delete('/tasks/:id', authenticateToken, async (req, res) => {
 //calendar 
 app.post('/events', authenticateToken, async (req, res) => {
     const { name, event_date, start_time, end_time } = req.body;
-
+  
     if (!name || !event_date || !start_time || !end_time) {
-        return res.status(400).json({ error: "Name, event_date, start_time, and end_time are required" });
+      return res.status(400).json({ error: "Name, event_date, start_time, and end_time are required" });
     }
-
+  
     try {
-        const event = await createEvent(name, event_date, start_time, end_time, req.user.id);
-        res.status(201).json({ id: event.id, name: event.name, event_date: event.event_date, start_time: event.start_time, end_time: event.end_time });
+      const event = await createEvent(name, event_date, start_time, end_time, req.user.id);
+      res.status(201).json({ id: event.id, name: event.name, event_date: event.event_date, start_time: event.start_time, end_time: event.end_time });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create event' });
+      console.error('Failed to create event:', error); // Log the specific error
+      res.status(500).json({ error: 'Failed to create event', details: error.message });
     }
-});
+  });
+  
 
 // Update event
 app.put('/events/:id', authenticateToken, async (req, res) => {
@@ -334,12 +336,12 @@ app.put('/events/:id', authenticateToken, async (req, res) => {
     }
 });
 
-
+// Delete event
 app.delete('/events/:id', authenticateToken, async (req, res) => {
     try {
-        const success = await deleteEvent(req.params.id);
+        const success = await deleteEvent(req.params.id, req.user.id); 
         if (!success) {
-            return res.status(404).json({ error: 'No event found' });
+            return res.status(404).json({ error: 'No event found or permission error' });
         }
         res.json({ message: 'Event deleted successfully' });
     } catch (error) {
@@ -350,7 +352,7 @@ app.delete('/events/:id', authenticateToken, async (req, res) => {
 // Get all events
 app.get('/events', authenticateToken, async (req, res) => {
     try {
-        const events = await fetchEvents();
+        const events = await fetchEvents(req.user.id); 
         res.json(events);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch events' });
@@ -360,15 +362,16 @@ app.get('/events', authenticateToken, async (req, res) => {
 // Get event by ID
 app.get('/events/:id', authenticateToken, async (req, res) => {
     try {
-        const event = await fetchEventById(req.params.id);
+        const event = await fetchEventById(req.params.id, req.user.id); 
         if (!event) {
-            return res.status(404).json({ error: 'Event not found' });
+            return res.status(404).json({ error: 'Event not found or permission error' });
         }
         res.json(event);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch event' });
     }
 });
+
 
 //quote
 app.get('/quote', authenticateToken, async (req, res) => {

@@ -27,7 +27,7 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 30px;
-    background-color: #e2e1dc;
+    background-color: #101828;
   }
   .container {
     position: relative;
@@ -328,21 +328,7 @@
   .events .event:hover .event-time {
     color: #fff;
   }
-  /* add tick in event after */
-  .events .event::after {
-    content: "✓";
-    position: absolute;
-    top: 50%;
-    right: 0;
-    font-size: 3rem;
-    line-height: 1;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.3;
-    color: var(--primary-clr);
-    transform: translateY(-50%);
-  }
+ 
   .events .event:hover::after {
     display: flex;
   }
@@ -556,3 +542,18 @@
   .credits a:hover {
     text-decoration: underline;
   }
+
+  .delete-btn i {
+    content: "x";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    font-size: 2rem; 
+    line-height: 1;
+    display: block;
+    opacity: 1;
+    color: var(--primary-clr);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  

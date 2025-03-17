@@ -117,7 +117,7 @@ export async function fetchAllContacts() {
     }
 }
 
-// Fetch a specific task by ID
+// Fetch a task by ID
 export async function fetchTaskById(taskId, userId) {
     try {
         const [rows] = await pool.query("SELECT * FROM Task WHERE id = ? AND UserID = ?", [taskId, userId]);
@@ -157,9 +157,11 @@ export async function createEvent(name, event_date, start_time, end_time, UserID
       const [result] = await pool.query(query, [name, event_date, start_time, end_time, UserID]);
       return { id: result.insertId, name, event_date, start_time, end_time, UserID };
   } catch (error) {
-      throw error;
+      console.error("Error creating event:", error.message);
+      throw new Error("Failed to create event"); 
   }
 }
+
 
 export async function updateEvent(id, name, event_date, start_time, end_time, UserID) {
   try {
@@ -175,35 +177,37 @@ export async function updateEvent(id, name, event_date, start_time, end_time, Us
 }
 
 
-export async function deleteEvent(id) {
+export async function deleteEvent(id, UserId) {
   try {
-      const query = 'DELETE FROM Event WHERE id = ?';
-      const [result] = await pool.query(query, [id]);
+      const query = 'DELETE FROM Event WHERE id = ? AND UserID = ?';
+      const [result] = await pool.query(query, [id, UserId]);
       return result.affectedRows > 0;
   } catch (error) {
       throw error;
   }
 }
 
-export async function fetchEvents() {
+export async function fetchEvents(UserId) {
   try {
-      const query = 'SELECT * FROM Event';
-      const [events] = await pool.query(query);
+      const query = 'SELECT * FROM Event WHERE UserID = ?';
+      const [events] = await pool.query(query, [UserId]); 
       return events;
   } catch (error) {
       throw error;
   }
 }
 
-export async function fetchEventById(id) {
+
+export async function fetchEventById(id, UserId) {
   try {
-      const query = 'SELECT * FROM Event WHERE id = ?';
-      const [event] = await pool.query(query, [id]);
-      return event[0];  // Assuming the query returns an array.
+      const query = 'SELECT * FROM Event WHERE id = ? AND UserID = ?';
+      const [event] = await pool.query(query, [id, UserId]);
+      return event[0];  
   } catch (error) {
       throw error;
   }
 }
+
 
 export async function getQuoteOfTheDay() {
   try {
