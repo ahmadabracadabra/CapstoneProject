@@ -146,7 +146,6 @@ app.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ error: "Invalid email or password" });
         }
-
         // Generate JWT
         const token = jwt.sign(
             { id: user.UserID, email: user.Email, username: user.Username }, 
@@ -167,7 +166,11 @@ app.post('/login', async (req, res) => {
   app.get("/login", (req, res) => {
     res.status(405).json({ error: "Use POST /login instead" });
 });
-
+// logout
+app.post('/logout', async (req, res) => {
+    res.json ({message: "Successfully logged out!"})
+ });
+ 
 const authenticateToken = (req, res, next) => {
     const token = req.headers.authorization?.split(" ")[1];
 
