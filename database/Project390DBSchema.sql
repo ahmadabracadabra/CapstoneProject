@@ -28,7 +28,7 @@ CREATE TABLE `Assignments` (
   `Class` varchar(100) NOT NULL,
   `DueDate` date NOT NULL,
   `DateCreated` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `Type` varchar(100) NOT NULL,
+  `Description` text NOT NULL, 
   `Status` enum('Unstarted','In Progress','Done') NOT NULL,
   `Points_Possible` int NOT NULL,
   `UserID` int NOT NULL,

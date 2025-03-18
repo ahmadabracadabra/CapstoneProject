@@ -273,98 +273,106 @@ id="drawer-navigation"
   </div>
 </aside>
 <!-- End Sidebar -->
-    
-        <main class="p-4 md:ml-64 h-auto pt-20">
-          <div id="welcomeMessage" class="">
-            <div class="w-full p-8 text-center bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-              <h5 id="welcomeText" class="mb-2 text-3xl font-bold text-gray-900 dark:text-white"></h5>
-              <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">Are you ready to get your day started?</p>
-              <div class="items-center justify-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">       
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-              <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-xl font-semibold text-white">Tasks List</h3>
-                  <button class="bg-gray-700 text-white text-sm px-3 py-1 rounded cursor-pointer">Urgent</button>
-              </div>
-              <p class="text-gray-400 mb-3">Hello, here are your tasks for the day:</p>
-      
-              <!-- Form to add tasks -->
-              <form id="task-form" class="mb-4 flex">
-                  <input type="text" id="task-input" class="p-2 border rounded-l w-full text-black" placeholder="New Task">
-                  <button type="submit" class="bg-blue-500 text-white p-2 rounded-r">Add</button>
-              </form>
-              <!-- Task list -->
-              <ul id="task-list" class="space-y-3">
-                  <!-- Tasks added here -->
-              </ul>
-             <!-- <p class="text-xs text-gray-400 text-right mt-4">Last updated <span id="last-updated">just now</span></p> -->
-          </div>
-        
-          <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-            <h3 class="text-xl font-medium dark:text-white">Upcoming Assignments</h3>
-            <ul id="assignments-list" class="space-y-4 mt-4">
-              <!-- Example Assignment -->
-              <li class="bg-white p-4 rounded-lg shadow-md">
-                <h4 class="text-lg font-semibold">Assignment Title</h4>
-                <p>Due Date: <span class="font-medium">2025-03-20</span></p>
-                <p>Status: <span class="text-green-500">Completed</span></p>
-                <p>Priority: <span class="font-medium">High</span></p>
-              </li>
-              <!-- Assignments will go here -->
-            </ul>
-          </div>
-      
-          <!-- Add New Assignment Form -->
-          <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-            <h3 class="text-xl font-medium mb-4 dark:text-white">Add New Assignment</h3>
-            <form id="assignment-form" class="space-y-4">
-              <input type="text" id="title" placeholder="Assignment Title" class="w-full p-2 border rounded-md" required>
-              <input type="date" id="due-date" class="w-full p-2 border rounded-md" required>
-              <input type="text" id="class-name" placeholder="Class Name" class="w-full p-2 border rounded-md" required>
-              <textarea id="description" placeholder="Description" class="w-full p-2 border rounded-md" rows="4"></textarea>
-              <select id="priority" class="w-full p-2 border rounded-md" required>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-              </select>
-              <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md">Add Assignment</button>
-            </form>
-          </div>
-        </div>
+<main class="p-4 md:ml-64 h-auto pt-20">
+  <div id="welcomeMessage" class="">
+    <div class="w-full p-8 text-center bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+      <h5 id="welcomeText" class="mb-2 text-3xl font-bold text-gray-900 dark:text-white"></h5>
+      <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">Are you ready to get your day started?</p>
+      <div class="items-center justify-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">       
       </div>
-      
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-          <!-- Upcoming Events -->
-          <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-            <h2 class="text-lg font-semibold text-gray-700 dark:text-white">📅 Upcoming Events</h2>
-            <ul class="mt-2 text-gray-600 dark:text-gray-300" id="events-list">
-                <!-- Events inserted here -->
-            </ul>
-        </div>
-      
-          <!-- Daily Motivation -->
-          <div class="bg-purple-100 dark:bg-purple-900 p-4 rounded-xl shadow-md">
-            <h2 class="text-lg font-semibold text-purple-700 dark:text-purple-300">✨ Daily Motivation</h2>
-            <p id="quote" class="mt-2 text-purple-600 dark:text-purple-200 italic">
-                <!-- The quote will be inserted here by JavaScript -->
-            </p>
-        </div>
+    </div>
 
-         <!-- Timer -->
-         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md text-center">
-          <h2 class="text-lg font-semibold text-gray-700 dark:text-white">⏳ Study Timer</h2>
-          <p id="timer-display" class="text-4xl font-bold mt-2 text-gray-900 dark:text-gray-100">25:00</p>
-          <div class="mt-4">
-            <button id="start-btn" class="bg-green-800 text-white px-4 py-2 rounded-lg mr-2">▶ Start</button>
-            <button id="pause-btn" class="bg-yellow-600 text-white px-4 py-2 rounded-lg mr-2">⏸ Pause</button>
-            <button id="reset-btn" class="bg-red-800 text-white px-4 py-2 rounded-lg">🔄 Reset</button>
+    <!-- Main grid layout for content -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+      <!-- Tasks List -->
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[400px] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold text-white">Tasks List</h3>
+          <button class="bg-gray-700 text-white text-sm px-3 py-1 rounded cursor-pointer">Urgent</button>
+        </div>
+        <p class="text-gray-400 mb-3">Hello, here are your tasks for the day:</p>
+
+        <!-- Form to add tasks -->
+        <form id="task-form" class="mb-4 flex">
+          <input type="text" id="task-input" class="p-2 border rounded-l w-full text-black" placeholder="New Task">
+          <button type="submit" class="bg-blue-500 text-white p-2 rounded-r">Add</button>
+        </form>
+        <!-- Task list -->
+        <ul id="task-list" class="space-y-3">
+          <!-- Tasks added here -->
+        </ul>
+      </div>
+
+      <!-- Upcoming Assignments -->
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[400px] overflow-y-auto">
+        <h3 class="text-xl font-medium dark:text-white">Upcoming Assignments</h3>
+        <ul id="assignments-list" class="space-y-4 mt-4">
+          <!-- Assignments will go here -->
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[450px] overflow-y-auto flex flex-col justify-between">
+        <h3 class="text-xl font-medium mb-4 dark:text-white">Add New Assignment</h3>
+        <form id="assignment-form" class="space-y-4 flex-1">
+          <input type="text" id="title" placeholder="Assignment Title" class="w-full p-2 border rounded-md" required>
+      
+          <!-- Flex container for Class Name and Due Date -->
+          <div class="flex space-x-4">
+            <input type="text" id="class-name" placeholder="Class Name" class="w-[48%] p-2 border rounded-md" required>
+            <input type="date" id="due-date" class="w-[48%] p-2 border rounded-md" required>
           </div>
           
+      
+          <textarea id="description" placeholder="Description" class="w-full p-2 border rounded-md" rows="4"></textarea>
+      
+          <!-- Flex container to align Status and Points next to each other -->
+          <div class="flex space-x-4">
+            <select id="status" class="flex-1 p-2 border rounded-md" required>
+              <option value="Unstarted">Unstarted</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+      
+            <input type="number" id="points-possible" placeholder="Points Possible" class="flex-1 p-2 border rounded-md" required>
           </div>
+      
+          <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md">Add Assignment</button>
+        </form>
+      </div>
+      
+
+      <!-- Upcoming Events -->
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[150px] overflow-y-auto">
+        <h2 class="text-lg font-semibold text-gray-700 dark:text-white">📅 Upcoming Events</h2>
+        <ul class="mt-2 text-gray-600 dark:text-gray-300" id="events-list">
+          <!-- Events inserted here -->
+        </ul>
+      </div>
+
+      <!-- Daily Motivation -->
+      <div class="bg-purple-100 dark:bg-purple-900 p-4 rounded-xl shadow-md h-[150px] overflow-y-auto">
+        <h2 class="text-lg font-semibold text-purple-700 dark:text-purple-300">✨ Daily Motivation</h2>
+        <p id="quote" class="mt-2 text-purple-600 dark:text-purple-200 italic">
+          <!-- The quote will be inserted here -->
+        </p>
+      </div>
+
+      <!-- Timer -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md text-center h-[180px] overflow-y-auto">
+        <h2 class="text-lg font-semibold text-gray-700 dark:text-white">⏳ Study Timer</h2>
+        <p id="timer-display" class="text-4xl font-bold mt-2 text-gray-900 dark:text-gray-100">25:00</p>
+        <div class="mt-4">
+          <button id="start-btn" class="bg-green-800 text-white px-4 py-2 rounded-lg mr-2">▶ Start</button>
+          <button id="pause-btn" class="bg-yellow-600 text-white px-4 py-2 rounded-lg mr-2">⏸ Pause</button>
+          <button id="reset-btn" class="bg-red-800 text-white px-4 py-2 rounded-lg">🔄 Reset</button>
         </div>
-        
+      </div>
+    </div>
+  </div>
+</main>
+
+
+
         <script>
             let timer;
             let timeLeft = 25 * 60; // 25 minutes in seconds
@@ -575,84 +583,275 @@ id="drawer-navigation"
   
   <script>
     async function getUserData() {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        window.location.href = '/login';  
-        return;
-      }
-  
-      try {
-        const response = await fetch('http://localhost:8080/dashboard', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
-        });
-  
-        if (!response.ok) throw new Error('Failed to fetch user data');
-        
-        const user = await response.json();
-        
-        // Logging the user data
-        console.log(user);  
-  
-        document.getElementById("user-name").textContent = user.username || "Unknown User";
-        document.getElementById("user-email").textContent = user.email || "user@example.com";
-        document.getElementById("welcomeText").textContent = `Welcome Back, ${user.username || "User"}`;
-  
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';  
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/dashboard', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch user data');
+
+            const user = await response.json();
+            console.log(user);  
+
+            document.getElementById("user-name").textContent = user.username || "Unknown User";
+            document.getElementById("user-email").textContent = user.email || "user@example.com";
+            document.getElementById("welcomeText").textContent = `Welcome Back, ${user.username || "User"}`;
+
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
     }
-  
+
     function formatEventDate(dateString) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      const eventDate = new Date(dateString);
-      return eventDate.toLocaleDateString('en-US', options); // Returns like "February 28, 2023"
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const eventDate = new Date(dateString);
+        return eventDate.toLocaleDateString('en-US', options);
     }
-  
+
     async function fetchUpcomingEvents() {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        window.location.href = '/login';  
-        return;
-      }
-  
-      try {
-        const response = await fetch('http://localhost:8080/events', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
-        });
-  
-        if (!response.ok) throw new Error('Failed to fetch events');
-  
-        const events = await response.json();
-  
-        //Rendering events 
-        const eventsList = document.getElementById('events-list');
-        eventsList.innerHTML = '';  
-  
-        events.forEach(event => {
-          const listItem = document.createElement('li');
-          const formattedDate = formatEventDate(event.event_date);  
-          listItem.textContent = `${event.name} (${formattedDate})`; 
-          eventsList.appendChild(listItem);
-        });
-  
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';  
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/events', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch events');
+
+            const events = await response.json();
+
+            const eventsList = document.getElementById('events-list');
+            eventsList.innerHTML = '';  
+
+            events.forEach(event => {
+                const listItem = document.createElement('li');
+                const formattedDate = formatEventDate(event.event_date);  
+                listItem.textContent = `${event.name} (${formattedDate})`; 
+                eventsList.appendChild(listItem);
+            });
+
+        } catch (error) {
+            console.error('Error fetching events:', error);
+        }
     }
-  
-    window.onload = function() {
-      getUserData();
-      fetchUpcomingEvents();
-    };
-  </script>
+
+    async function postAssignment(event) {
+        event.preventDefault();
+
+        const title = document.getElementById("title").value;
+        const dueDate = document.getElementById("due-date").value;
+        const className = document.getElementById("class-name").value;
+        const description = document.getElementById("description").value;
+        const status = document.getElementById("status").value;
+        const pointsPossible = document.getElementById("points-possible").value;
+
+        console.log(title, dueDate, className, description, status, pointsPossible);
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch("http://localhost:8080/assignments", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    title, className, dueDate, description, status, pointsPossible
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Assignment created successfully!");
+                await fetchAssignments();
+            } else {
+                alert("Error: " + data.error);
+            }
+        } catch (error) {
+            console.error("Error creating assignment:", error);
+        }
+    }
+
+    async function fetchAssignments() {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch("http://localhost:8080/assignments", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const assignments = await response.json();
+            const assignmentList = document.getElementById("assignments-list");
+            assignmentList.innerHTML = ""; 
+
+            assignments.forEach(assignment => {
+                const assignmentCard = createAssignmentCard(assignment);
+                assignmentList.appendChild(assignmentCard);
+            });
+        } catch (error) {
+            console.error("Error fetching assignments:", error);
+        }
+    }
+
+    async function deleteAssignment(assignmentId) {
+        const token = localStorage.getItem("token");
+        if (!confirm("Are you sure you want to delete this assignment?")) return;
+
+        try {
+            const response = await fetch(`http://localhost:8080/assignments/${assignmentId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Assignment deleted successfully!");
+                await fetchAssignments();
+            } else {
+                alert("Error: " + data.error);
+            }
+        } catch (error) {
+            console.error("Error deleting assignment:", error);
+        }
+    }
+
+    function updateStatus(assignmentId) {
+        const statusSelect = document.getElementById(`status-select-${assignmentId}`);
+        const newStatus = statusSelect.value;
+
+        fetch(`http://localhost:8080/assignments/${assignmentId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const assignmentCard = document.getElementById(`assignment-card-${assignmentId}`);
+                updateCardStatusAndColor(assignmentCard, newStatus);
+                alert('Status updated successfully!');
+            } else {
+                alert('Failed to update status');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update status');
+        });
+    }
+
+    function updateCardStatusAndColor(cardElement, newStatus) {
+        const statusElement = cardElement.querySelector('.assignment-status');
+        statusElement.textContent = newStatus;
+
+        let cardColorClass = "bg-gray-500";
+        if (newStatus === "Unstarted") cardColorClass = "bg-yellow-500";
+        if (newStatus === "In Progress") cardColorClass = "bg-blue-500";
+        if (newStatus === "Done") cardColorClass = "bg-green-500";
+
+        cardElement.classList.remove("bg-yellow-500", "bg-blue-500", "bg-green-500", "bg-gray-500");
+        cardElement.classList.add(cardColorClass);
+    }
+
+    function createAssignmentCard(assignment) {
+        const li = document.createElement("li");
+        li.className = `assignment-card rounded-md mb-4 p-4 text-white relative`;
+
+        const formattedDate = new Date(assignment.DueDate).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+
+        let cardColorClass = "bg-gray-500";
+        if (assignment.Status === "Unstarted") cardColorClass = "bg-yellow-500";
+        if (assignment.Status === "In Progress") cardColorClass = "bg-blue-500";
+        if (assignment.Status === "Done") cardColorClass = "bg-green-500";
+
+        li.id = `assignment-card-${assignment.AssignmentID}`;
+
+        li.innerHTML = `
+    <div class="flex justify-between items-start w-full" id="assignment-card-${assignment.AssignmentID}">
+        <div class="flex flex-col items-start">
+            <span class="font-bold text-lg">${assignment.Title}</span>
+            <span class="text-sm text-white">${assignment.Class}</span>
+        </div>
+        <button class="text-xl bg-transparent text-white" onclick="deleteAssignment(${assignment.AssignmentID})">X</button>
+    </div>
+    <div class="mt-1 text-sm">
+        <div class="flex items-center">
+            <span>${assignment.Points_Possible} pts</span>
+            <span class="mx-2">•</span>
+            <span>${formattedDate}</span>
+        </div>
+    </div>
+    <div class="description-toggle absolute bottom-4 right-4 text-3xl cursor-pointer">☰</div>
+    <div class="description-content mt-2 text-gray-200 hidden">
+        <p>${assignment.Description}</p>
+        <!-- Add hidden class to the redundant status label -->
+        <div class="mt-2 text-sm font-semibold assignment-status hidden">Status: ${assignment.Status}</div> 
+        <div class="mt-2 text-sm font-semibold">
+            <label for="status-select-${assignment.AssignmentID}">Status: </label>
+            <select id="status-select-${assignment.AssignmentID}" class="status-select" onchange="updateStatus(${assignment.AssignmentID})">
+                <option value="Unstarted" ${assignment.Status === 'Unstarted' ? 'selected' : ''}>Unstarted</option>
+                <option value="In Progress" ${assignment.Status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                <option value="Done" ${assignment.Status === 'Done' ? 'selected' : ''}>Done</option>
+            </select>
+        </div>
+    </div>
+`;
+
+
+
+        li.classList.add(cardColorClass);
+
+        const descriptionToggle = li.querySelector(".description-toggle");
+        const descriptionContent = li.querySelector(".description-content");
+
+        descriptionToggle.addEventListener("click", () => {
+            descriptionContent.classList.toggle("hidden");
+        });
+
+        return li;
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        await getUserData();
+        await fetchUpcomingEvents();
+        await fetchAssignments();
+    });
+
+    document.getElementById("assignment-form").addEventListener("submit", postAssignment);
+</script>
+    
   
   <script> 
   //logout stuff
@@ -683,6 +882,10 @@ id="drawer-navigation"
   }
 });
   </script>
+
+
+
+
       
  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>   
 

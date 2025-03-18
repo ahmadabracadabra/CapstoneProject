@@ -220,28 +220,51 @@ export async function getQuoteOfTheDay() {
 }
 
 
-// Fetch all assignments
-export async function fetchAssignments() {
+// Fetch assignments
+export async function fetchAssignments(userId) {
   try {
-    const [rows] = await pool.query("SELECT * FROM Assignments");
-    console.log(rows);
+    const [rows] = await pool.query("SELECT * FROM Assignments WHERE UserID = ?", [userId]);
+    return rows;
   } catch (error) {
     console.error("Database query error:", error);
+    throw error; 
   }
 }
 
-// Create a new assignment
-export async function createAssignment(title, className, dueDate, dateCreated, type, status, pointsPossible, userId) {
+// Create a assignment
+export async function createAssignment(title, className, dueDate, dateCreated, description, status, pointsPossible, userId) {
   try {
     const [result] = await pool.query(
-      "INSERT INTO Assignments (Title, Class, DueDate, DateCreated, Type, Status, Points_Possible, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      [title, className, dueDate, dateCreated, type, status, pointsPossible, userId]
+      "INSERT INTO Assignments (Title, Class, DueDate, DateCreated, Description, Status, Points_Possible, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [title, className, dueDate, dateCreated, description, status, pointsPossible, userId]
     );
-    console.log("Assignment created with ID:", result.insertId);
+    return { id: result.insertId, title, className, dueDate, dateCreated, description, status, pointsPossible, userId };
   } catch (error) {
     console.error("Database query error:", error);
+    throw error;
   }
 }
+
+// Delete assignment
+export async function deleteAssignment(assignmentId, userId) {
+  try {
+      const [result] = await pool.query(
+          "DELETE FROM Assignments WHERE AssignmentID = ? AND UserID = ?", 
+          [assignmentId, userId]
+      );
+      return result;
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error; 
+  }
+}
+
+export async function updateAssignmentStatus(assignmentId, userId, status) {
+  const query = 'UPDATE Assignments SET Status = ? WHERE AssignmentID = ? AND UserID = ?';
+  const [result] = await pool.execute(query, [status, assignmentId, userId]);
+  return result;
+}
+
 
 // Fetch all groups
 export async function fetchGroups() {

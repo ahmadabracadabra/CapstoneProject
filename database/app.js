@@ -14,7 +14,9 @@ import {
     fetchUsers, 
     createUser, 
     fetchAssignments, 
-    createAssignment, 
+    createAssignment,
+    deleteAssignment,
+    updateAssignmentStatus,  
     fetchGroups, 
     createGroup, 
     fetchMeetingMessages, 
@@ -41,7 +43,7 @@ import {
     deleteEvent,
     fetchEvents,
     fetchEventById,
-    getQuoteOfTheDay 
+    getQuoteOfTheDay
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -395,22 +397,69 @@ app.get('/quote', authenticateToken, async (req, res) => {
 });
 
 //Assignments
-app.get('/assignments', async (req, res) => {
+app.get('/assignments', authenticateToken, async (req, res) => {
     try {
-        const assignments = await fetchAssignments();
+        const userId = req.user.id; 
+        const assignments = await fetchAssignments(userId);
         res.json(assignments);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch assignments" });
     }
 });
 
-app.post('/assignments', async (req, res) => {
+app.post('/assignments', authenticateToken, async (req, res) => {
     try {
-        const { title, className, dueDate, dateCreated, type, status, pointsPossible, userId } = req.body;
-        const newAssignment = await createAssignment(title, className, dueDate, dateCreated, type, status, pointsPossible, userId);
-        res.status(201).json(newAssignment);
+        const { title, className, dueDate, description, status, pointsPossible } = req.body;
+        if (!title || !className || !dueDate || !description || !status || !pointsPossible) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+        const userId = req.user.id;
+        const newAssignment = await createAssignment(title, className, dueDate, new Date(), description, status, pointsPossible, userId);
+        res.status(201).json({ message: "Assignment created successfully", assignment: newAssignment });
     } catch (error) {
-        res.status(500).json({ error: "Failed to create assignment" });
+        console.error("Failed to create assignment:", error);
+        res.status(500).json({ error: "Failed to create assignment", details: error.message });
+    }
+});
+
+app.delete('/assignments/:id', authenticateToken, async (req, res) => {
+    try {
+        const assignmentId = req.params.id;
+        const userId = req.user.id; 
+
+        const result = await deleteAssignment(assignmentId, userId);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Assignment not found or you don't have permission to delete it" });
+        }
+
+        res.json({ message: "Assignment deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete assignment" });
+    }
+});
+
+app.put('/assignments/:id/status', authenticateToken, async (req, res) => {
+    try {
+        const assignmentId = req.params.id;
+        const userId = req.user.id;
+        const { status } = req.body;
+
+       
+        if (!['Unstarted', 'In Progress', 'Done'].includes(status)) {
+            return res.status(400).json({ error: 'Invalid status' });
+        }
+
+       
+        const result = await updateAssignmentStatus(assignmentId, userId, status);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Assignment not found or you don\'t have permission to update it' });
+        }
+
+        res.json({ success: true, message: 'Status updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update status' });
     }
 });
 
