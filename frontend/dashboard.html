@@ -693,27 +693,34 @@ id="drawer-navigation"
     }
 
     async function fetchAssignments() {
-        const token = localStorage.getItem("token");
-        try {
-            const response = await fetch("http://localhost:8080/assignments", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch("http://localhost:8080/assignments", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-            const assignments = await response.json();
-            const assignmentList = document.getElementById("assignments-list");
-            assignmentList.innerHTML = ""; 
+        const assignments = await response.json();
+        const assignmentList = document.getElementById("assignments-list");
+        assignmentList.innerHTML = "";  
 
-            assignments.forEach(assignment => {
-                const assignmentCard = createAssignmentCard(assignment);
-                assignmentList.appendChild(assignmentCard);
-            });
-        } catch (error) {
-            console.error("Error fetching assignments:", error);
-        }
+        // Sort the assignments by due date 
+        assignments.sort((a, b) => {
+            const dueDateA = new Date(a.DueDate);
+            const dueDateB = new Date(b.DueDate);
+            return dueDateA - dueDateB;  // ascending
+        });
+
+        assignments.forEach(assignment => {
+            const assignmentCard = createAssignmentCard(assignment);
+            assignmentList.appendChild(assignmentCard);
+        });
+    } catch (error) {
+        console.error("Error fetching assignments:", error);
     }
+}
 
     async function deleteAssignment(assignmentId) {
         const token = localStorage.getItem("token");
