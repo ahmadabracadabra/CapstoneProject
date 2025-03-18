@@ -160,33 +160,34 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
-
-
-  
+ 
   app.get("/login", (req, res) => {
     res.status(405).json({ error: "Use POST /login instead" });
 });
+
 // logout
-app.post('/logout', async (req, res) => {
-    res.json ({message: "Successfully logged out!"})
- });
- 
 const authenticateToken = (req, res, next) => {
     const token = req.headers.authorization?.split(" ")[1];
 
-    if (!token) {
-        return res.status(403).json({ error: "Access denied. No token provided." });
+    if (!token || blacklistedTokens.has(token)) {
+        return res.status(403).json({ error: "Access denied. Invalid or expired token." });
     }
 
     jwt.verify(token, SECRET_KEY, (err, user) => {
         if (err) {
             return res.status(401).json({ error: "Invalid token." });
         }
-        req.user = user; 
+        req.user = user;
         next();
     });
 };
 
+const blacklistedTokens = new Set(); // use Redis or DB in AWS
+
+app.post('/logout', authenticateToken, (req, res) => {
+    blacklistedTokens.add(req.headers.authorization?.split(" ")[1]); 
+    res.json({ message: "Successfully logged out!" });
+});
 
 
 app.get('/dashboard', authenticateToken, (req, res) => {
@@ -197,8 +198,6 @@ app.get('/dashboard', authenticateToken, (req, res) => {
     });
   });
   
-
-
 
 app.get('/contact', async (req, res) => {
     try {

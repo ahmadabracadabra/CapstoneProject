@@ -138,9 +138,9 @@
                 },
                 body: JSON.stringify(signupData)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+                .then(response => response.json())
+                .then(data => {
+                if (data.message === "User created successfully") {
                     window.location.href = "login.html";
                 } else {
                     alert("Error: " + data.message);

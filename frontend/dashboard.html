@@ -178,6 +178,7 @@
                 <li>
                   <a
                     href="#"
+                    id="logoutButton"
                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >Sign Out</a
                   >
@@ -619,6 +620,35 @@ id="drawer-navigation"
     };
   </script>
   
+  <script> 
+  //logout stuff
+  document.getElementById("logoutButton").addEventListener("click", async function (event) {
+  event.preventDefault(); 
+
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:8080/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`, 
+      },
+    });
+
+    if (response.ok) {
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
+
+      window.location.href = "login.html"; 
+    } else {
+      console.error("Logout failed:", await response.json());
+    }
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+});
+  </script>
       
  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>   
 
