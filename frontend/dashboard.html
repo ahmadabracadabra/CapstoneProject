@@ -282,8 +282,8 @@ id="drawer-navigation"
               <div class="items-center justify-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">       
               </div>
             </div>
-
-            <div class="mt-6 w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-lg">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
               <div class="flex justify-between items-center mb-4">
                   <h3 class="text-xl font-semibold text-white">Tasks List</h3>
                   <button class="bg-gray-700 text-white text-sm px-3 py-1 rounded cursor-pointer">Urgent</button>
@@ -301,6 +301,39 @@ id="drawer-navigation"
               </ul>
              <!-- <p class="text-xs text-gray-400 text-right mt-4">Last updated <span id="last-updated">just now</span></p> -->
           </div>
+        
+          <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+            <h3 class="text-xl font-medium dark:text-white">Upcoming Assignments</h3>
+            <ul id="assignments-list" class="space-y-4 mt-4">
+              <!-- Example Assignment -->
+              <li class="bg-white p-4 rounded-lg shadow-md">
+                <h4 class="text-lg font-semibold">Assignment Title</h4>
+                <p>Due Date: <span class="font-medium">2025-03-20</span></p>
+                <p>Status: <span class="text-green-500">Completed</span></p>
+                <p>Priority: <span class="font-medium">High</span></p>
+              </li>
+              <!-- Assignments will go here -->
+            </ul>
+          </div>
+      
+          <!-- Add New Assignment Form -->
+          <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+            <h3 class="text-xl font-medium mb-4 dark:text-white">Add New Assignment</h3>
+            <form id="assignment-form" class="space-y-4">
+              <input type="text" id="title" placeholder="Assignment Title" class="w-full p-2 border rounded-md" required>
+              <input type="date" id="due-date" class="w-full p-2 border rounded-md" required>
+              <input type="text" id="class-name" placeholder="Class Name" class="w-full p-2 border rounded-md" required>
+              <textarea id="description" placeholder="Description" class="w-full p-2 border rounded-md" rows="4"></textarea>
+              <select id="priority" class="w-full p-2 border rounded-md" required>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+              <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md">Add Assignment</button>
+            </form>
+          </div>
+        </div>
+      </div>
       
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
           <!-- Upcoming Events -->
@@ -320,15 +353,16 @@ id="drawer-navigation"
         </div>
 
          <!-- Timer -->
-          <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md text-center">
-            <h2 class="text-lg font-semibold text-gray-700 dark:text-white">⏳ Study Timer</h2>
-            <p id="timer-display" class="text-4xl font-bold mt-2 text-gray-900 dark:text-gray-100">25:00</p>
-            
-            <div class="mt-4">
-                <button id="start-btn" class="bg-green-800 text-white px-4 py-2 rounded-lg mr-2">▶ Start</button>
-                <button id="pause-btn" class="bg-yellow-600 text-white px-4 py-2 rounded-lg mr-2">⏸ Pause</button>
-                <button id="reset-btn" class="bg-red-800 text-white px-4 py-2 rounded-lg">🔄 Reset</button>
-            </div>
+         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md text-center">
+          <h2 class="text-lg font-semibold text-gray-700 dark:text-white">⏳ Study Timer</h2>
+          <p id="timer-display" class="text-4xl font-bold mt-2 text-gray-900 dark:text-gray-100">25:00</p>
+          <div class="mt-4">
+            <button id="start-btn" class="bg-green-800 text-white px-4 py-2 rounded-lg mr-2">▶ Start</button>
+            <button id="pause-btn" class="bg-yellow-600 text-white px-4 py-2 rounded-lg mr-2">⏸ Pause</button>
+            <button id="reset-btn" class="bg-red-800 text-white px-4 py-2 rounded-lg">🔄 Reset</button>
+          </div>
+          
+          </div>
         </div>
         
         <script>
