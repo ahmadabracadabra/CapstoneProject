@@ -15,13 +15,23 @@ MYSQL_PASSWORD='WHATEVER-YOUR-PASSWORD-IS'
 MYSQL_DATABASE='Project390DB'
 */
 
+//Possible database connection fix
+const mysql = require('mysql2');
 
-const pool = mysql.createPool({
+const connection = mysql.createConnection({
+  host: '35.174.153.248:8080',  // NOT localhost
+  user: 'your-db-username',
+  password: 'your-db-password',
+  database: 'your-db-name'
+});
+
+
+/*const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE
-}).promise();
+}).promise();*/
 
 
 // Fetch all users
