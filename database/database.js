@@ -15,21 +15,12 @@ MYSQL_PASSWORD='WHATEVER-YOUR-PASSWORD-IS'
 MYSQL_DATABASE='Project390DB'
 */
 
-//Possible database connection fix
 const pool = mysql.createPool({
-  host: '35.174.153.248',
-  user: 'root',
-  password: '2002',
-  database: 'Project390DB'
-}).promise();
-
-
-/*const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE
-}).promise();*/
+}).promise();
 
 
 // Fetch all users
