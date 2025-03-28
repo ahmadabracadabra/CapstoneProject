@@ -15,7 +15,6 @@ MYSQL_PASSWORD='WHATEVER-YOUR-PASSWORD-IS'
 MYSQL_DATABASE='Project390DB'
 */
 
-require('dotenv').config();
 
 //const pool = mysql.createPool({
   const connection = mysql.createConnection({
