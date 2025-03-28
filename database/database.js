@@ -17,10 +17,10 @@ MYSQL_DATABASE='Project390DB'
 
 //Possible database connection fix
 const pool = mysql.createPool({
-  host: '35.174.153.248:8080',
-  user: 'your-db-username',
-  password: 'your-db-password',
-  database: 'your-db-name'
+  host: '35.174.153.248',
+  user: 'seba',
+  password: '2002',
+  database: 'Project390DB'
 });
 
 
