@@ -21,7 +21,7 @@ const pool = mysql.createPool({
   user: 'seba',
   password: '2002',
   database: 'Project390DB'
-});
+}).promise();
 
 
 /*const pool = mysql.createPool({
