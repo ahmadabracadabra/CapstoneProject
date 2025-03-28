@@ -16,10 +16,8 @@ MYSQL_DATABASE='Project390DB'
 */
 
 //Possible database connection fix
-const mysql = require('mysql2');
-
-const connection = mysql.createConnection({
-  host: '35.174.153.248:8080',  // NOT localhost
+const pool = mysql.createPool({
+  host: '35.174.153.248:8080',
   user: 'your-db-username',
   password: 'your-db-password',
   database: 'your-db-name'
