@@ -559,8 +559,8 @@ id="drawer-navigation"
             return;
         }
           try {
-            //const response = await fetch('http://35.174.153.248:8080/quote', {
-              const response = await fetch('http://localhost:8080/quote', {
+            const response = await fetch('http://35.174.153.248:8080/quote', {
+              //const response = await fetch('http://localhost:8080/quote', {
                   method: 'GET', 
                   headers: {
                       'Authorization': `Bearer ${token}`, 
@@ -590,7 +590,8 @@ id="drawer-navigation"
         }
 
         try {
-            const response = await fetch('http://localhost:8080/dashboard', {
+            const response = await fetch('http://35.174.153.248:8080/dashboard', {
+            //const response = await fetch('http://localhost:8080/dashboard', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -626,7 +627,8 @@ id="drawer-navigation"
         }
 
         try {
-            const response = await fetch('http://localhost:8080/events', {
+            const response = await fetch('http://35.174.153.248:8080/events', {
+            //const response = await fetch('http://localhost:8080/events', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -668,7 +670,8 @@ id="drawer-navigation"
         const token = localStorage.getItem("token");
 
         try {
-            const response = await fetch("http://localhost:8080/assignments", {
+          const response = await fetch('http://35.174.153.248:8080/assignments', {
+            //const response = await fetch("http://localhost:8080/assignments", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -695,7 +698,8 @@ id="drawer-navigation"
     async function fetchAssignments() {
     const token = localStorage.getItem("token");
     try {
-        const response = await fetch("http://localhost:8080/assignments", {
+      const response = await fetch('http://35.174.153.248:8080/assignments', {
+        //const response = await fetch("http://localhost:8080/assignments", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -727,7 +731,8 @@ id="drawer-navigation"
         if (!confirm("Are you sure you want to delete this assignment?")) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/assignments/${assignmentId}`, {
+          const response = await fetch(`http://35.174.153.248:8080/assignments/${assignmentId}`, {
+            //const response = await fetch(`http://localhost:8080/assignments/${assignmentId}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -751,7 +756,8 @@ id="drawer-navigation"
         const statusSelect = document.getElementById(`status-select-${assignmentId}`);
         const newStatus = statusSelect.value;
 
-        fetch(`http://localhost:8080/assignments/${assignmentId}/status`, {
+        fetch(`http://35.174.153.248:8080/assignments/${assignmentId}/status`, {
+        //fetch(`http://localhost:8080/assignments/${assignmentId}/status`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -868,7 +874,8 @@ id="drawer-navigation"
   try {
     const token = localStorage.getItem("token");
 
-    const response = await fetch("http://localhost:8080/logout", {
+    const response = await fetch("http://35.174.153.248:8080/logout", {
+    //const response = await fetch("http://localhost:8080/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
