@@ -57,6 +57,17 @@ export async function fetchUserByEmail(email) {
     }
   }
 
+  export async function fetchUserByUsername(username) {
+    try {
+        const [rows] = await pool.query("SELECT * FROM users WHERE Username = ?", [username]);
+        return rows[0];  // Return the first matching user
+    } catch (error) {
+        console.error("Database query error:", error);
+        throw new Error('Failed to fetch user by username');
+    }
+}
+
+
 // Create a new user
 export async function createUser(username, email, passwordHash, firstName, lastName) {
   try {
@@ -265,6 +276,288 @@ export async function updateAssignmentStatus(assignmentId, userId, status) {
   return result;
 }
 
+
+// MESSAGES (Updated but not finished)
+export async function sendMessage(senderId, chatId, content) {
+  try {
+      const [result] = await pool.query(
+          "INSERT INTO Messages (SenderID, ChatID, Content) VALUES (?, ?, ?)",
+          [senderId, chatId, content]
+      );
+      return result.insertId;
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error;
+  }
+}
+
+export async function getMessagesByChat(chatId) {
+  try {
+      const [rows] = await pool.query(
+          "SELECT * FROM Messages WHERE ChatID = ? ORDER BY SentAt ASC",
+          [chatId]
+      );
+      return rows;
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error;
+  }
+}
+
+export async function deleteMessage(messageId, userId) {
+  try {
+      const [result] = await pool.query(
+          "DELETE FROM Messages WHERE MessageID = ? AND SenderID = ?",
+          [messageId, userId]
+      );
+      return result;
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error;
+  }
+}
+
+// CHAT GROUPS (Updated but not finished)
+export async function createChatGroup(groupName, ownerId) {
+  try {
+      const [result] = await pool.query(
+          "INSERT INTO ChatGroups (GroupName, OwnerID) VALUES (?, ?)",
+          [groupName, ownerId]
+      );
+      return result.insertId;
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error;
+  }
+}
+
+export async function getChatGroupById(groupId) {
+  try {
+      const [rows] = await pool.query(
+          "SELECT * FROM ChatGroups WHERE GroupID = ?",
+          [groupId]
+      );
+      return rows[0];
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error;
+  }
+}
+
+export async function deleteChatGroup(groupId) {
+  try {
+      const [result] = await pool.query(
+          "DELETE FROM ChatGroups WHERE GroupID = ?",
+          [groupId]
+      );
+      return result;
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error;
+  }
+}
+
+// GROUP CONVERSATIONS (Updated but not finished)
+export async function addUserToGroup(groupId, userId) {
+  try {
+      const [result] = await pool.query(
+          "INSERT INTO GroupConversations (GroupID, UserID) VALUES (?, ?)",
+          [groupId, userId]
+      );
+      return result.insertId;
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error;
+  }
+}
+
+export async function removeUserFromGroup(groupId, userId) {
+  try {
+      const [result] = await pool.query(
+          "DELETE FROM GroupConversations WHERE GroupID = ? AND UserID = ?",
+          [groupId, userId]
+      );
+      return result;
+  } catch (error) {
+      console.error("Database query error:", error);
+      throw error;
+  }
+}
+
+// FRIENDS
+export async function sendFriendRequest(creatorID, receiverID) {
+  try {
+    // Check if friend request already exists or already friends
+    const [existingRequest] = await pool.query(
+      "SELECT * FROM friendrequests WHERE (creatorID = ? AND receiverID = ?) OR (creatorID = ? AND receiverID = ?)",
+      [creatorID, receiverID, receiverID, creatorID]
+    );
+
+    if (existingRequest.length > 0) {
+      // A request already exists
+      return { message: "Request already exists or are already friends." };
+    }
+
+    await pool.query(
+      "INSERT INTO friendrequests (creatorID, receiverID, status) VALUES (?, ?, 'pending')",
+      [creatorID, receiverID]
+    );
+
+    return { message: "Friend request sent." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error sending friend request." };
+  }
+}
+
+export async function acceptFriendRequest(creatorID, receiverID) {
+  try {
+    // Check if the request exists and is pending
+    const [request] = await pool.query(
+      "SELECT * FROM friendrequests WHERE creatorID = ? AND receiverID = ? AND status = 'pending'",
+      [creatorID, receiverID]
+    );
+
+    if (request.length === 0) {
+      return { message: "No pending friend request to accept." };
+    }
+
+    // Update status to accepted
+    await pool.query(
+      "UPDATE friendrequests SET status = 'accepted' WHERE creatorID = ? AND receiverID = ?",
+      [creatorID, receiverID]
+    );
+
+    // Add the users to the friends table for both directions
+    await pool.query(
+      "INSERT INTO friends (FriendID1, FriendID2, CreatedAt) VALUES (?, ?, NOW()), (?, ?, NOW())",
+      [creatorID, receiverID, receiverID, creatorID]
+    );
+
+    // Fetch and return the updated friends list for the creator
+    const [creatorFriends] = await pool.query(
+      "SELECT * FROM friends WHERE FriendID1 = ? OR FriendID2 = ?",
+      [creatorID, creatorID]
+    );
+
+    const [receiverFriends] = await pool.query(
+      "SELECT * FROM friends WHERE FriendID1 = ? OR FriendID2 = ?",
+      [receiverID, receiverID]
+    );
+
+    return {
+      message: "Friend request accepted.",
+      creatorFriends,
+      receiverFriends
+    };
+
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error accepting friend request." };
+  }
+}
+
+export async function declineFriendRequest(creatorID, receiverID) {
+  try {
+    // Check if the request exists and is pending
+    const [request] = await pool.query(
+      "SELECT * FROM friendrequests WHERE creatorID = ? AND receiverID = ? AND status = 'pending'",
+      [creatorID, receiverID]
+    );
+
+    if (request.length === 0) {
+      return { message: "No pending friend request to decline." };
+    }
+
+    // Delete the friend request
+    await pool.query(
+      "DELETE FROM friendrequests WHERE creatorID = ? AND receiverID = ?",
+      [creatorID, receiverID]
+    );
+
+    // Return updated friends lists 
+    const [creatorFriends] = await pool.query(
+      "SELECT * FROM friends WHERE FriendID1 = ? OR FriendID2 = ?",
+      [creatorID, creatorID]
+    );
+
+    const [receiverFriends] = await pool.query(
+      "SELECT * FROM friends WHERE FriendID1 = ? OR FriendID2 = ?",
+      [receiverID, receiverID]
+    );
+
+    return {
+      message: "Friend request declined.",
+      creatorFriends,
+      receiverFriends
+    };
+
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error declining friend request." };
+  }
+}
+
+
+// Fetch Pending Friend Requests
+export async function fetchFriendRequests(userID) {
+  try {
+    const [requests] = await pool.query(
+      `SELECT fr.requestID, fr.creatorID, fr.receiverID, fr.status, u.username AS senderUsername
+       FROM friendrequests fr
+       JOIN users u ON fr.creatorID = u.UserID
+       WHERE fr.receiverID = ? AND fr.status = 'pending'`,
+      [userID]
+    );
+    return requests;  
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error fetching friend requests." };
+  }
+}
+
+export async function fetchFriendsList(userID) {
+  try {
+    const [friends] = await pool.query(
+      `SELECT u.username, 
+              CASE WHEN f.FriendID1 = ? THEN f.FriendID2 ELSE f.FriendID1 END AS FriendID
+       FROM friends f
+       JOIN users u ON u.userid = (CASE WHEN f.FriendID1 = ? THEN f.FriendID2 ELSE f.FriendID1 END)
+       WHERE f.FriendID1 = ? OR f.FriendID2 = ?
+       AND (f.FriendID1 != ? AND f.FriendID2 != ?)`, 
+      [userID, userID, userID, userID, userID, userID]
+    );
+
+    const formattedFriends = friends.map(friend => ({
+      username: friend.username,
+      friendID: friend.FriendID
+    }));
+
+    return formattedFriends;  
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error fetching friends list." };
+  }
+}
+
+
+export async function searchUsers(searchTerm) {
+  try {
+    const query = `
+      SELECT UserID, username 
+      FROM users 
+      WHERE username LIKE ? 
+      LIMIT 10;
+    `;
+    const [rows] = await pool.query(query, [`%${searchTerm}%`]);
+    return rows;
+  } catch (error) {
+    console.error("Database query error:", error);
+    throw error;
+  }
+}
+
+//OUTDATED VVVV
 
 // Fetch all groups
 export async function fetchGroups() {

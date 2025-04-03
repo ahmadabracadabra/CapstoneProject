@@ -11,7 +11,8 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { 
-    fetchUsers, 
+    fetchUsers,
+    fetchUserByUsername, 
     createUser, 
     fetchAssignments, 
     createAssignment,
@@ -43,7 +44,21 @@ import {
     deleteEvent,
     fetchEvents,
     fetchEventById,
-    getQuoteOfTheDay
+    getQuoteOfTheDay,
+    sendMessage,
+    getMessagesByChat,
+    deleteMessage,
+    createChatGroup,
+    getChatGroupById,
+    deleteChatGroup,
+    addUserToGroup,
+    removeUserFromGroup,
+    sendFriendRequest,
+    acceptFriendRequest,
+    declineFriendRequest,
+    fetchFriendsList,
+    fetchFriendRequests,
+    searchUsers
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -462,6 +477,179 @@ app.put('/assignments/:id/status', authenticateToken, async (req, res) => {
         res.status(500).json({ error: 'Failed to update status' });
     }
 });
+
+// MESSAGES (Updated but not finished)
+
+app.post('/messages', authenticateToken, async (req, res) => {
+    const { chatId, content } = req.body;
+    try {
+        const messageId = await sendMessage(req.user.id, chatId, content);
+        res.status(201).json({ messageId, message: "Message sent successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to send message" });
+    }
+});
+
+app.get('/messages/:chatId', authenticateToken, async (req, res) => {
+    const chatId = req.params.chatId;
+    try {
+        const messages = await getMessagesByChat(chatId);
+        res.status(200).json(messages);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch messages" });
+    }
+});
+
+app.delete('/messages/:id', authenticateToken, async (req, res) => {
+    const messageId = req.params.id;
+    try {
+        const result = await deleteMessage(messageId, req.user.id);
+        if (!result.affectedRows) {
+            return res.status(404).json({ error: "Message not found or unauthorized" });
+        }
+        res.status(200).json({ message: "Message deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete message" });
+    }
+});
+
+// CHAT GROUPS (Updated but not finished)
+app.post('/groups', authenticateToken, async (req, res) => {
+    const { groupName } = req.body;
+    try {
+        const groupId = await createChatGroup(groupName, req.user.id);
+        res.status(201).json({ groupId, message: "Chat group created successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to create chat group" });
+    }
+});
+
+app.get('/groups/:id', authenticateToken, async (req, res) => {
+    const groupId = req.params.id;
+    try {
+        const group = await getChatGroupById(groupId);
+        if (!group) {
+            return res.status(404).json({ error: "Chat group not found" });
+        }
+        res.status(200).json(group);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to retrieve chat group" });
+    }
+});
+
+app.delete('/groups/:id', authenticateToken, async (req, res) => {
+    const groupId = req.params.id;
+    try {
+        const result = await deleteChatGroup(groupId);
+        if (!result.affectedRows) {
+            return res.status(404).json({ error: "Chat group not found or unauthorized" });
+        }
+        res.status(200).json({ message: "Chat group deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete chat group" });
+    }
+});
+
+// GROUP CONVERSATIONS (Updated but not finished)
+app.post('/groups/:id/users', authenticateToken, async (req, res) => {
+    const groupId = req.params.id;
+    const { userId } = req.body;
+    try {
+        const conversationId = await addUserToGroup(groupId, userId);
+        res.status(201).json({ conversationId, message: "User added to group successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to add user to group" });
+    }
+});
+
+app.delete('/groups/:id/users/:userId', authenticateToken, async (req, res) => {
+    const groupId = req.params.id;
+    const userId = req.params.userId;
+    try {
+        const result = await removeUserFromGroup(groupId, userId);
+        if (!result.affectedRows) {
+            return res.status(404).json({ error: "User not found in group or unauthorized" });
+        }
+        res.status(200).json({ message: "User removed from group successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to remove user from group" });
+    }
+});
+
+// FRIENDS
+// Send Friend Request
+app.post('/friend-request/send', authenticateToken, async (req, res) => {
+    try {
+      const { receiverID } = req.body; 
+      const creatorID = req.user.id; 
+  
+      const result = await sendFriendRequest(creatorID, receiverID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send friend request" });
+    }
+  });
+  
+  // Accept Friend Request
+  app.post('/friend-request/accept', authenticateToken, async (req, res) => {
+    try {
+      const { creatorID } = req.body; 
+      const receiverID = req.user.id; 
+  
+      const result = await acceptFriendRequest(creatorID, receiverID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to accept friend request" });
+    }
+  });
+  
+  // Decline Friend Request
+  app.post('/friend-request/decline', authenticateToken, async (req, res) => {
+    try {
+      const { creatorID } = req.body;
+      const receiverID = req.user.id; 
+  
+      const result = await declineFriendRequest(creatorID, receiverID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to decline friend request" });
+    }
+  });
+  
+  // Fetch Pending Friend Requests
+  app.get('/friend-requests', authenticateToken, async (req, res) => {
+    try {
+      const userID = req.user.id; 
+      const requests = await fetchFriendRequests(userID);
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch friend requests" });
+    }
+  });
+  
+  // Fetch Friends List
+  app.get('/friends-list', authenticateToken, async (req, res) => {
+    try {
+      const userID = req.user.id; 
+      const friends = await fetchFriendsList(userID);
+      res.json(friends);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch friends list" });
+    }
+  });
+
+  // Search for users by username
+app.get('/friends-search', authenticateToken, async (req, res) => {
+    const searchTerm = req.query.q; 
+    try {
+      const users = await searchUsers(searchTerm);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to search users' });
+    }
+  });
+  
+//OUTDATED VVV
 
 // Routes for Groups
 app.get('/groups', async (req, res) => {

@@ -273,199 +273,433 @@ id="drawer-navigation"
 </aside>
 <!-- End Sidebar -->
           
-            <!-- Messaging Section -->
-            <div class="flex-1 flex flex-col ml-64">
-              <!-- Header -->
-              <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Messages</h2>
-              </header>
-          
-              <!-- Chat List and Chat Area -->
-              <div class="flex-1 flex overflow-hidden">
-                <!-- Chat List -->
-                <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    class="w-full p-2 mb-4 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                  <ul class="space-y-2 overflow-y-auto h-[calc(100vh-180px)]">
-                    <!-- Chat List Items with Avatars -->
-                    <li class="flex items-center p-2 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600">
-                      <img
-                        src="https://via.placeholder.com/40"
-                        alt="User 1"
-                        class="w-8 h-8 rounded-full mr-3"
-                      />
-                      <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">User 1</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Hello! How are you?</p>
-                      </div>
-                    </li>
-                    <li class="flex items-center p-2 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600">
-                      <img
-                        src="https://via.placeholder.com/40"
-                        alt="User 2"
-                        class="w-8 h-8 rounded-full mr-3"
-                      />
-                      <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">User 2</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">I'm good, thanks!</p>
-                      </div>
-                    </li>
-                    <li class="flex items-center p-2 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600">
-                      <img
-                        src="https://via.placeholder.com/40"
-                        alt="User 3"
-                        class="w-8 h-8 rounded-full mr-3"
-                      />
-                      <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">User 3</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">See you later!</p>
-                      </div>
-                    </li>
-                  </ul>
-                </aside>
-          
-                <!-- Chat Area -->
-                <div class="flex-1 flex flex-col bg-white dark:bg-gray-800">
-                  <!-- Chat Header -->
-                  <div class="border-b border-gray-200 dark:border-gray-700 p-4">
-                    <div class="flex items-center">
-                      <img
-                        src="https://via.placeholder.com/40"
-                        alt="User 1"
-                        class="w-8 h-8 rounded-full mr-3"
-                      />
-                      <div>
-                        <p class="text-lg font-semibold text-gray-900 dark:text-white">User 1</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Online</p>
-                      </div>
-                    </div>
-                  </div>
-          
-                  <!-- Chat Messages -->
-                  <div class="flex-1 overflow-y-auto p-4 space-y-4">
-                    <!-- Received Message -->
-                    <div class="flex items-start">
-                      <img
-                        src="https://via.placeholder.com/40"
-                        alt="User 1"
-                        class="w-8 h-8 rounded-full mr-3"
-                      />
-                      <div class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg max-w-[70%]">
-                        Hello! How are you?
-                      </div>
-                    </div>
-          
-                    <!-- Sent Message -->
-                    <div class="flex items-start justify-end">
-                      <div class="bg-blue-500 text-white p-3 rounded-lg max-w-[70%]">
-                        I'm good, thanks! How about you?
-                      </div>
-                      <img
-                        src="https://via.placeholder.com/40"
-                        alt="You"
-                        class="w-8 h-8 rounded-full ml-3"
-                      />
-                    </div>
-                  </div>
-          
-                  <!-- Message Input -->
-                  <div class="border-t border-gray-200 dark:border-gray-700 p-4">
-                    <div class="flex items-center">
-                      <input
-                        type="text"
-                        placeholder="Type a message..."
-                        class="flex-1 p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      />
-                      <button class="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                        <svg
-                          class="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                          ></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!-- Messaging Section -->
+<div class="flex-1 flex flex-col ml-64">
+  <!-- Header -->
+  <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Messages</h2>
+  </header>
+
+  <!-- Chat List and Chat Area -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Chat List -->
+    <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
+      <!-- Search and Add Friend -->
+      <div class="mb-4">
+        <input
+          type="text"
+          id="search-friends"
+          placeholder="Search for friends"
+          class="w-full p-2 mb-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        />
+        <button
+          id="add-friend-btn"
+          class="w-full p-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+        >
+          Add Friend
+        </button>
+      </div>
+    
+      <!-- Search Results -->
+      <ul id="search-results" class="space-y-2 mb-4">
+        <!-- Dynamically populated search results will be inserted here -->
+      </ul>
+    
+      <!-- Friend Requests Section -->
+      <div class="friend-requests-container mt-6">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Friend Requests</h3>
+        <ul id="friend-requests-list" class="space-y-2 overflow-y-auto max-h-[200px]">
+          <!-- If no friend requests, show a message -->
+          <li class="text-gray-500 dark:text-gray-400 text-sm">No friend requests at the moment.</li>
+        </ul>
+      </div>
+    
+      <!-- Friend List -->
+      <ul id="friend-list" class="space-y-2 overflow-y-auto max-h-[calc(100vh-300px)]">
+        <!-- Dynamic Friends will be listed here -->
+      </ul>
+    </aside>
+    
+
+    <!-- Chat Area -->
+    <div class="flex-1 flex flex-col bg-white dark:bg-gray-800">
+      <!-- Chat Header -->
+      <div class="border-b border-gray-200 dark:border-gray-700 p-4">
+        <div id="chat-header" class="flex items-center hidden">
+          <img
+            id="chat-avatar"
+            src="https://via.placeholder.com/40"
+            alt="Friend Avatar"
+            class="w-8 h-8 rounded-full mr-3"
+          />
+          <div>
+            <p id="chat-friend-name" class="text-lg font-semibold text-gray-900 dark:text-white"></p>
+            <p id="chat-status" class="text-xs text-gray-500 dark:text-gray-400">Online</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Chat Messages -->
+      <div id="messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Dynamic Chat Messages will appear here -->
+      </div>
+
+      <!-- Message Input -->
+      <div class="border-t border-gray-200 dark:border-gray-700 p-4">
+        <div class="flex items-center">
+          <input
+            id="message-input"
+            type="text"
+            placeholder="Type a message..."
+            class="flex-1 p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          />
+          <button id="send-message" class="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function getUserData() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';  
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/dashboard', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      
+      const user = await response.json();
+      
+      document.getElementById("user-name").textContent = user.username || "Unknown User";
+      document.getElementById("user-email").textContent = user.email || "user@example.com";
+
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  }
+
+  document.getElementById("logoutButton").addEventListener("click", async function (event) {
+    event.preventDefault(); 
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("http://localhost:8080/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, 
+        },
+      });
+
+      if (response.ok) {
+        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
+
+        window.location.href = "login.html"; 
+      } else {
+        console.error("Logout failed:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  });
+
+
+  //FRIENDS
+async function fetchFriendRequests() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login';  
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:8080/friend-requests', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch friend requests');
+
+    const requests = await response.json();
+    const friendRequestsList = document.getElementById('friend-requests-list');
+    friendRequestsList.innerHTML = ''; 
+
+    if (requests.length === 0) {
+      friendRequestsList.innerHTML = '<li class="text-gray-500 dark:text-gray-400 text-sm">No friend requests at the moment.</li>';
+    } else {
+      requests.forEach(request => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('p-2', 'bg-gray-200', 'rounded', 'flex', 'justify-between', 'items-center');
         
-          <script>
-            async function getUserData() {
-              const token = localStorage.getItem('token');
-              if (!token) {
-                window.location.href = '/login';  
-                return;
-              }
-          
-              try {
-                const response = await fetch('http://localhost:8080/dashboard', {
-                  method: 'GET',
-                  headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                  }
-                });
-          
-                if (!response.ok) throw new Error('Failed to fetch user data');
-                
-                const user = await response.json();
-                
-                document.getElementById("user-name").textContent = user.username || "Unknown User";
-                document.getElementById("user-email").textContent = user.email || "user@example.com";
-          
-              } catch (error) {
-                console.error('Error fetching user data:', error);
-              }
-            }
-          
-            window.onload = function() {
-              getUserData();
-            };
-          </script>
-          
-          <script> 
-            //logout stuff
-            document.getElementById("logoutButton").addEventListener("click", async function (event) {
-            event.preventDefault(); 
-          
-            try {
-              const token = localStorage.getItem("token");
-          
-              const response = await fetch("http://localhost:8080/logout", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "Authorization": `Bearer ${token}`, 
-                },
-              });
-          
-              if (response.ok) {
-                localStorage.removeItem("token");
-                sessionStorage.removeItem("token");
-          
-                window.location.href = "login.html"; 
-              } else {
-                console.error("Logout failed:", await response.json());
-              }
-            } catch (error) {
-              console.error("Error during logout:", error);
-            }
-          });
-            </script>
-        
+        listItem.innerHTML = `
+          <span class="font-semibold">${request.senderUsername}</span>
+          <button class="accept-btn" data-id="${request.requestID}">Accept</button>
+          <button class="decline-btn" data-id="${request.requestID}">Decline</button>
+        `;
+
+        friendRequestsList.appendChild(listItem);
+
+        listItem.querySelector('.accept-btn').addEventListener('click', async () => {
+          await handleAcceptRequest(request.requestID, request.creatorID);
+        });
+
+        listItem.querySelector('.decline-btn').addEventListener('click', async () => {
+          await handleDeclineRequest(request.requestID, request.creatorID);
+        });
+      });
+    }
+  } catch (error) {
+    console.error('Error displaying friend requests:', error);
+  }
+}
+
+async function handleAcceptRequest(requestId, creatorID) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login';  
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:8080/friend-request/accept', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ creatorID })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert('Friend request accepted');
+      await displayFriendRequests();
+      await displayFriendsList();
+ 
+    } else {
+      console.error(result.message || 'Error accepting friend request');
+    }
+  } catch (error) {
+    console.error('Error handling accept request:', error);
+  }
+}
+
+async function handleDeclineRequest(requestId, creatorID) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login';  
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:8080/friend-request/decline', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ creatorID })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert('Friend request declined');
+      await displayFriendRequests();
+      await displayFriendsList();
+   
+    } else {
+      console.error(result.message || 'Error declining friend request');
+    }
+  } catch (error) {
+    console.error('Error handling decline request:', error);
+  }
+}
+
+
+async function fetchFriendsList() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login';  
+    return;
+  }
+
+  try {
+    console.log("Fetching friends list...");
+    const response = await fetch('http://localhost:8080/friends-list', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch friends list');
+    
+    const friends = await response.json();
+
+    const friendList = document.getElementById('friend-list');
+    if (!friendList) {
+      console.error("Friend list element not found");
+      return;
+    }
+    
+    friendList.innerHTML = ''; 
+    
+    if (friends.length === 0) {
+      friendList.innerHTML = '<li class="text-gray-500 dark:text-gray-400 text-sm">You have no friends yet.</li>';
+    } else {
+      friends.forEach(friend => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('p-2', 'bg-gray-200', 'rounded');
+        listItem.textContent = friend.username; 
+        friendList.appendChild(listItem);
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching friends list:', error);
+  }
+}
+
+
+async function searchForFriends() {
+  const searchTerm = document.getElementById('search-friends').value.trim();
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    window.location.href = '/login';  
+    return;
+  }
+
+  try {
+    if (searchTerm.length > 0) {
+      const response = await fetch(`http://localhost:8080/friends-search?q=${encodeURIComponent(searchTerm)}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to search for friends');
+
+      const users = await response.json();
+      displaySearchResults(users);
+    } else {
+      document.getElementById('search-results').innerHTML = '';
+    }
+  } catch (error) {
+    console.error('Error searching for friends:', error);
+  }
+}
+
+function displaySearchResults(users) {
+  const resultsContainer = document.getElementById('search-results');
+  resultsContainer.innerHTML = ''; 
+
+  if (users.length === 0) {
+    resultsContainer.innerHTML = '<li class="text-gray-500 dark:text-gray-400 text-sm">No users found.</li>';
+  } else {
+    users.forEach(user => {
+      const listItem = document.createElement('li');
+      listItem.classList.add('p-2', 'bg-gray-200', 'rounded', 'flex', 'justify-between', 'items-center');
+      listItem.innerHTML = `
+        <span class="font-semibold dark:text-white">${user.username}</span>
+        <button class="add-btn p-1 bg-green-500 text-white rounded-lg hover:bg-green-600" data-id="${user.UserID}">
+          Add Friend
+        </button>
+      `;
+
+      resultsContainer.appendChild(listItem);
+
+      listItem.querySelector('.add-btn').addEventListener('click', async function() {
+        console.log("Attempting to send friend request to UserID:", user.UserID);
+        if (!user.UserID) {
+          console.error("Error: UserID is undefined or null.");
+          return;
+        }
+        await sendFriendRequest(user.UserID);
+      });
+    });
+  }
+}
+
+async function sendFriendRequest(userId) {
+  if (!userId) {
+    console.error("sendFriendRequest error: userId is missing or null.");
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    window.location.href = '/login';
+    return;
+  }
+
+  console.log("Sending request with receiverID:", userId); // Debugging
+
+  try {
+    const response = await fetch(`http://localhost:8080/friend-request/send`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ receiverID: userId }) 
+    });
+
+    if (!response.ok) throw new Error('Failed to send friend request');
+
+    alert('Friend request sent successfully!');
+  } catch (error) {
+    console.error('Error sending friend request:', error);
+  }
+}
+
+document.getElementById('search-friends').addEventListener('input', searchForFriends);
+
+
+window.onload = function() {
+  fetchFriendRequests();
+  fetchFriendsList();
+  getUserData();
+};
+
+</script>
+
 
   <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 </body>
