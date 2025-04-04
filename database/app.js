@@ -58,7 +58,8 @@ import {
     declineFriendRequest,
     fetchFriendsList,
     fetchFriendRequests,
-    searchUsers
+    searchUsers,
+    removeFriend
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -637,6 +638,20 @@ app.post('/friend-request/send', authenticateToken, async (req, res) => {
       res.status(500).json({ error: "Failed to fetch friends list" });
     }
   });
+
+  // Removing a friend
+app.post('/friend/remove', authenticateToken, async (req, res) => {
+    try {
+      const { friendID } = req.body;
+      const userID = req.user.id; // The user making the request (from JWT token)
+  
+      const result = await removeFriend(userID, friendID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to remove friend" });
+    }
+  });
+  
 
   // Search for users by username
 app.get('/friends-search', authenticateToken, async (req, res) => {

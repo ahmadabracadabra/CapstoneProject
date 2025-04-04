@@ -564,7 +564,6 @@ async function handleDeclineRequest(requestId, creatorID) {
   }
 }
 
-
 async function fetchFriendsList() {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -599,15 +598,58 @@ async function fetchFriendsList() {
     } else {
       friends.forEach(friend => {
         const listItem = document.createElement('li');
-        listItem.classList.add('p-2', 'bg-gray-200', 'rounded');
-        listItem.textContent = friend.username; 
+        listItem.classList.add('p-2', 'bg-gray-200', 'rounded', 'flex', 'justify-between', 'items-center');
+        listItem.innerHTML = `
+          <span class="text-gray-700">${friend.username}</span>
+          <button class="remove-friend-btn text-red-500 hover:text-red-700" data-id="${friend.friendID}">
+            X
+          </button>
+        `;
         friendList.appendChild(listItem);
+
+        // Add event listener for the "X" button
+        listItem.querySelector('.remove-friend-btn').addEventListener('click', async () => {
+          const confirmation = window.confirm(`Are you sure you want to remove ${friend.username} from your friends?`);
+          if (confirmation) {
+            await removeFriend(friend.friendID);
+            listItem.remove(); // Remove the friend from the UI
+          }
+        });
       });
     }
   } catch (error) {
     console.error('Error fetching friends list:', error);
   }
 }
+
+async function removeFriend(friendID) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login';  
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:8080/friend/remove', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ friendID }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      console.log(data.message);
+    } else {
+      console.error(data.message);
+    }
+  } catch (error) {
+    console.error('Error removing friend:', error);
+  }
+}
+
 
 
 async function searchForFriends() {

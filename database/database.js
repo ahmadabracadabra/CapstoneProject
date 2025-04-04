@@ -498,6 +498,26 @@ export async function declineFriendRequest(creatorID, receiverID) {
   }
 }
 
+// Remove a friend
+export async function removeFriend(userID, friendID) {
+  try {
+    const result = await pool.query(
+      `DELETE FROM friends
+       WHERE (FriendID1 = ? AND FriendID2 = ?) OR (FriendID1 = ? AND FriendID2 = ?)`,
+      [userID, friendID, friendID, userID]
+    );
+    
+    if (result.affectedRows === 0) {
+      return { message: "No friend relationship found to remove." };
+    }
+
+    return { message: "Friend removed successfully." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error removing friend." };
+  }
+}
+
 
 // Fetch Pending Friend Requests
 export async function fetchFriendRequests(userID) {
