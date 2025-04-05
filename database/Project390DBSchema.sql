@@ -28,13 +28,51 @@ CREATE TABLE `Assignments` (
   `Class` varchar(100) NOT NULL,
   `DueDate` date NOT NULL,
   `DateCreated` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `Description` text NOT NULL, 
   `Status` enum('Unstarted','In Progress','Done') NOT NULL,
   `Points_Possible` int NOT NULL,
   `UserID` int NOT NULL,
+  `Description` text NOT NULL,
   PRIMARY KEY (`AssignmentID`),
   KEY `UserID` (`UserID`),
   CONSTRAINT `assignments_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `channels`
+--
+
+DROP TABLE IF EXISTS `channels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `channels` (
+  `channel_id` int NOT NULL AUTO_INCREMENT,
+  `channel_name` varchar(255) NOT NULL,
+  `description` text,
+  `creator_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`channel_id`),
+  KEY `creator_id` (`creator_id`),
+  CONSTRAINT `channels_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ChatGroups`
+--
+
+DROP TABLE IF EXISTS `ChatGroups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ChatGroups` (
+  `GroupID` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100) NOT NULL,
+  `Subject` varchar(100) NOT NULL,
+  `CreatorID` int NOT NULL,
+  `CreatedDate` date NOT NULL,
+  PRIMARY KEY (`GroupID`),
+  KEY `CreatorID` (`CreatorID`),
+  CONSTRAINT `chatgroups_ibfk_1` FOREIGN KEY (`CreatorID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -52,7 +90,7 @@ CREATE TABLE `Contact` (
   `message` text NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,45 +127,109 @@ CREATE TABLE `Event` (
   PRIMARY KEY (`id`),
   KEY `fk_event_user` (`UserID`),
   CONSTRAINT `fk_event_user` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `GroupMember`
+-- Table structure for table `FriendRequests`
 --
 
-DROP TABLE IF EXISTS `GroupMember`;
+DROP TABLE IF EXISTS `FriendRequests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `GroupMember` (
-  `JoinDate` date NOT NULL,
-  `LeftDate` date DEFAULT NULL,
-  `UserID` int NOT NULL,
-  `GroupID` int NOT NULL,
-  PRIMARY KEY (`UserID`,`GroupID`),
-  KEY `GroupID` (`GroupID`),
-  CONSTRAINT `groupmember_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE,
-  CONSTRAINT `groupmember_ibfk_2` FOREIGN KEY (`GroupID`) REFERENCES `Groups` (`GroupID`) ON DELETE CASCADE
+CREATE TABLE `FriendRequests` (
+  `RequestID` int NOT NULL AUTO_INCREMENT,
+  `CreatorID` int NOT NULL,
+  `ReceiverID` int NOT NULL,
+  `Status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  `CreatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`RequestID`),
+  KEY `CreatorID` (`CreatorID`),
+  KEY `ReceiverID` (`ReceiverID`),
+  CONSTRAINT `friendrequests_ibfk_1` FOREIGN KEY (`CreatorID`) REFERENCES `Users` (`UserID`),
+  CONSTRAINT `friendrequests_ibfk_2` FOREIGN KEY (`ReceiverID`) REFERENCES `Users` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Friends`
+--
+
+DROP TABLE IF EXISTS `Friends`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Friends` (
+  `FriendID1` int NOT NULL,
+  `FriendID2` int NOT NULL,
+  `CreatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`FriendID1`,`FriendID2`),
+  KEY `FriendID2` (`FriendID2`),
+  CONSTRAINT `friends_ibfk_1` FOREIGN KEY (`FriendID1`) REFERENCES `Users` (`UserID`),
+  CONSTRAINT `friends_ibfk_2` FOREIGN KEY (`FriendID2`) REFERENCES `Users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Groups`
+-- Table structure for table `group_membership`
 --
 
-DROP TABLE IF EXISTS `Groups`;
+DROP TABLE IF EXISTS `group_membership`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Groups` (
-  `GroupID` int NOT NULL AUTO_INCREMENT,
-  `Name` varchar(100) NOT NULL,
-  `Subject` varchar(100) NOT NULL,
-  `CreatorID` int NOT NULL,
-  `CreatedDate` date NOT NULL,
-  PRIMARY KEY (`GroupID`),
-  KEY `CreatorID` (`CreatorID`),
-  CONSTRAINT `groups_ibfk_1` FOREIGN KEY (`CreatorID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `group_membership` (
+  `channel_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `joined_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`channel_id`,`user_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `group_membership_ibfk_1` FOREIGN KEY (`channel_id`) REFERENCES `channels` (`channel_id`),
+  CONSTRAINT `group_membership_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `group_message`
+--
+
+DROP TABLE IF EXISTS `group_message`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_message` (
+  `channel_id` int NOT NULL AUTO_INCREMENT,
+  `message_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`channel_id`),
+  KEY `message_id` (`message_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `group_message_ibfk_1` FOREIGN KEY (`message_id`) REFERENCES `message` (`messageID`),
+  CONSTRAINT `group_message_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `invitations`
+--
+
+DROP TABLE IF EXISTS `invitations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `invitations` (
+  `invitation_id` int NOT NULL AUTO_INCREMENT,
+  `channel_id` int DEFAULT NULL,
+  `inviter_id` int DEFAULT NULL,
+  `invitee_id` int DEFAULT NULL,
+  `status` enum('pending','accepted','declined') DEFAULT 'pending',
+  `sent_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`invitation_id`),
+  KEY `channel_id` (`channel_id`),
+  KEY `inviter_id` (`inviter_id`),
+  KEY `invitee_id` (`invitee_id`),
+  CONSTRAINT `invitations_ibfk_1` FOREIGN KEY (`channel_id`) REFERENCES `channels` (`channel_id`),
+  CONSTRAINT `invitations_ibfk_2` FOREIGN KEY (`inviter_id`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `invitations_ibfk_3` FOREIGN KEY (`invitee_id`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,46 +312,66 @@ CREATE TABLE `Meetings` (
   KEY `HostID` (`HostID`),
   KEY `GroupID` (`GroupID`),
   CONSTRAINT `meetings_ibfk_1` FOREIGN KEY (`HostID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE,
-  CONSTRAINT `meetings_ibfk_2` FOREIGN KEY (`GroupID`) REFERENCES `Groups` (`GroupID`) ON DELETE SET NULL
+  CONSTRAINT `meetings_ibfk_2` FOREIGN KEY (`GroupID`) REFERENCES `ChatGroups` (`GroupID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Message`
+-- Table structure for table `message`
 --
 
-DROP TABLE IF EXISTS `Message`;
+DROP TABLE IF EXISTS `message`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Message` (
-  `MessageID` int NOT NULL AUTO_INCREMENT,
-  `Timestamp` datetime NOT NULL,
-  `SenderID` int NOT NULL,
-  `MessageText` text NOT NULL,
-  `GroupID` int DEFAULT NULL,
-  `CreatedAt` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`MessageID`),
-  KEY `SenderID` (`SenderID`),
-  KEY `GroupID` (`GroupID`),
-  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`SenderID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE,
-  CONSTRAINT `message_ibfk_2` FOREIGN KEY (`GroupID`) REFERENCES `Groups` (`GroupID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `message` (
+  `messageID` int NOT NULL AUTO_INCREMENT,
+  `senderID` int NOT NULL,
+  `receiverID` int NOT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`messageID`),
+  KEY `senderID` (`senderID`),
+  KEY `receiverID` (`receiverID`),
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`senderID`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `message_ibfk_2` FOREIGN KEY (`receiverID`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `MessageRecipient`
+-- Table structure for table `message_attachments`
 --
 
-DROP TABLE IF EXISTS `MessageRecipient`;
+DROP TABLE IF EXISTS `message_attachments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `MessageRecipient` (
-  `RecipientID` int NOT NULL,
-  `MessageID` int NOT NULL,
-  PRIMARY KEY (`RecipientID`,`MessageID`),
-  KEY `MessageID` (`MessageID`),
-  CONSTRAINT `messagerecipient_ibfk_1` FOREIGN KEY (`MessageID`) REFERENCES `Message` (`MessageID`) ON DELETE CASCADE,
-  CONSTRAINT `messagerecipient_ibfk_2` FOREIGN KEY (`RecipientID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
+CREATE TABLE `message_attachments` (
+  `attachment_id` int NOT NULL AUTO_INCREMENT,
+  `message_id` int DEFAULT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `file_type` varchar(50) DEFAULT NULL,
+  `file_size` int DEFAULT NULL,
+  `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`attachment_id`),
+  KEY `message_id` (`message_id`),
+  CONSTRAINT `message_attachments_ibfk_1` FOREIGN KEY (`message_id`) REFERENCES `message` (`messageID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `message_status`
+--
+
+DROP TABLE IF EXISTS `message_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `message_status` (
+  `message_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `status` enum('unread','read') DEFAULT 'unread',
+  PRIMARY KEY (`message_id`,`user_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `message_status_ibfk_1` FOREIGN KEY (`message_id`) REFERENCES `message` (`messageID`),
+  CONSTRAINT `message_status_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -288,7 +410,7 @@ CREATE TABLE `Task` (
   PRIMARY KEY (`id`),
   KEY `fk_task_user` (`UserID`),
   CONSTRAINT `fk_task_user` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -308,7 +430,7 @@ CREATE TABLE `Users` (
   `PasswordDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `Username` (`Username`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -320,4 +442,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-17 23:11:47
+-- Dump completed on 2025-04-04 21:06:35
