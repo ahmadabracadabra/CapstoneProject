@@ -18,14 +18,10 @@ import {
     createAssignment,
     deleteAssignment,
     updateAssignmentStatus,  
-    fetchGroups, 
-    createGroup, 
     fetchMeetingMessages, 
     createMeetingMessage, 
     fetchMeetings, 
     createMeeting, 
-    fetchGroupMembers, 
-    addGroupMember, 
     fetchMessageRecipients, 
     addMessageRecipient, 
     fetchMeetingRecordings, 
@@ -45,21 +41,25 @@ import {
     fetchEvents,
     fetchEventById,
     getQuoteOfTheDay,
-    sendMessage,
-    getMessagesByChat,
-    deleteMessage,
-    createChatGroup,
-    getChatGroupById,
-    deleteChatGroup,
-    addUserToGroup,
-    removeUserFromGroup,
     sendFriendRequest,
     acceptFriendRequest,
     declineFriendRequest,
     fetchFriendsList,
     fetchFriendRequests,
     searchUsers,
-    removeFriend
+    removeFriend,
+    sendMessage,
+    uploadAttachment,
+    updateMessageStatus,
+    createNotification,
+    markNotificationAsRead,
+    sendGroupMessage,
+    inviteUserToGroup,
+    acceptGroupInvitation,
+    declineGroupInvitation,
+    joinGroup,
+    leaveGroup,
+    getMessages
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -479,104 +479,6 @@ app.put('/assignments/:id/status', authenticateToken, async (req, res) => {
     }
 });
 
-// MESSAGES (Updated but not finished)
-
-app.post('/messages', authenticateToken, async (req, res) => {
-    const { chatId, content } = req.body;
-    try {
-        const messageId = await sendMessage(req.user.id, chatId, content);
-        res.status(201).json({ messageId, message: "Message sent successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to send message" });
-    }
-});
-
-app.get('/messages/:chatId', authenticateToken, async (req, res) => {
-    const chatId = req.params.chatId;
-    try {
-        const messages = await getMessagesByChat(chatId);
-        res.status(200).json(messages);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch messages" });
-    }
-});
-
-app.delete('/messages/:id', authenticateToken, async (req, res) => {
-    const messageId = req.params.id;
-    try {
-        const result = await deleteMessage(messageId, req.user.id);
-        if (!result.affectedRows) {
-            return res.status(404).json({ error: "Message not found or unauthorized" });
-        }
-        res.status(200).json({ message: "Message deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete message" });
-    }
-});
-
-// CHAT GROUPS (Updated but not finished)
-app.post('/groups', authenticateToken, async (req, res) => {
-    const { groupName } = req.body;
-    try {
-        const groupId = await createChatGroup(groupName, req.user.id);
-        res.status(201).json({ groupId, message: "Chat group created successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to create chat group" });
-    }
-});
-
-app.get('/groups/:id', authenticateToken, async (req, res) => {
-    const groupId = req.params.id;
-    try {
-        const group = await getChatGroupById(groupId);
-        if (!group) {
-            return res.status(404).json({ error: "Chat group not found" });
-        }
-        res.status(200).json(group);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve chat group" });
-    }
-});
-
-app.delete('/groups/:id', authenticateToken, async (req, res) => {
-    const groupId = req.params.id;
-    try {
-        const result = await deleteChatGroup(groupId);
-        if (!result.affectedRows) {
-            return res.status(404).json({ error: "Chat group not found or unauthorized" });
-        }
-        res.status(200).json({ message: "Chat group deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete chat group" });
-    }
-});
-
-// GROUP CONVERSATIONS (Updated but not finished)
-app.post('/groups/:id/users', authenticateToken, async (req, res) => {
-    const groupId = req.params.id;
-    const { userId } = req.body;
-    try {
-        const conversationId = await addUserToGroup(groupId, userId);
-        res.status(201).json({ conversationId, message: "User added to group successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to add user to group" });
-    }
-});
-
-app.delete('/groups/:id/users/:userId', authenticateToken, async (req, res) => {
-    const groupId = req.params.id;
-    const userId = req.params.userId;
-    try {
-        const result = await removeUserFromGroup(groupId, userId);
-        if (!result.affectedRows) {
-            return res.status(404).json({ error: "User not found in group or unauthorized" });
-        }
-        res.status(200).json({ message: "User removed from group successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to remove user from group" });
-    }
-});
-
 // FRIENDS
 // Send Friend Request
 app.post('/friend-request/send', authenticateToken, async (req, res) => {
@@ -664,28 +566,168 @@ app.get('/friends-search', authenticateToken, async (req, res) => {
     }
   });
   
+
+//MESSAGING 
+// Fetch messages between two friends
+app.get('/messages/:friendID', authenticateToken, async (req, res) => {
+    try {
+        const userID = req.user.id; 
+        const { friendID } = req.params; 
+        const { page = 1, limit = 20 } = req.query; 
+        const messages = await getMessages(userID, friendID, page, limit);
+        res.json(messages); 
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch messages' });
+    }
+});
+  
+// Send a message
+app.post('/message/send', authenticateToken, async (req, res) => {
+    try {
+        const { receiverID, content } = req.body;
+        const senderID = req.user.id;
+
+        if (!content || !receiverID) {
+            return res.status(400).json({ error: "Receiver ID and content are required." });
+        }
+        const result = await sendMessage(senderID, receiverID, content);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to send message" });
+    }
+});
+  
+//NEEDS OPTIMIZATIOn VVVV
+  // Upload a message attachment
+  app.post('/message/attachment/upload', authenticateToken, async (req, res) => {
+    try {
+      const { messageID, filePath, fileType, fileSize } = req.body;
+  
+      const result = await uploadAttachment(messageID, filePath, fileType, fileSize);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to upload attachment" });
+    }
+  });
+  
+  // Update message status
+  app.post('/message/status/update', authenticateToken, async (req, res) => {
+    try {
+      const { messageID, status } = req.body;
+      const userID = req.user.id;
+  
+      const result = await updateMessageStatus(messageID, userID, status);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update message status" });
+    }
+  });
+  
+  // Create a notification
+  app.post('/notification/create', authenticateToken, async (req, res) => {
+    try {
+      const { type, content } = req.body;
+      const userID = req.user.id;
+  
+      const result = await createNotification(type, content, userID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create notification" });
+    }
+  });
+  
+  // Mark notification as read
+  app.post('/notification/mark-read', authenticateToken, async (req, res) => {
+    try {
+      const { notificationID } = req.body;
+  
+      const result = await markNotificationAsRead(notificationID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to mark notification as read" });
+    }
+  });
+  
+  // Send a group message
+  app.post('/group-message/send', authenticateToken, async (req, res) => {
+    try {
+      const { channelID, content } = req.body;
+      const userID = req.user.id;
+  
+      const result = await sendGroupMessage(channelID, userID, content);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send group message" });
+    }
+  });
+  
+  // Invite a user to a group
+  app.post('/group/invite', authenticateToken, async (req, res) => {
+    try {
+      const { channelID, inviteeID } = req.body;
+      const inviterID = req.user.id;
+  
+      const result = await inviteUserToGroup(channelID, inviterID, inviteeID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send group invitation" });
+    }
+  });
+  
+  // Accept a group invitation
+  app.post('/group/invitation/accept', authenticateToken, async (req, res) => {
+    try {
+      const { invitationID } = req.body;
+  
+      const result = await acceptGroupInvitation(invitationID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to accept group invitation" });
+    }
+  });
+  
+  // Decline a group invitation
+  app.post('/group/invitation/decline', authenticateToken, async (req, res) => {
+    try {
+      const { invitationID } = req.body;
+  
+      const result = await declineGroupInvitation(invitationID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to decline group invitation" });
+    }
+  });
+  
+  // Join a group
+  app.post('/group/join', authenticateToken, async (req, res) => {
+    try {
+      const { channelID } = req.body;
+      const userID = req.user.id;
+  
+      const result = await joinGroup(channelID, userID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to join group" });
+    }
+  });
+  
+  // Leave a group
+  app.post('/group/leave', authenticateToken, async (req, res) => {
+    try {
+      const { channelID } = req.body;
+      const userID = req.user.id;
+  
+      const result = await leaveGroup(channelID, userID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to leave group" });
+    }
+  });
+  
+
+
+
 //OUTDATED VVV
-
-// Routes for Groups
-app.get('/groups', async (req, res) => {
-    try {
-        const groups = await fetchGroups();
-        res.json(groups);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch groups" });
-    }
-});
-
-app.post('/groups', async (req, res) => {
-    try {
-        const { name, subject, creatorId, createdDate } = req.body;
-        const newGroup = await createGroup(name, subject, creatorId, createdDate);
-        res.status(201).json(newGroup);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to create group" });
-    }
-});
-
 // Routes for Meeting Messages
 app.get('/meeting-messages', async (req, res) => {
     try {
@@ -723,26 +765,6 @@ app.post('/meetings', async (req, res) => {
         res.status(201).json(newMeeting);
     } catch (error) {
         res.status(500).json({ error: "Failed to create meeting" });
-    }
-});
-
-// Routes for Group Members
-app.get('/group-members', async (req, res) => {
-    try {
-        const members = await fetchGroupMembers();
-        res.json(members);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch group members" });
-    }
-});
-
-app.post('/group-members', async (req, res) => {
-    try {
-        const { userId, groupId, joinDate, leftDate } = req.body;
-        const newMember = await addGroupMember(userId, groupId, joinDate, leftDate);
-        res.status(201).json(newMember);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to add group member" });
     }
 });
 

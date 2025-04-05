@@ -276,114 +276,6 @@ export async function updateAssignmentStatus(assignmentId, userId, status) {
   return result;
 }
 
-
-// MESSAGES (Updated but not finished)
-export async function sendMessage(senderId, chatId, content) {
-  try {
-      const [result] = await pool.query(
-          "INSERT INTO Messages (SenderID, ChatID, Content) VALUES (?, ?, ?)",
-          [senderId, chatId, content]
-      );
-      return result.insertId;
-  } catch (error) {
-      console.error("Database query error:", error);
-      throw error;
-  }
-}
-
-export async function getMessagesByChat(chatId) {
-  try {
-      const [rows] = await pool.query(
-          "SELECT * FROM Messages WHERE ChatID = ? ORDER BY SentAt ASC",
-          [chatId]
-      );
-      return rows;
-  } catch (error) {
-      console.error("Database query error:", error);
-      throw error;
-  }
-}
-
-export async function deleteMessage(messageId, userId) {
-  try {
-      const [result] = await pool.query(
-          "DELETE FROM Messages WHERE MessageID = ? AND SenderID = ?",
-          [messageId, userId]
-      );
-      return result;
-  } catch (error) {
-      console.error("Database query error:", error);
-      throw error;
-  }
-}
-
-// CHAT GROUPS (Updated but not finished)
-export async function createChatGroup(groupName, ownerId) {
-  try {
-      const [result] = await pool.query(
-          "INSERT INTO ChatGroups (GroupName, OwnerID) VALUES (?, ?)",
-          [groupName, ownerId]
-      );
-      return result.insertId;
-  } catch (error) {
-      console.error("Database query error:", error);
-      throw error;
-  }
-}
-
-export async function getChatGroupById(groupId) {
-  try {
-      const [rows] = await pool.query(
-          "SELECT * FROM ChatGroups WHERE GroupID = ?",
-          [groupId]
-      );
-      return rows[0];
-  } catch (error) {
-      console.error("Database query error:", error);
-      throw error;
-  }
-}
-
-export async function deleteChatGroup(groupId) {
-  try {
-      const [result] = await pool.query(
-          "DELETE FROM ChatGroups WHERE GroupID = ?",
-          [groupId]
-      );
-      return result;
-  } catch (error) {
-      console.error("Database query error:", error);
-      throw error;
-  }
-}
-
-// GROUP CONVERSATIONS (Updated but not finished)
-export async function addUserToGroup(groupId, userId) {
-  try {
-      const [result] = await pool.query(
-          "INSERT INTO GroupConversations (GroupID, UserID) VALUES (?, ?)",
-          [groupId, userId]
-      );
-      return result.insertId;
-  } catch (error) {
-      console.error("Database query error:", error);
-      throw error;
-  }
-}
-
-export async function removeUserFromGroup(groupId, userId) {
-  try {
-      const [result] = await pool.query(
-          "DELETE FROM GroupConversations WHERE GroupID = ? AND UserID = ?",
-          [groupId, userId]
-      );
-      return result;
-  } catch (error) {
-      console.error("Database query error:", error);
-      throw error;
-  }
-}
-
 // FRIENDS
 export async function sendFriendRequest(creatorID, receiverID) {
   try {
@@ -560,7 +452,6 @@ export async function fetchFriendsList(userID) {
   }
 }
 
-
 export async function searchUsers(searchTerm) {
   try {
     const query = `
@@ -577,31 +468,260 @@ export async function searchUsers(searchTerm) {
   }
 }
 
-//OUTDATED VVVV
-
-// Fetch all groups
-export async function fetchGroups() {
+//MESSAGING 
+// Fetch messages between two friends
+export async function getMessages(userID, friendID) {
   try {
-    const [rows] = await pool.query("SELECT * FROM Groups");
-    console.log(rows);
-  } catch (error) {
-    console.error("Database query error:", error);
-  }
-}
-
-// Create a new group
-export async function createGroup(name, subject, creatorId, createdDate) {
-  try {
-    const [result] = await pool.query(
-      "INSERT INTO Groups (Name, Subject, CreatorID, CreatedDate) VALUES (?, ?, ?, ?)",
-      [name, subject, creatorId, createdDate]
+    const result = await pool.query(
+      `SELECT m.*, u.username as senderName 
+       FROM message m
+       JOIN users u ON m.senderID = u.userid
+       WHERE (m.senderID = ? AND m.receiverID = ?) 
+          OR (m.senderID = ? AND m.receiverID = ?)
+       ORDER BY m.created_at ASC`,
+      [userID, friendID, friendID, userID]
     );
-    console.log("Group created with ID:", result.insertId);
+
+    if (result.length === 0) {
+      return { message: "No messages found between these users." };
+    }
+
+    return result; 
   } catch (error) {
     console.error("Database query error:", error);
+    return { message: "Error fetching messages." };
   }
 }
 
+
+// Send a message
+export async function sendMessage(senderID, receiverID, content) {
+  try {
+      const created_at = new Date(); 
+      const result = await pool.query(
+          `INSERT INTO message (senderID, receiverID, content, created_at)
+           VALUES (?, ?, ?, ?)`,
+          [senderID, receiverID, content, created_at]
+      );
+      if (result.affectedRows === 0) {
+          return { message: "Failed to send message." };
+      }
+      return { message: "Message sent successfully." };
+  } catch (error) {
+      console.error("Database query error:", error);
+      return { message: "Error sending message." };
+  }
+}
+
+//NEEDS WORK VVV
+// Upload a message attachment
+export async function uploadAttachment(messageID, filePath, fileType, fileSize) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO message_attachments (message_id, file_path, file_type, file_size)
+       VALUES (?, ?, ?, ?)`,
+      [messageID, filePath, fileType, fileSize]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Failed to upload attachment." };
+    }
+
+    return { message: "Attachment uploaded successfully." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error uploading attachment." };
+  }
+}
+
+// Update message status
+export async function updateMessageStatus(messageID, userID, status) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO message_status (message_id, user_id, status)
+       VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE status = ?`,
+      [messageID, userID, status, status]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Failed to update message status." };
+    }
+
+    return { message: "Message status updated successfully." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error updating message status." };
+  }
+}
+
+// Create a notification
+export async function createNotification(type, content, userID) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO Notification (type, content, UserID)
+       VALUES (?, ?, ?)`,
+      [type, content, userID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Failed to create notification." };
+    }
+
+    return { message: "Notification created successfully." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error creating notification." };
+  }
+}
+
+// Mark notification as read
+export async function markNotificationAsRead(notificationID) {
+  try {
+    const result = await pool.query(
+      `UPDATE Notification
+       SET is_read = 1
+       WHERE id = ?`,
+      [notificationID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Notification not found or already read." };
+    }
+
+    return { message: "Notification marked as read." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error marking notification as read." };
+  }
+}
+
+// Send a group message
+export async function sendGroupMessage(channelID, userID, content) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO group_message (message_id, user_id, content)
+       VALUES (?, ?, ?)`,
+      [channelID, userID, content]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Failed to send group message." };
+    }
+
+    return { message: "Group message sent successfully." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error sending group message." };
+  }
+}
+
+// Invite a user to a group
+export async function inviteUserToGroup(channelID, inviterID, inviteeID) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO invitations (channel_id, inviter_id, invitee_id, status)
+       VALUES (?, ?, ?, 'pending')`,
+      [channelID, inviterID, inviteeID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Failed to send invitation." };
+    }
+
+    return { message: "Invitation sent successfully." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error sending invitation." };
+  }
+}
+
+// Accept a group invitation
+export async function acceptGroupInvitation(invitationID) {
+  try {
+    const result = await pool.query(
+      `UPDATE invitations
+       SET status = 'accepted'
+       WHERE invitation_id = ?`,
+      [invitationID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Invitation not found or already accepted." };
+    }
+
+    return { message: "Invitation accepted successfully." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error accepting invitation." };
+  }
+}
+
+// Decline a group invitation
+export async function declineGroupInvitation(invitationID) {
+  try {
+    const result = await pool.query(
+      `UPDATE invitations
+       SET status = 'declined'
+       WHERE invitation_id = ?`,
+      [invitationID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Invitation not found or already declined." };
+    }
+
+    return { message: "Invitation declined successfully." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error declining invitation." };
+  }
+}
+
+// Join a group
+export async function joinGroup(channelID, userID) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO group_membership (channel_id, user_id)
+       VALUES (?, ?)`,
+      [channelID, userID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Failed to join group." };
+    }
+
+    return { message: "Successfully joined the group." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error joining group." };
+  }
+}
+
+// Leave a group
+export async function leaveGroup(channelID, userID) {
+  try {
+    const result = await pool.query(
+      `DELETE FROM group_membership
+       WHERE channel_id = ? AND user_id = ?`,
+      [channelID, userID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Failed to leave group." };
+    }
+
+    return { message: "Successfully left the group." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error leaving group." };
+  }
+}
+
+
+
+
+//OUTDATED VVVV
 // Fetch all meeting messages
 export async function fetchMeetingMessages() {
   try {
@@ -648,28 +768,6 @@ export async function createMeeting(hostId, groupId, startTime, endTime, status,
   }
 }
 
-// Fetch all group members
-export async function fetchGroupMembers() {
-  try {
-    const [rows] = await pool.query("SELECT * FROM GroupMember");
-    console.log(rows);
-  } catch (error) {
-    console.error("Database query error:", error);
-  }
-}
-
-// Add a member to a group
-export async function addGroupMember(userId, groupId, joinDate, leftDate) {
-  try {
-    const [result] = await pool.query(
-      "INSERT INTO GroupMember (UserID, GroupID, JoinDate, LeftDate) VALUES (?, ?, ?, ?)",
-      [userId, groupId, joinDate, leftDate]
-    );
-    console.log("Group member added with UserID:", userId, "and GroupID:", groupId);
-  } catch (error) {
-    console.error("Database query error:", error);
-  }
-}
 
 // Fetch all message recipients
 export async function fetchMessageRecipients() {

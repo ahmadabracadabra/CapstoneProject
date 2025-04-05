@@ -300,23 +300,20 @@ id="drawer-navigation"
         <!-- Dynamically populated search results will be inserted here -->
       </ul>
     
-<!-- Friend Requests Section -->
-<div class="friend-requests-container mt-6 mb-6">
-  <h3 class="text-2xl font-bold text-white mb-4">Friend Requests</h3>
-  <ul id="friend-requests-list" class="space-y-2 overflow-y-auto max-h-[200px] bg-[#101828] rounded-lg p-0"> <!-- Removed any additional padding -->
-    <!-- If no friend requests, show a message -->
-    <li class="text-gray-500 dark:text-gray-400 text-sm">No friend requests at the moment.</li>
-  </ul>
-</div>
-
+      <!-- Friend Requests Section -->
+      <div class="friend-requests-container mt-6 mb-6">
+        <h3 class="text-2xl font-bold text-white mb-4">Friend Requests</h3>
+        <ul id="friend-requests-list" class="space-y-2 overflow-y-auto max-h-[200px] bg-[#101828] rounded-lg p-0"> 
+          <li class="text-gray-500 dark:text-gray-400 text-sm">No friend requests at the moment.</li>
+        </ul>
+      </div>
 
       <!-- Friend List -->
       <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Friend List</h3>
       <ul id="friend-list" class="space-y-2 overflow-y-auto max-h-[calc(100vh-300px)]">
-      <!-- Dynamic Friends will be listed here -->
+        <!-- Dynamic Friends will be listed here -->
       </ul>
-          </aside>
-    
+    </aside>
 
     <!-- Chat Area -->
     <div class="flex-1 flex flex-col bg-white dark:bg-gray-800">
@@ -332,9 +329,11 @@ id="drawer-navigation"
           <div>
             <p id="chat-friend-name" class="text-lg font-semibold text-gray-900 dark:text-white"></p>
             <p id="chat-status" class="text-xs text-gray-500 dark:text-gray-400">Online</p>
+            <!-- Add the chat-friend-id element to store the friend's ID -->
           </div>
         </div>
       </div>
+
 
       <!-- Chat Messages -->
       <div id="messages" class="flex-1 overflow-y-auto p-4 space-y-4">
@@ -601,19 +600,24 @@ async function fetchFriendsList() {
         listItem.classList.add('p-2', 'bg-gray-200', 'rounded', 'flex', 'justify-between', 'items-center');
         listItem.innerHTML = `
           <span class="text-gray-700">${friend.username}</span>
-          <button class="remove-friend-btn text-red-500 hover:text-red-700" data-id="${friend.friendID}">
+          <button class="open-chat-btn text-blue-500 hover:text-blue-700 ml-25" data-id="${friend.friendID}">
+            <i class="fas fa-comment-dots"></i> <!-- Chat bubble icon -->
+          </button>
+          <button class="remove-friend-btn text-red-500 hover:text-red-700 ml-2" data-id="${friend.friendID}">
             X
           </button>
         `;
         friendList.appendChild(listItem);
 
-        // Add event listener for the "X" button
         listItem.querySelector('.remove-friend-btn').addEventListener('click', async () => {
           const confirmation = window.confirm(`Are you sure you want to remove ${friend.username} from your friends?`);
           if (confirmation) {
             await removeFriend(friend.friendID);
-            listItem.remove(); // Remove the friend from the UI
+            listItem.remove(); 
           }
+        });
+        listItem.querySelector('.open-chat-btn').addEventListener('click', async () => {
+          openChat(friend);
         });
       });
     }
@@ -621,6 +625,175 @@ async function fetchFriendsList() {
     console.error('Error fetching friends list:', error);
   }
 }
+
+function openChat(friend) {
+  const chatHeader = document.getElementById('chat-header');
+  const chatFriendName = document.getElementById('chat-friend-name');
+  const chatAvatar = document.getElementById('chat-avatar');
+  
+  chatFriendName.textContent = friend.username;
+  chatAvatar.src = friend.avatarUrl || 'https://via.placeholder.com/40';
+  chatHeader.classList.remove('hidden');
+  
+  // Store friend's ID for future use
+  localStorage.setItem('currentChatID', friend.friendID);
+  loadChatHistory(friend.friendID);
+}
+
+async function loadChatHistory(friendID) {
+  try {
+    const token = localStorage.getItem('token'); 
+    const response = await fetch(`http://localhost:8080/messages/${friendID}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch messages');
+    }
+
+    const messages = await response.json();
+    
+    // Debugging by checking message array
+    const chatMessages = messages[0]; 
+    console.log(chatMessages); 
+
+    displayMessages(chatMessages); 
+  } catch (error) {
+    console.error(error);
+    alert('Error loading messages');
+  }
+}
+
+function displayMessages(messages) {
+  const messagesContainer = document.getElementById('messages');
+  messagesContainer.innerHTML = '';
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    messagesContainer.innerHTML = '<p>No messages found</p>';
+    return;
+  }
+
+  let lastMessageDate = null;
+  const currentChatID = localStorage.getItem('currentChatID'); // ID of the other person
+
+  messages.forEach((message) => {
+    if (!message || !message.created_at || !message.content) {
+      console.error('Invalid message data', message);
+      return;
+    }
+
+    const messageElement = document.createElement('div');
+
+    // Format time and date
+    const messageTime = new Date(message.created_at);
+    const formattedTime = messageTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formattedDate = messageTime.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Show date if different from last message
+    if (lastMessageDate !== formattedDate) {
+      const dateElement = document.createElement('div');
+      dateElement.innerHTML = `
+        <div style="text-align: center; margin: 10px 0; font-weight: bold; color: #888;">
+          ${formattedDate}
+        </div>
+      `;
+      messagesContainer.appendChild(dateElement);
+      lastMessageDate = formattedDate;
+    }
+
+    const isSender = message.senderID !== parseInt(currentChatID);
+
+    messageElement.innerHTML = `
+      <div style="display: flex; flex-direction: ${isSender ? 'row-reverse' : 'row'}; margin-bottom: 10px; align-items: flex-end;">
+        <!-- Sender's Name (hidden for one-on-one chats) -->
+        <div style="display: none; font-weight: bold; margin-${isSender ? 'left' : 'right'}: 10px; font-size: 0.9rem; color: ${isSender ? '#ffffff' : '#555'};">
+          ${message.senderName || 'Unknown Sender'}
+        </div>
+
+        <!-- Message Bubble -->
+        <div style="
+          background-color: ${isSender ? '#007bff' : '#e5e5e5'};
+          color: ${isSender ? 'white' : 'black'};
+          padding: 10px;
+          border-radius: 15px;
+          max-width: 75%;
+          word-wrap: break-word;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+        ">
+          <p style="margin-top: 0.5rem; margin-bottom: 10px;">${message.content}</p>
+
+          <div style="font-size: 0.8rem; color: ${isSender ? '#ffffff' : '#888'}; text-align: right; margin-top: auto;">
+            ${formattedTime}
+          </div>
+        </div>
+      </div>
+    `;
+
+    messagesContainer.appendChild(messageElement);
+  });
+
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Send a message to the friend
+async function sendMessage(receiverID, content) {
+  try {
+    const token = localStorage.getItem('token');
+
+    const messagePayload = {
+      receiverID: receiverID,
+      content: content,
+    };
+
+    const response = await fetch('http://localhost:8080/message/send', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(messagePayload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send message');
+    }
+
+    const data = await response.json();
+    alert(data.message); 
+
+    const currentFriendID = localStorage.getItem('currentChatID');
+    loadChatHistory(currentFriendID); 
+  } catch (error) {
+    console.error(error);
+    alert('Error sending message');
+  }
+}
+
+
+const sendButton = document.getElementById('send-message');
+sendButton.addEventListener('click', () => {
+  const messageInput = document.getElementById('message-input');
+  const receiverID = localStorage.getItem('currentChatID');
+  const content = messageInput.value.trim();
+
+  if (receiverID && content) {
+    sendMessage(receiverID, content);
+    messageInput.value = ''; 
+  } else {
+    alert('Please enter a message');
+  }
+});
+
 
 async function removeFriend(friendID) {
   const token = localStorage.getItem('token');
