@@ -61,7 +61,8 @@ import {
     leaveGroup,
     getMessages,
     createGroupChat,
-    getGroupMessages
+    getGroupMessages,
+    getUserGroupChats
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -675,6 +676,18 @@ app.post('/message/send', authenticateToken, async (req, res) => {
       res.status(500).json({ error: "Failed to create group chat" });
     }
   });
+
+app.get('/group/list', authenticateToken, async (req, res) => {
+    try {
+      const userID = req.user.id;
+      const groups = await getUserGroupChats(userID); 
+      res.json(groups);
+    } catch (error) {
+      console.error("Failed to fetch user's group chats:", error);
+      res.status(500).json({ error: "Failed to fetch user's group chats" });
+    }
+  });
+  
   
   app.get('/group/messages/:channelID', authenticateToken, async (req, res) => {
     try {

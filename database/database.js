@@ -624,6 +624,29 @@ export async function createGroupChat(channelName, description, creatorID) {
   }
 }
 
+export async function getUserGroupChats(userID) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT 
+         c.channel_id AS channelID,
+         c.channel_name,
+         c.description,
+         c.created_at
+       FROM group_membership gm
+       JOIN channels c ON gm.channel_id = c.channel_id
+       WHERE gm.user_id = ?`,
+      [userID]
+    );
+
+    return { groups: rows };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { groups: [], message: "Error fetching user group chats." };
+  }
+}
+
+
+
 export async function getGroupMessages(channelID, page = 1, limit = 20) {
   try {
     const offset = (page - 1) * limit;
