@@ -403,10 +403,16 @@ export async function removeFriend(userID, friendID) {
       return { message: "No friend relationship found to remove." };
     }
 
-    return { message: "Friend removed successfully." };
+    await pool.query(
+      `DELETE FROM friendrequests
+       WHERE (CreatorID = ? AND ReceiverID = ?) OR (CreatorID = ? AND ReceiverID = ?)`,
+      [userID, friendID, friendID, userID]
+    );
+
+    return { message: "Friend removed and pending requests cleared successfully." };
   } catch (error) {
     console.error("Database query error:", error);
-    return { message: "Error removing friend." };
+    return { message: "Error removing friend or clearing requests." };
   }
 }
 
@@ -593,6 +599,47 @@ export async function markNotificationAsRead(notificationID) {
   } catch (error) {
     console.error("Database query error:", error);
     return { message: "Error marking notification as read." };
+  }
+}
+
+// Create a new group chat (channel)
+export async function createGroupChat(channelName, description, creatorID) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO channels (channel_name, description, creator_id)
+       VALUES (?, ?, ?)`,
+      [channelName, description, creatorID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "Failed to create group chat." };
+    }
+    return {
+      message: "Group chat created successfully.",
+      channelID: result.insertId
+    };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error creating group chat." };
+  }
+}
+
+export async function getGroupMessages(channelID, page = 1, limit = 20) {
+  try {
+    const offset = (page - 1) * limit;
+    const [rows] = await pool.query(
+      `SELECT g.*, u.username AS senderName
+       FROM group_message g
+       JOIN users u ON g.user_id = u.UserID
+       WHERE g.channel_id = ?
+       ORDER BY g.created_at DESC
+       LIMIT ? OFFSET ?`,
+      [channelID, parseInt(limit), parseInt(offset)]
+    );
+    return rows;
+  } catch (error) {
+    console.error("Database query error:", error);
+    return [];
   }
 }
 

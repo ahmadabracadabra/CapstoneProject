@@ -59,7 +59,9 @@ import {
     declineGroupInvitation,
     joinGroup,
     leaveGroup,
-    getMessages
+    getMessages,
+    createGroupChat,
+    getGroupMessages
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -658,6 +660,32 @@ app.post('/message/send', authenticateToken, async (req, res) => {
       res.json(result);
     } catch (error) {
       res.status(500).json({ error: "Failed to send group message" });
+    }
+  });
+
+  app.post('/group/create', authenticateToken, async (req, res) => {
+    try {
+      const { channelName, description } = req.body;
+      const creatorID = req.user.id;
+  
+      const result = await createGroupChat(channelName, description, creatorID);
+      res.json(result);
+    } catch (error) {
+      console.error("Error creating group:", error);
+      res.status(500).json({ error: "Failed to create group chat" });
+    }
+  });
+  
+  app.get('/group/messages/:channelID', authenticateToken, async (req, res) => {
+    try {
+      const { channelID } = req.params;
+      const { page = 1, limit = 20 } = req.query;
+  
+      const messages = await getGroupMessages(channelID, page, limit);
+      res.json(messages);
+    } catch (error) {
+      console.error("Failed to fetch group messages:", error);
+      res.status(500).json({ error: "Failed to fetch group messages" });
     }
   });
   
