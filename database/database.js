@@ -603,24 +603,57 @@ export async function markNotificationAsRead(notificationID) {
 }
 
 // Create a new group chat (channel)
-export async function createGroupChat(channelName, description, creatorID) {
+export async function createGroupChat(channelName, description, creatorID, invitedFriends) {
+  console.log('Invited Friends:', invitedFriends);
+
+  if (!Array.isArray(invitedFriends)) {
+    console.error('invitedFriends is not an array');
+    return { message: 'Error: invitedFriends is not an array.' };
+  }
+
+  const connection = await pool.getConnection();
   try {
+    await connection.beginTransaction();
     const result = await pool.query(
       `INSERT INTO channels (channel_name, description, creator_id)
        VALUES (?, ?, ?)`,
       [channelName, description, creatorID]
     );
 
-    if (result.affectedRows === 0) {
-      return { message: "Failed to create group chat." };
+    const channelID = result[0].insertId;
+    console.log('Channel created with ID:', channelID);
+
+    await pool.query(
+      `INSERT INTO group_membership (channel_id, user_id)
+       VALUES (?, ?)`,
+      [channelID, creatorID]
+    );
+    for (let friendID of invitedFriends) {
+      await pool.query(
+        `INSERT INTO group_membership (channel_id, user_id)
+         VALUES (?, ?)`,
+        [channelID, friendID]
+      );
     }
+    const membersResult = await pool.query(
+      `SELECT u.username FROM users u
+       JOIN group_membership gm ON u.userid = gm.user_id
+       WHERE gm.channel_id = ?`,
+      [channelID]
+    );
+    const members = membersResult.map(row => row.username);
+    await connection.commit();
     return {
       message: "Group chat created successfully.",
-      channelID: result.insertId
+      channelID,
+      members 
     };
   } catch (error) {
-    console.error("Database query error:", error);
+    await connection.rollback();
+    console.error("Database transaction error:", error);
     return { message: "Error creating group chat." };
+  } finally {
+    connection.release();
   }
 }
 
@@ -631,10 +664,13 @@ export async function getUserGroupChats(userID) {
          c.channel_id AS channelID,
          c.channel_name,
          c.description,
-         c.created_at
+         c.created_at,
+         GROUP_CONCAT(u.username) AS members
        FROM group_membership gm
        JOIN channels c ON gm.channel_id = c.channel_id
-       WHERE gm.user_id = ?`,
+       JOIN users u ON gm.user_id = u.userid
+       WHERE gm.user_id = ?
+       GROUP BY c.channel_id`,
       [userID]
     );
 
@@ -644,8 +680,6 @@ export async function getUserGroupChats(userID) {
     return { groups: [], message: "Error fetching user group chats." };
   }
 }
-
-
 
 export async function getGroupMessages(channelID, page = 1, limit = 20) {
   try {
@@ -669,10 +703,14 @@ export async function getGroupMessages(channelID, page = 1, limit = 20) {
 // Send a group message
 export async function sendGroupMessage(channelID, userID, content) {
   try {
+    const created_at = new Date(); 
+
+    console.log('Executing query with parameters:', [channelID, userID, content, created_at]);
+
     const result = await pool.query(
-      `INSERT INTO group_message (message_id, user_id, content)
-       VALUES (?, ?, ?)`,
-      [channelID, userID, content]
+      `INSERT INTO group_message (channel_id, user_id, content, created_at)
+       VALUES (?, ?, ?, ?)`,
+      [channelID, userID, content, created_at]
     );
 
     if (result.affectedRows === 0) {
@@ -686,99 +724,15 @@ export async function sendGroupMessage(channelID, userID, content) {
   }
 }
 
-// Invite a user to a group
-export async function inviteUserToGroup(channelID, inviterID, inviteeID) {
-  try {
-    const result = await pool.query(
-      `INSERT INTO invitations (channel_id, inviter_id, invitee_id, status)
-       VALUES (?, ?, ?, 'pending')`,
-      [channelID, inviterID, inviteeID]
-    );
-
-    if (result.affectedRows === 0) {
-      return { message: "Failed to send invitation." };
-    }
-
-    return { message: "Invitation sent successfully." };
-  } catch (error) {
-    console.error("Database query error:", error);
-    return { message: "Error sending invitation." };
-  }
-}
-
-// Accept a group invitation
-export async function acceptGroupInvitation(invitationID) {
-  try {
-    const result = await pool.query(
-      `UPDATE invitations
-       SET status = 'accepted'
-       WHERE invitation_id = ?`,
-      [invitationID]
-    );
-
-    if (result.affectedRows === 0) {
-      return { message: "Invitation not found or already accepted." };
-    }
-
-    return { message: "Invitation accepted successfully." };
-  } catch (error) {
-    console.error("Database query error:", error);
-    return { message: "Error accepting invitation." };
-  }
-}
-
-// Decline a group invitation
-export async function declineGroupInvitation(invitationID) {
-  try {
-    const result = await pool.query(
-      `UPDATE invitations
-       SET status = 'declined'
-       WHERE invitation_id = ?`,
-      [invitationID]
-    );
-
-    if (result.affectedRows === 0) {
-      return { message: "Invitation not found or already declined." };
-    }
-
-    return { message: "Invitation declined successfully." };
-  } catch (error) {
-    console.error("Database query error:", error);
-    return { message: "Error declining invitation." };
-  }
-}
-
-// Join a group
-export async function joinGroup(channelID, userID) {
-  try {
-    const result = await pool.query(
-      `INSERT INTO group_membership (channel_id, user_id)
-       VALUES (?, ?)`,
-      [channelID, userID]
-    );
-
-    if (result.affectedRows === 0) {
-      return { message: "Failed to join group." };
-    }
-
-    return { message: "Successfully joined the group." };
-  } catch (error) {
-    console.error("Database query error:", error);
-    return { message: "Error joining group." };
-  }
-}
-
 // Leave a group
 export async function leaveGroup(channelID, userID) {
   try {
     const result = await pool.query(
-      `DELETE FROM group_membership
-       WHERE channel_id = ? AND user_id = ?`,
+      `DELETE FROM group_membership WHERE channel_id = ? AND user_id = ?`,
       [channelID, userID]
     );
-
     if (result.affectedRows === 0) {
-      return { message: "Failed to leave group." };
+      return { message: "You are not a member of this group." };
     }
 
     return { message: "Successfully left the group." };
@@ -787,9 +741,6 @@ export async function leaveGroup(channelID, userID) {
     return { message: "Error leaving group." };
   }
 }
-
-
-
 
 //OUTDATED VVVV
 // Fetch all meeting messages

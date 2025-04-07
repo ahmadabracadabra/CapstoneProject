@@ -440,32 +440,39 @@ id="drawer-navigation"
 
 <script>
   async function getUserData() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = '/login';  
-      return;
-    }
-
-    try {
-      const response = await fetch('http://localhost:8080/dashboard', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch user data');
-      
-      const user = await response.json();
-      
-      document.getElementById("user-name").textContent = user.username || "Unknown User";
-      document.getElementById("user-email").textContent = user.email || "user@example.com";
-
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login';  
+    return;
   }
+
+  try {
+    const response = await fetch('http://localhost:8080/dashboard', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch user data');
+    
+    const user = await response.json();
+
+    if (user && user.userid) {
+      localStorage.setItem('userID', user.userid);
+    } else {
+      console.error('User ID is missing from the response', user);
+    }
+
+    document.getElementById("user-name").textContent = user.username || "Unknown User";
+    document.getElementById("user-email").textContent = user.email || "user@example.com";
+
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+}
+
 
   document.getElementById("logoutButton").addEventListener("click", async function (event) {
     event.preventDefault(); 
@@ -483,6 +490,7 @@ id="drawer-navigation"
 
       if (response.ok) {
         localStorage.removeItem("token");
+        localStorage.removeItem("userID");  
         sessionStorage.removeItem("token");
 
         window.location.href = "login.html"; 
@@ -693,6 +701,7 @@ async function fetchFriendsList() {
   }
 }
 
+//CONVERSATIONS
 function openChat(friend) {
   const chatHeader = document.getElementById('chat-header');
   const chatFriendName = document.getElementById('chat-friend-name');
@@ -702,10 +711,11 @@ function openChat(friend) {
   chatAvatar.src = friend.avatarUrl || 'https://via.placeholder.com/40';
   chatHeader.classList.remove('hidden');
   
-  // Store friend's ID for future use
   localStorage.setItem('currentChatID', friend.friendID);
+  localStorage.removeItem('currentGroupID'); 
   loadChatHistory(friend.friendID);
 }
+
 
 async function loadChatHistory(friendID) {
   try {
@@ -850,11 +860,20 @@ async function sendMessage(receiverID, content) {
 const sendButton = document.getElementById('send-message');
 sendButton.addEventListener('click', () => {
   const messageInput = document.getElementById('message-input');
-  const receiverID = localStorage.getItem('currentChatID');
   const content = messageInput.value.trim();
 
-  if (receiverID && content) {
-    sendMessage(receiverID, content);
+  const currentGroupID = localStorage.getItem('currentGroupID');
+  const currentChatID = localStorage.getItem('currentChatID');
+
+  if (content) {
+    if (currentGroupID) {
+      sendGroupMessage(currentGroupID, content);  // Group chat message
+    } else if (currentChatID) {
+      sendMessage(currentChatID, content);  // One-on-one chat message
+    } else {
+      alert('No active chat found!');
+    }
+
     messageInput.value = ''; 
   } else {
     alert('Please enter a message');
@@ -889,7 +908,6 @@ async function removeFriend(friendID) {
     console.error('Error removing friend:', error);
   }
 }
-
 
 
 async function searchForFriends() {
@@ -1081,7 +1099,6 @@ function removeInvitedFriend(button, friendID) {
   const checkbox = document.querySelector(`#friend-${friendID}`);
   if (checkbox) checkbox.checked = false;
   
-  // Remove from the invited friends list
   button.closest('li').remove();
 }
 
@@ -1112,6 +1129,8 @@ async function createGroupChat() {
   const description = document.getElementById('group-description').value;
   const selectedFriends = Array.from(document.querySelectorAll('#invited-friends-list li')).map(item => item.dataset.id);
 
+  console.log('Selected friends:', selectedFriends); 
+
   if (!channelName || selectedFriends.length === 0) {
     alert('Please provide a group name and select at least one friend to invite.');
     return;
@@ -1134,7 +1153,7 @@ async function createGroupChat() {
       body: JSON.stringify({
         channelName,
         description,
-        invitedFriends: selectedFriends, 
+        invitedFriends: selectedFriends,  
       }),
     });
 
@@ -1144,6 +1163,7 @@ async function createGroupChat() {
 
     if (result.message === 'Group chat created successfully.') {
       alert('Group chat created successfully!');
+      fetchGroupChats()
     } else {
       alert('Failed to create group chat.');
     }
@@ -1151,6 +1171,7 @@ async function createGroupChat() {
     console.error('Error creating group chat:', error);
   }
 }
+
 
 document.getElementById('create-group-btn').addEventListener('click', createGroupChat);
 
@@ -1165,6 +1186,7 @@ async function fetchGroupChats() {
     const response = await fetch('http://localhost:8080/group/list', {
       headers: {
         'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
     });
 
@@ -1173,8 +1195,11 @@ async function fetchGroupChats() {
     }
 
     const result = await response.json();
+    console.log("Fetched group chats:", result);
 
     const chatList = document.getElementById('group-chats-list');
+    const groupChatsContainer = document.querySelector('.group-chats-container');
+
     if (!chatList) {
       console.error('Group chat list element not found');
       return;
@@ -1182,20 +1207,226 @@ async function fetchGroupChats() {
 
     chatList.innerHTML = '';
 
-    if (result.groups && result.groups.length === 0) {
-      chatList.innerHTML = '<li>No group chats found.</li>';
+    if (!result.groups || result.groups.length === 0) {
+      chatList.innerHTML = '<li class="text-gray-500 dark:text-gray-400 text-sm">No group chats found.</li>';
+      groupChatsContainer.style.display = 'none'; // Hide if empty
       return;
     }
 
+    groupChatsContainer.style.display = 'block'; // Show if there are chats
+
     result.groups.forEach(group => {
-      const li = document.createElement('li');
-      li.textContent = `${group.channel_name} - ${group.description || 'No description'}`;
-      li.dataset.channelId = group.channelID;
-      chatList.appendChild(li);
+      const listItem = document.createElement('li');
+      listItem.classList.add('flex', 'justify-between', 'items-center', 'bg-[#101828]', 'w-full', 'py-2', 'px-3', 'mb-2', 'rounded');
+
+      listItem.innerHTML = `
+        <span class="font-semibold text-white">${group.channel_name}</span>
+        <div class="flex space-x-2">
+          <button class="open-chat-btn text-2xl text-blue-400 hover:text-blue-500 cursor-pointer" data-id="${group.channelID}" title="Open Chat">
+            <i class="fas fa-comments"></i>
+          </button>
+          <button class="leave-group-btn text-2xl text-red-500 hover:text-red-600 cursor-pointer" data-id="${group.channelID}" title="Leave Group">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `;
+
+      listItem.querySelector('.open-chat-btn').addEventListener('click', () => {
+        openGroupChat(group);
+      });
+
+      listItem.querySelector('.leave-group-btn').addEventListener('click', async () => {
+        await leaveGroup(group.channelID);
+      });
+
+      chatList.appendChild(listItem);
     });
 
   } catch (error) {
     console.error('Error fetching group chats:', error);
+  }
+}
+
+
+
+function openGroupChat(group) {
+  const groupChatName = document.getElementById('chat-header');
+  const groupName = document.getElementById('chat-friend-name');
+  const chatAvatar = document.getElementById('chat-avatar');
+  
+  groupName.textContent = group.channel_name;
+  chatAvatar.src = group.avatarUrl || 'https://via.placeholder.com/40';
+  groupChatName.classList.remove('hidden');
+
+  localStorage.setItem('currentGroupID', group.channelID);
+  localStorage.removeItem('currentChatID'); 
+  loadGroupChatHistory(group.channelID);  
+}
+
+
+async function loadGroupChatHistory(groupID) {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8080/group/messages/${groupID}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch group messages');
+    }
+
+    const messages = await response.json();
+    displayGroupMessages(messages);  
+  } catch (error) {
+    console.error(error);
+    alert('Error loading messages');
+  }
+}
+
+async function leaveGroup(channelID) {  
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8080/group/leave`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ channelID }),  
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to leave group');
+    }
+
+    const result = await response.json();
+    console.log(result.message);
+    alert(result.message);
+    fetchGroupChats();  
+  } catch (error) {
+    console.error(error);
+    alert('Error leaving group');
+  }
+}
+
+
+function displayGroupMessages(messages) {
+  const messagesContainer = document.getElementById('messages');
+  messagesContainer.innerHTML = '';
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    messagesContainer.innerHTML = '<p>No messages found</p>';
+    return;
+  }
+
+  let lastMessageDate = null;
+  const currentUserID = parseInt(localStorage.getItem('userID')); 
+
+  messages.reverse().forEach((message) => {
+    if (!message || !message.created_at || !message.content || !message.user_id) {
+      console.error('Invalid message data', message);
+      return;
+    }
+
+    const messageElement = document.createElement('div');
+
+    const messageTime = new Date(message.created_at);
+    const formattedTime = messageTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formattedDate = messageTime.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    if (lastMessageDate !== formattedDate) {
+      const dateElement = document.createElement('div');
+      dateElement.innerHTML = `
+        <div style="text-align: center; margin: 10px 0; font-weight: bold; color: #888;">
+          ${formattedDate}
+        </div>
+      `;
+      messagesContainer.appendChild(dateElement);
+      lastMessageDate = formattedDate;
+    }
+
+    const isSender = message.user_id === currentUserID;
+
+    messageElement.innerHTML = `
+      <div style="display: flex; flex-direction: ${isSender ? 'row-reverse' : 'row'}; margin-bottom: 10px; align-items: flex-end;">
+        <!-- Sender's Avatar -->
+        <div style="margin-${isSender ? 'left' : 'right'}: 10px;">
+          <img src="${message.senderAvatar || 'https://via.placeholder.com/40'}" style="border-radius: 50%; width: 30px; height: 30px;">
+        </div>
+
+        <!-- Message Content and Bubble -->
+        <div style="display: flex; flex-direction: column; max-width: 75%; word-wrap: break-word;">
+          <!-- Receiver's Name (Only for the Receiver) -->
+          ${!isSender ? `
+            <div style="font-size: 0.9rem; color: white; font-weight: bold; margin-bottom: 5px; margin-left: 10px;">
+              ${message.senderName}
+            </div>
+          ` : ''}
+
+          <div style="
+            background-color: ${isSender ? '#007bff' : '#e5e5e5'};
+            color: ${isSender ? 'white' : 'black'};
+            padding: 10px;
+            border-radius: 15px;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+          ">
+            <!-- Message Content -->
+            <p style="margin: 0;">${message.content}</p>
+
+            <!-- Time -->
+            <div style="font-size: 0.75rem; color: ${isSender ? '#ddd' : '#888'}; text-align: right; margin-top: 5px; white-space: nowrap;">
+              ${formattedTime}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    messagesContainer.appendChild(messageElement);
+  });
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+async function sendGroupMessage(groupID, content) {
+  try {
+    const token = localStorage.getItem('token');
+
+    const messagePayload = {
+      channelID: groupID,  
+      content: content,
+    };
+
+    const response = await fetch('http://localhost:8080/group-message/send', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(messagePayload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send message');
+    }
+
+    const data = await response.json();
+    alert(data.message);
+
+    loadGroupChatHistory(groupID); 
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error sending message');
   }
 }
 

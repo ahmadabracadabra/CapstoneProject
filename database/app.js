@@ -54,10 +54,6 @@ import {
     createNotification,
     markNotificationAsRead,
     sendGroupMessage,
-    inviteUserToGroup,
-    acceptGroupInvitation,
-    declineGroupInvitation,
-    joinGroup,
     leaveGroup,
     getMessages,
     createGroupChat,
@@ -214,6 +210,7 @@ app.post('/logout', authenticateToken, (req, res) => {
 app.get('/dashboard', authenticateToken, (req, res) => {
     res.json({ 
       username: req.user.username,  
+      userid: req.user.id,
       email: req.user.email,        
       message: "Welcome to your dashboard!" 
     });
@@ -548,7 +545,7 @@ app.post('/friend-request/send', authenticateToken, async (req, res) => {
 app.post('/friend/remove', authenticateToken, async (req, res) => {
     try {
       const { friendID } = req.body;
-      const userID = req.user.id; // The user making the request (from JWT token)
+      const userID = req.user.id; 
   
       const result = await removeFriend(userID, friendID);
       res.json(result);
@@ -651,31 +648,24 @@ app.post('/message/send', authenticateToken, async (req, res) => {
     }
   });
   
-  // Send a group message
-  app.post('/group-message/send', authenticateToken, async (req, res) => {
-    try {
-      const { channelID, content } = req.body;
-      const userID = req.user.id;
   
-      const result = await sendGroupMessage(channelID, userID, content);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to send group message" });
-    }
-  });
-
   app.post('/group/create', authenticateToken, async (req, res) => {
     try {
-      const { channelName, description } = req.body;
+      const { channelName, description, invitedFriends } = req.body;  
       const creatorID = req.user.id;
   
-      const result = await createGroupChat(channelName, description, creatorID);
+      if (!Array.isArray(invitedFriends)) {
+        return res.status(400).json({ error: 'Invited friends must be an array' });
+      }
+  
+      const result = await createGroupChat(channelName, description, creatorID, invitedFriends); 
       res.json(result);
     } catch (error) {
       console.error("Error creating group:", error);
       res.status(500).json({ error: "Failed to create group chat" });
     }
   });
+  
 
 app.get('/group/list', authenticateToken, async (req, res) => {
     try {
@@ -685,6 +675,26 @@ app.get('/group/list', authenticateToken, async (req, res) => {
     } catch (error) {
       console.error("Failed to fetch user's group chats:", error);
       res.status(500).json({ error: "Failed to fetch user's group chats" });
+    }
+  });
+  
+  // Send a group message
+  app.post('/group-message/send', authenticateToken, async (req, res) => {
+    try {
+      const { channelID, content } = req.body;
+      const userID = req.user.id;
+  
+      console.log('Received data:', { channelID, content, userID }); // debugging
+  
+      if (!channelID || !content) {
+        return res.status(400).json({ error: 'Missing required fields' });
+      }
+  
+      const result = await sendGroupMessage(channelID, userID, content);
+      res.json(result);
+    } catch (error) {
+      console.error('Error in sending group message:', error);
+      res.status(500).json({ error: "Failed to send group message" });
     }
   });
   
@@ -702,71 +712,26 @@ app.get('/group/list', authenticateToken, async (req, res) => {
     }
   });
   
-  // Invite a user to a group
-  app.post('/group/invite', authenticateToken, async (req, res) => {
-    try {
-      const { channelID, inviteeID } = req.body;
-      const inviterID = req.user.id;
-  
-      const result = await inviteUserToGroup(channelID, inviterID, inviteeID);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to send group invitation" });
-    }
-  });
-  
-  // Accept a group invitation
-  app.post('/group/invitation/accept', authenticateToken, async (req, res) => {
-    try {
-      const { invitationID } = req.body;
-  
-      const result = await acceptGroupInvitation(invitationID);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to accept group invitation" });
-    }
-  });
-  
-  // Decline a group invitation
-  app.post('/group/invitation/decline', authenticateToken, async (req, res) => {
-    try {
-      const { invitationID } = req.body;
-  
-      const result = await declineGroupInvitation(invitationID);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to decline group invitation" });
-    }
-  });
-  
-  // Join a group
-  app.post('/group/join', authenticateToken, async (req, res) => {
-    try {
-      const { channelID } = req.body;
-      const userID = req.user.id;
-  
-      const result = await joinGroup(channelID, userID);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to join group" });
-    }
-  });
   
   // Leave a group
   app.post('/group/leave', authenticateToken, async (req, res) => {
     try {
       const { channelID } = req.body;
-      const userID = req.user.id;
+      const userID = req.user.id;  
+  
+      console.log(`Leaving group with channelID: ${channelID} and userID: ${userID}`);  
   
       const result = await leaveGroup(channelID, userID);
+      console.log(result);  
+  
       res.json(result);
     } catch (error) {
+      console.error("Error leaving group:", error);
       res.status(500).json({ error: "Failed to leave group" });
     }
   });
   
-
-
+  
 
 //OUTDATED VVV
 // Routes for Meeting Messages
