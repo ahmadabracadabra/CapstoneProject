@@ -209,30 +209,6 @@ CREATE TABLE `group_message` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `invitations`
---
-
-DROP TABLE IF EXISTS `invitations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `invitations` (
-  `invitation_id` int NOT NULL AUTO_INCREMENT,
-  `channel_id` int DEFAULT NULL,
-  `inviter_id` int DEFAULT NULL,
-  `invitee_id` int DEFAULT NULL,
-  `status` enum('pending','accepted','declined') DEFAULT 'pending',
-  `sent_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`invitation_id`),
-  KEY `channel_id` (`channel_id`),
-  KEY `inviter_id` (`inviter_id`),
-  KEY `invitee_id` (`invitee_id`),
-  CONSTRAINT `invitations_ibfk_1` FOREIGN KEY (`channel_id`) REFERENCES `channels` (`channel_id`),
-  CONSTRAINT `invitations_ibfk_2` FOREIGN KEY (`inviter_id`) REFERENCES `users` (`UserID`),
-  CONSTRAINT `invitations_ibfk_3` FOREIGN KEY (`invitee_id`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `MeetingMessages`
 --
 
