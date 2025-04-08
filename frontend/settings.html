@@ -1,90 +1,195 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Settings</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script>
-    //Apply saved theme before rendering
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else if (savedTheme === "light") {
-      document.documentElement.classList.remove("dark");
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.classList.add("dark");
-    }
+    (function () {
+      const theme = localStorage.getItem("theme");
+      const fontSize = localStorage.getItem("fontSize") || "base";
+      const doc = document.documentElement;
+
+      doc.classList.remove("dark", "text-sm", "text-base", "text-lg");
+      if (theme === "dark") {
+        doc.classList.add("dark");
+      } else if (theme === "system") {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          doc.classList.add("dark");
+        }
+      }
+      doc.classList.add(`text-${fontSize}`);
+    })();
   </script>
 </head>
-<body class="bg-gray-900 text-white min-h-screen p-8 transition-colors duration-300">
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white min-h-screen p-8 transition-colors duration-300">
   <h1 class="text-3xl font-bold mb-6">Settings</h1>
 
-  <div class="flex flex-col space-y-6 bg-gray-800 p-6 rounded-lg shadow-md max-w-md">
-    <!-- Notifications -->
-    <div>
+  <div class="space-y-8 max-w-xl">
+    <!-- Notifications Toggle -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
       <h2 class="text-xl font-semibold mb-2">Notifications</h2>
       <label class="flex items-center gap-4 cursor-pointer">
         <input type="checkbox" id="notificationToggle" class="sr-only peer">
         <div class="w-12 h-7 bg-gray-500 rounded-full peer-checked:bg-blue-600 relative transition-colors duration-300 ease-in-out">
           <div class="absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out peer-checked:translate-x-5"></div>
         </div>
-        <span class="text-sm text-gray-300">Enable Notifications</span>
+        <span class="text-sm text-gray-700 dark:text-gray-300">Enable Notifications</span>
       </label>
     </div>
 
-    <!-- Theme Toggle -->
-    <div>
+    <!-- Theme Selector -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
       <h2 class="text-xl font-semibold mb-2">Theme</h2>
-      <select id="themeSelector" class="p-2 rounded bg-gray-700 text-white w-full">
+      <select id="themeSelector" class="w-full p-2 rounded bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white">
         <option value="system">Default (System)</option>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
       </select>
     </div>
+
+    <!-- Font Size -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-2">Font Size</h2>
+      <select id="fontSizeSelector" class="w-full p-2 rounded bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white">
+        <option value="sm">Small</option>
+        <option value="base">Medium</option>
+        <option value="lg">Large</option>
+      </select>
+    </div>
+
+    <!-- Daily Reminders -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-2">Daily Reminders</h2>
+      <label class="flex items-center gap-4 cursor-pointer">
+        <input type="checkbox" id="dailyReminderToggle" class="sr-only peer">
+        <div class="w-12 h-7 bg-gray-500 rounded-full peer-checked:bg-green-600 relative transition-colors duration-300 ease-in-out">
+          <div class="absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out peer-checked:translate-x-5"></div>
+        </div>
+        <span class="text-sm text-gray-700 dark:text-gray-300">Receive Daily Study Reminders</span>
+      </label>
+    </div>
+
+    <!-- Delete Account -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-4 text-red-500">Danger Zone</h2>
+      <button class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded" onclick="confirmDelete()">Delete Account</button>
+    </div>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      //Notifications toggle
-      const toggle = document.getElementById("notificationToggle");
-      const savedNotifications = localStorage.getItem("notificationsEnabled");
-      if (savedNotifications !== null) {
-        toggle.checked = savedNotifications === "true";
-      }
+    document.addEventListener("DOMContentLoaded", async () => {
+      const notificationToggle = document.getElementById("notificationToggle");
+      const themeSelector = document.getElementById("themeSelector");
+      const fontSizeSelector = document.getElementById("fontSizeSelector");
+      const dailyReminderToggle = document.getElementById("dailyReminderToggle");
 
-      toggle.addEventListener("change", () => {
-        localStorage.setItem("notificationsEnabled", toggle.checked);
+      await loadUserSettings();
+
+      notificationToggle.addEventListener("change", saveSettings);
+      themeSelector.addEventListener("change", () => {
+        applyTheme(themeSelector.value);
+        saveSettings();
       });
-
-      // Theme toggle
-      const themeSelect = document.getElementById("themeSelector");
-      const savedTheme = localStorage.getItem("theme");
-
-      if (savedTheme) {
-        themeSelect.value = savedTheme;
-      }
-
-      themeSelect.addEventListener("change", () => {
-        const theme = themeSelect.value;
-        localStorage.setItem("theme", theme);
-
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        } else if (theme === "light") {
-          document.documentElement.classList.remove("dark");
-        } else {
-          localStorage.removeItem("theme");
-          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            document.documentElement.classList.add("dark");
-          } else {
-            document.documentElement.classList.remove("dark");
-          }
-        }
+      fontSizeSelector.addEventListener("change", () => {
+        applyFontSize(fontSizeSelector.value);
+        saveSettings();
       });
+      dailyReminderToggle.addEventListener("change", saveSettings);
     });
+
+    async function loadUserSettings() {
+      const token = localStorage.getItem("token");
+      const fontSizeSelector = document.getElementById("fontSizeSelector");
+      const localFontSize = localStorage.getItem("fontSize") || "base";
+      fontSizeSelector.value = localFontSize;
+      applyFontSize(localFontSize);
+
+      if (!token) return;
+
+      try {
+        const res = await fetch("/api/settings", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const settings = await res.json();
+
+        document.getElementById("notificationToggle").checked = settings.notifications_enabled;
+        document.getElementById("themeSelector").value = settings.theme || "system";
+        fontSizeSelector.value = settings.font_size || localFontSize;
+        document.getElementById("dailyReminderToggle").checked = settings.daily_reminder;
+
+        applyTheme(settings.theme || "system");
+        applyFontSize(settings.font_size || localFontSize);
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+      }
+    }
+
+    async function saveSettings() {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const settings = {
+        notificationsEnabled: document.getElementById("notificationToggle").checked,
+        theme: document.getElementById("themeSelector").value,
+        fontSize: document.getElementById("fontSizeSelector").value,
+        dailyReminder: document.getElementById("dailyReminderToggle").checked
+      };
+
+      localStorage.setItem("theme", settings.theme);
+      localStorage.setItem("fontSize", settings.fontSize);
+
+      try {
+        await fetch("/api/settings", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(settings)
+        });
+      } catch (error) {
+        console.error("Failed to save settings:", error);
+      }
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.classList.remove("dark");
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else if (theme === "system") {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.classList.add("dark");
+        }
+      }
+      localStorage.setItem("theme", theme);
+    }
+
+    function applyFontSize(size) {
+      const root = document.documentElement;
+      root.classList.remove("text-sm", "text-base", "text-lg");
+      root.classList.add(`text-${size}`);
+      localStorage.setItem("fontSize", size);
+    }
+
+    function confirmDelete() {
+      if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        const token = localStorage.getItem("token");
+        fetch("/api/account", {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(() => {
+          localStorage.clear();
+          alert("Account deleted.");
+          window.location.href = "/login.html";
+        })
+        .catch(err => console.error("Error deleting account:", err));
+      }
+    }
   </script>
 </body>
 </html>
