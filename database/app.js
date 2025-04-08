@@ -58,7 +58,8 @@ import {
     getMessages,
     createGroupChat,
     getGroupMessages,
-    getUserGroupChats
+    getUserGroupChats,
+    userProfile
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -832,6 +833,24 @@ app.post('/meeting-participants', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Failed to add meeting participant" });
     }
+});
+
+//profile
+app.post('/profile', async (req, res) => {
+  const {username, bio} = req.body;
+  if (!username || bio) {
+    return res.status(400).json ({error: "Need a username or bio"});
+  }
+    try {
+      await userProfile (username, bio)
+      res.json({success: true, username, bio});
+    }
+    catch (error) {
+    console.error('Error Saving', error);
+    res.status(500).json({ error: 'Failed to save.' });
+  }
+
+
 });
 
 // Error handler
