@@ -59,10 +59,10 @@ import {
     createGroupChat,
     getGroupMessages,
     getUserGroupChats,
-    saveProfile,
     fetchTransactions,
     createTransaction,
-    deleteTransaction
+    deleteTransaction,
+    saveProfile
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
