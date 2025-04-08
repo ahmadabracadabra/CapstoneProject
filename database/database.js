@@ -231,10 +231,10 @@ export async function getQuoteOfTheDay() {
 }
 
 // Fetch all assignments
-export async function fetchAssignments() {
+export async function fetchAssignments(userId) {
   try {
-    const [rows] = await pool.query("SELECT * FROM Assignments");
-    console.log(rows);
+    const [rows] = await pool.query("SELECT * FROM Assignments WHERE UserID = ?", [userId]);
+    return rows;
   } catch (error) {
     console.error("Database query error:", error);
   }

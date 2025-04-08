@@ -306,7 +306,7 @@ id="drawer-navigation"
       <script>
         async function getUserData() {
           const token = localStorage.getItem('token');
-          if (token) {
+          if (!token) {
             window.location.href = '/login';  
             return;
           }
