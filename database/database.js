@@ -230,15 +230,13 @@ export async function getQuoteOfTheDay() {
   }
 }
 
-
-// Fetch assignments
-export async function fetchAssignments(userId) {
+// Fetch all assignments
+export async function fetchAssignments() {
   try {
-    const [rows] = await pool.query("SELECT * FROM Assignments WHERE UserID = ?", [userId]);
-    return rows;
+    const [rows] = await pool.query("SELECT * FROM Assignments");
+    console.log(rows);
   } catch (error) {
     console.error("Database query error:", error);
-    throw error; 
   }
 }
 
@@ -859,3 +857,26 @@ export async function addMeetingParticipant(meetingId, userId, joinedAt, leftAt)
   }
 }
 
+
+// profile
+
+export async function saveProfile (username, bio, photo) {
+  try {
+    const query = ` INSERT INTO userProfile (username, bio, photo) VALUES (?, ?, ?)   `;
+    const [result] = await pool.query(query, [username, bio, photo]);
+    console.log("Profile saved:", result);
+  }
+  catch (error) {
+    console.error("Database query error:", error);
+  }
+}
+// Fetch profile
+export async function getUser(username) {
+  try {
+    const [rows] = await pool.query("SELECT * FROM userProfile WHERE username = ?", [username]);
+    console.log(rows);
+  }
+  catch (error) {
+    console.error("Database query error:", error);
+  }
+}
