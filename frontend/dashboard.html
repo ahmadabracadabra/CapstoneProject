@@ -393,6 +393,50 @@ id="drawer-navigation"
           <button id="reset-btn" class="bg-red-800 text-white px-4 py-2 rounded-lg">🔄 Reset</button>
         </div>
       </div>
+      <!-- Transaction Form Module -->
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[300px] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-white">Add Transaction</h3>
+        </div>
+        <!-- Form to add transactions -->
+        <form id="transactionForm" class="mb-4 flex flex-col space-y-4">
+            <div class="flex space-x-4">
+                <input type="text" id="item" class="p-2 border rounded-md w-full text-black" placeholder="Item Name" required>
+                <input type="text" id="category" class="p-2 border rounded-md w-full text-black" placeholder="Category" required>
+            </div>
+
+            <!-- Amount and Income/Expense -->
+            <div class="flex space-x-4">
+                <input type="number" id="amount" class="p-2 border rounded-md w-full text-black" placeholder="Amount" step="0.01" required>
+                <select id="type" class="p-2 border rounded-md w-full text-black" required>
+                    <option value="income">💸 Income</option>
+                    <option value="expense">💳 Expense</option>
+                </select>
+            </div>
+
+            <input type="date" id="transactionDate" class="p-2 border rounded-md w-full text-black" required>
+            <input type="hidden" id="userId" class="p-2 border rounded-md w-full text-black" value="12345" required> 
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded-md w-full">Add Transaction</button>
+        </form>
+      </div>
+      <!-- Display Transactions Module -->
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[400px] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+          <!-- Transactions title -->
+          <h3 class="text-xl font-medium text-white">Transactions</h3>
+          <!-- Total amount section -->
+          <div class="flex items-center">
+            <h4 class="text-xl text-white font-semibold">Total: </h4>
+            <span id="totalAmount" class="text-xl text-white ml-2">0.00</span>
+          </div>
+        </div>
+
+        <!-- List of Transactions -->
+        <div id="transactionList" class="mt-4">
+          <!-- Transactions will go here -->
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
@@ -891,7 +935,202 @@ id="drawer-navigation"
     document.getElementById("assignment-form").addEventListener("submit", postAssignment);
 </script>
     
+<script>
+  // Add a new transaction
+  async function postTransaction(event) {
+    event.preventDefault();
   
+    const item = document.getElementById("item").value;
+    const category = document.getElementById("category").value;
+    const amount = parseFloat(document.getElementById("amount").value);
+    const type = document.getElementById("type").value;
+    const transactionDate = document.getElementById("transactionDate").value;
+  
+    const token = localStorage.getItem("token");
+  
+    console.log("Posting new transaction with the following data:");
+    console.log("Item:", item);
+    console.log("Category:", category);
+    console.log("Amount:", amount);
+    console.log("Type:", type);
+    console.log("Transaction Date:", transactionDate);
+  
+    if (!item || !category || !amount || !type || !transactionDate) {
+        console.log("Missing required fields: ");
+        if (!item) console.log("Item is missing.");
+        if (!category) console.log("Category is missing.");
+        if (!amount) console.log("Amount is missing.");
+        if (!type) console.log("Type is missing.");
+        if (!transactionDate) console.log("Transaction Date is missing.");
+        alert("Please fill in all required fields.");
+        return;
+    }
+  
+    try {
+        console.log("Sending POST request to server...");
+        const response = await fetch("http://localhost:8080/transactions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                transactionDate,
+                category,
+                item,
+                type,
+                amount,
+            }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+            console.log("Transaction added successfully!");
+            alert("Transaction added successfully!");
+            await fetchTransactions();
+        } else {
+            console.error("Error from server:", data.error);
+            alert("Error: " + data.error);
+        }
+    } catch (error) {
+        console.error("Error adding transaction:", error);
+    }
+  }
+  
+// Fetch all transactions
+async function fetchTransactions() {
+    const token = localStorage.getItem("token");
+
+    console.log("Fetching all transactions...");
+    try {
+        const response = await fetch("http://localhost:8080/transactions", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        const transactions = await response.json();
+        const transactionList = document.getElementById("transactionList");
+        transactionList.innerHTML = ""; 
+
+        console.log("Fetched transactions:", transactions);
+
+        // Sort transactions by date in descending order 
+        transactions.sort((a, b) => {
+            const dateA = new Date(a.transaction_date).getTime();  
+            const dateB = new Date(b.transaction_date).getTime();  
+
+            console.log(`Date A: ${dateA}, Date B: ${dateB}`);
+
+            return dateB - dateA; 
+        });
+
+        let total = 0; 
+
+        transactions.forEach(transaction => {
+            const transactionCard = createTransactionCard(transaction);
+            transactionList.appendChild(transactionCard);
+
+            if (transaction.type === 'income') {
+                total += parseFloat(transaction.amount);  
+            } else if (transaction.type === 'expense') {
+                total -= parseFloat(transaction.amount); 
+            }
+        });
+
+        const totalAmountElement = document.getElementById("totalAmount");
+
+        if (total < 0) {
+            totalAmountElement.textContent = `-$${Math.abs(total).toFixed(2)}`; 
+            totalAmountElement.style.color = 'red'; 
+        } else {
+            totalAmountElement.textContent = `$${total.toFixed(2)}`; 
+            totalAmountElement.style.color = 'green'; 
+        }
+
+    } catch (error) {
+        console.error("Error fetching transactions:", error);
+    }
+}
+
+  // Delete a transaction
+  async function deleteTransaction(transactionId) {
+    const token = localStorage.getItem("token");
+    if (!confirm("Are you sure you want to delete this transaction?")) return;
+  
+    console.log("Deleting transaction with ID:", transactionId);
+    try {
+        const response = await fetch(`http://localhost:8080/transactions/${transactionId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+            console.log("Transaction deleted successfully!");
+            alert("Transaction deleted successfully!");
+            await fetchTransactions();
+        } else {
+            console.error("Error deleting transaction:", data.error);
+            alert("Error: " + data.error);
+        }
+    } catch (error) {
+        console.error("Error deleting transaction:", error);
+    }
+  }
+  
+// Create a transaction card
+function createTransactionCard(transaction) {
+  const div = document.createElement("div");
+  div.className = `transaction-card p-4 mb-4 rounded-md`;
+
+  const formattedAmount = parseFloat(transaction.amount).toFixed(2);
+  const formattedDate = new Date(transaction.transaction_date).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+  });
+
+  if (transaction.type === 'income') {
+      div.style.backgroundColor = '#28a745';  
+  } else {
+      div.style.backgroundColor = '#dc3545';  
+  }
+
+  div.style.color = 'white';  
+
+  div.innerHTML = `
+      <div class="flex justify-between items-center">
+          <div class="flex flex-col items-start">
+              <span class="font-bold text-lg">${transaction.item}</span>
+              <span class="text-sm">${formattedDate}</span>
+          </div>
+          <button class="text-xl bg-transparent text-white" onclick="deleteTransaction(${transaction.id})">X</button>
+      </div>
+      <div class="mt-1 text-sm flex items-center">
+          <span>${transaction.type === 'income' ? '💸 Income' : '💳 Expense'}</span>
+          <span class="mx-1">•</span> <!-- Reduced spacing -->
+          <span>${transaction.category}</span> <!-- Display category next to the amount -->
+          <span class="mx-1">•</span> <!-- Reduced spacing -->
+          <span>$${formattedAmount}</span> <!-- Place $ before the amount -->
+      </div>
+  `;
+
+  return div;
+}
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log("Page loaded. Fetching transactions...");
+    await fetchTransactions();
+  });
+  
+  document.getElementById("transactionForm").addEventListener("submit", postTransaction);
+  </script>
+
   <script> 
   //logout stuff
   document.getElementById("logoutButton").addEventListener("click", async function (event) {

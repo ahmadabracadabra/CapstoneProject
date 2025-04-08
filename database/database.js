@@ -274,6 +274,55 @@ export async function updateAssignmentStatus(assignmentId, userId, status) {
   return result;
 }
 
+
+//BUDGETING
+// Fetch all transactions for a user
+export async function fetchTransactions(userId) {
+  try {
+    const [rows] = await pool.query("SELECT * FROM transactions WHERE user_id = ?", [userId]);
+    return rows;
+  } catch (error) {
+    console.error("Database query error:", error);
+  }
+}
+
+// Create a transaction
+export async function createTransaction(transactionDate, category, item, type, amount, userId) {
+  try {
+    const [result] = await pool.query(
+      "INSERT INTO transactions (transaction_date, category, item, type, amount, user_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [transactionDate, category, item, type, amount, userId]
+    );
+    return {
+      id: result.insertId,
+      transactionDate,
+      category,
+      item,
+      type,
+      amount,
+      userId
+    };
+  } catch (error) {
+    console.error("Database query error:", error);
+    throw error;
+  }
+}
+
+// Delete a transaction
+export async function deleteTransaction(transactionId, userId) {
+  try {
+    const [result] = await pool.query(
+      "DELETE FROM transactions WHERE id = ? AND user_id = ?", 
+      [transactionId, userId]
+    );
+    return result;
+  } catch (error) {
+    console.error("Database query error:", error);
+    throw error;
+  }
+}
+
+
 // FRIENDS
 export async function sendFriendRequest(creatorID, receiverID) {
   try {
