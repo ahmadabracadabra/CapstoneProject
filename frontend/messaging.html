@@ -245,7 +245,7 @@ id="drawer-navigation"
         </svg>
         <span class="flex-1 ml-3 whitespace-nowrap">Messages</span>
         <span class="inline-flex justify-center items-center w-5 h-5 text-xs font-semibold rounded-full text-primary-800 bg-primary-100 dark:bg-primary-200 dark:text-primary-800">
-          4
+          
         </span>
       </a>
     </li>
@@ -275,7 +275,7 @@ id="drawer-navigation"
 <!-- End Sidebar -->
           
 <!-- Messaging Section -->
-<div class="flex-1 flex flex-col ml-64">
+<div class="flex-1 flex flex-col ml-64 relative">
   <!-- Header -->
   <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Messages</h2>
@@ -284,54 +284,62 @@ id="drawer-navigation"
   <!-- Chat List and Chat Area -->
   <div class="flex-1 flex overflow-hidden">
     <!-- Chat List -->
-    <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
-      <!-- Search -->
-      <div class="mb-4">
-        <input
-          type="text"
-          id="search-friends"
-          placeholder="Search for friends"
-          class="w-full p-2 mb-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        />
-      </div>
+    <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 relative">
+      <div class="overflow-y-auto max-h-[calc(100vh-100px)] pr-2">
+        <!-- Search -->
+        <div class="mb-4">
+          <input
+            type="text"
+            id="search-friends"
+            placeholder="Search for friends"
+            class="w-full p-2 mb-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          />
+        </div>
 
-      <!-- Search Results -->
-      <ul id="search-results" class="space-y-2 mb-4">
-        <!-- Dynamic search results -->
-      </ul>
-
-      <!-- Friend Requests Section -->
-      <div class="friend-requests-container mt-6 mb-6">
-        <h3 class="text-2xl font-bold text-white mb-4">Friend Requests</h3>
-        <ul id="friend-requests-list" class="space-y-2 overflow-y-auto max-h-[200px] bg-[#101828] rounded-lg p-0">
-          <li class="text-gray-500 dark:text-gray-400 text-sm">No friend requests at the moment.</li>
+        <!-- Search Results -->
+        <ul id="search-results" class="space-y-2 mb-4">
+          <!-- Dynamic search results -->
         </ul>
-      </div>
 
-      <!-- Group Chats Section -->
-      <div class="group-chats-container mb-6">
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Group Chats</h3>
-        <ul id="group-chats-list" class="space-y-2 overflow-y-auto max-h-[200px] bg-[#101828] rounded-lg p-4">
-          <!-- Dynamic list of group chats -->
+        <!-- Friend Requests Section -->
+        <div class="friend-requests-container mt-6 mb-6">
+          <h3 class="text-2xl font-bold text-white mb-4">Friend Requests</h3>
+          <ul id="friend-requests-list" class="space-y-2 overflow-y-auto max-h-[200px] bg-[#101828] rounded-lg p-0">
+            <li class="text-gray-500 dark:text-gray-400 text-sm">No friend requests at the moment.</li>
+          </ul>
+        </div>
+
+        <!-- Group Chats Section -->
+        <div class="group-chats-container mb-6">
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Group Chats</h3>
+          <ul id="group-chats-list" class="space-y-2 overflow-y-auto max-h-[200px] bg-[#101828] rounded-lg p-4">
+            <!-- Dynamic list of group chats -->
+          </ul>
+        </div>
+
+        <!-- Friend List Header and + -->
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Friend List</h3>
+          <button
+            id="toggle-group-chat"
+            class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-700 text-white"
+            title="Create Group Chat"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Friend List -->
+        <ul id="friend-list" class="space-y-2 overflow-y-auto max-h-[400px]">
+          <!-- Friends go here -->
         </ul>
-      </div>
-
-      <!-- Friend List Header and + -->
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Friend List</h3>
-        <button
-          id="toggle-group-chat"
-          class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-700 text-white"
-          title="Create Group Chat"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-        </button>
       </div>
 
       <!-- Group Chat Creation Form  -->
-      <div id="group-chat-form" class="mb-4 hidden">
+      <div id="group-chat-form" class="fixed z-50 bg-white dark:bg-gray-900 shadow-xl p-4 rounded-lg hidden w-80">
+
         <input
           type="text"
           id="group-name"
@@ -343,6 +351,7 @@ id="drawer-navigation"
           placeholder="Description (optional)"
           class="w-full p-2 mb-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         ></textarea>
+
         <div class="search-container">
           <input
             type="text"
@@ -351,28 +360,23 @@ id="drawer-navigation"
             placeholder="Search for friends..."
           />
         </div>
-        
-        <div id="friend-list-container" class="mb-4">
+
+        <div id="friend-list-container" class="mb-4 max-h-[150px] overflow-y-auto">
           <!-- Dynamically populated list of friends to invite -->
         </div>
-        
-        <div class="invited-friends-container bg-[#101828] p-4 rounded-lg">
+
+        <div class="invited-friends-container bg-[#101828] p-4 rounded-lg max-h-[150px] overflow-y-auto">
           <h3 class="text-white font-bold mb-2">Invited Friends</h3>
           <ul id="invited-friends-list" class="list-none"></ul>
         </div>
-        
+
         <button
           id="create-group-btn"
-          class="w-full p-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          class="w-full p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 mt-2"
         >
-          Create & Invite
+          Create
         </button>
       </div>
-
-      <!-- Friend List -->
-      <ul id="friend-list" class="space-y-2 overflow-y-auto max-h-[calc(100vh-300px)]">
-        <!-- Friends go here -->
-      </ul>
     </aside>
 
     <!-- Chat Area -->
@@ -382,13 +386,13 @@ id="drawer-navigation"
         <div id="chat-header" class="flex items-center hidden">
           <img
             id="chat-avatar"
-            src="https://via.placeholder.com/40"
+            src="Images/minion-icon.jpg"
             alt="Friend Avatar"
             class="w-8 h-8 rounded-full mr-3"
           />
           <div>
             <p id="chat-friend-name" class="text-lg font-semibold text-gray-900 dark:text-white"></p>
-            <p id="chat-status" class="text-xs text-gray-500 dark:text-gray-400">Online</p>
+            <p id="chat-status" class="text-xs text-gray-500 dark:text-gray-400"></p>
           </div>
         </div>
       </div>
@@ -431,10 +435,65 @@ id="drawer-navigation"
 
 
 <script>
-  document.getElementById("toggle-group-chat").addEventListener("click", function () {
-    const form = document.getElementById("group-chat-form");
-    form.classList.toggle("hidden");
-  });
+const toggleBtn = document.getElementById('toggle-group-chat');
+const form = document.getElementById('group-chat-form');
+
+toggleBtn.addEventListener('click', () => {
+  if (form.classList.contains('hidden')) {
+    const rect = toggleBtn.getBoundingClientRect();
+    const formWidth = form.offsetWidth;
+    const formHeight = form.scrollHeight;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    let top = rect.top + window.scrollY;
+    let left = rect.right + 10;
+
+    if (left + formWidth > windowWidth) {
+      left = windowWidth - formWidth - 10; 
+    }
+
+    if (top + formHeight > windowHeight) {
+      top = windowHeight - formHeight - 10; 
+    }
+
+    if (top < 0) {
+      top = 10; 
+    }
+    form.style.top = `${top}px`;
+    form.style.left = `${left}px`;
+    form.style.transform = 'translateY(0)'; 
+
+    form.classList.remove('hidden');
+  } else {
+    form.classList.add('hidden');
+  }
+});
+
+window.addEventListener('resize', () => {
+  if (!form.classList.contains('hidden')) {
+    const rect = toggleBtn.getBoundingClientRect();
+    const formWidth = form.offsetWidth;
+    const formHeight = form.scrollHeight;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    let top = rect.top + window.scrollY;
+    let left = rect.right + 10;
+    if (left + formWidth > windowWidth) {
+      left = windowWidth - formWidth - 10;
+    }
+    if (top + formHeight > windowHeight) {
+      top = windowHeight - formHeight - 10;
+    }
+    if (top < 0) {
+      top = 10;
+    }
+
+    form.style.top = `${top}px`;
+    form.style.left = `${left}px`;
+  }
+});
 </script>
 
 
@@ -674,13 +733,17 @@ async function fetchFriendsList() {
         const listItem = document.createElement('li');
         listItem.classList.add('p-2', 'bg-gray-200', 'rounded', 'flex', 'justify-between', 'items-center');
         listItem.innerHTML = `
-          <span class="text-gray-700">${friend.username}</span>
-          <button class="open-chat-btn text-blue-500 hover:text-blue-700 ml-25" data-id="${friend.friendID}">
-            <i class="fas fa-comment-dots"></i> <!-- Chat bubble icon -->
-          </button>
-          <button class="remove-friend-btn text-red-500 hover:text-red-700 ml-2" data-id="${friend.friendID}">
-            X
-          </button>
+          <div class="flex items-center justify-between w-full">
+            <span class="truncate max-w-[120px] text-gray-700">${friend.username}</span>
+            <div class="flex items-center space-x-2 ml-4 shrink-0">
+              <button class="open-chat-btn text-blue-500 hover:text-blue-700" data-id="${friend.friendID}">
+                <i class="fas fa-comment-alt"></i>
+              </button>
+              <button class="remove-friend-btn text-red-500 hover:text-red-700" data-id="${friend.friendID}">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
         `;
         friendList.appendChild(listItem);
 
@@ -708,7 +771,7 @@ function openChat(friend) {
   const chatAvatar = document.getElementById('chat-avatar');
   
   chatFriendName.textContent = friend.username;
-  chatAvatar.src = friend.avatarUrl || 'https://via.placeholder.com/40';
+  chatAvatar.src = friend.avatarUrl || 'Images/minion-icon.jpg';
   chatHeader.classList.remove('hidden');
   
   localStorage.setItem('currentChatID', friend.friendID);
@@ -750,7 +813,7 @@ function displayMessages(messages) {
   messagesContainer.innerHTML = '';
 
   if (!Array.isArray(messages) || messages.length === 0) {
-    messagesContainer.innerHTML = '<p>No messages found</p>';
+    messagesContainer.innerHTML = '<p style="color: white; text-align: center; font-size: 24px;">No messages found</p>';
     return;
   }
 
@@ -945,6 +1008,7 @@ function displaySearchResults(users) {
   const resultsContainer = document.getElementById('search-results');
   resultsContainer.innerHTML = ''; 
 
+  resultsContainer.classList.add('absolute', 'top-[60px]', 'left-0', 'z-10', 'bg-white', 'dark:bg-gray-900', 'shadow-lg', 'rounded-lg', 'w-full');
   if (users.length === 0) {
     resultsContainer.innerHTML = '<li class="text-gray-500 dark:text-gray-400 text-sm">No users found.</li>';
   } else {
@@ -1221,11 +1285,11 @@ async function fetchGroupChats() {
 
       listItem.innerHTML = `
         <span class="font-semibold text-white">${group.channel_name}</span>
-        <div class="flex space-x-2">
-          <button class="open-chat-btn text-2xl text-blue-400 hover:text-blue-500 cursor-pointer" data-id="${group.channelID}" title="Open Chat">
-            <i class="fas fa-comments"></i>
+        <div class="flex space-x-2 ml-auto">
+          <button class="open-chat-btn text-xl text-blue-400 hover:text-blue-500 cursor-pointer" data-id="${group.channelID}" title="Open Chat">
+            <i class="fa-solid fa-user-group"></i>
           </button>
-          <button class="leave-group-btn text-2xl text-red-500 hover:text-red-600 cursor-pointer" data-id="${group.channelID}" title="Leave Group">
+          <button class="leave-group-btn text-xl text-red-500 hover:text-red-600 cursor-pointer" data-id="${group.channelID}" title="Leave Group">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -1255,7 +1319,7 @@ function openGroupChat(group) {
   const chatAvatar = document.getElementById('chat-avatar');
   
   groupName.textContent = group.channel_name;
-  chatAvatar.src = group.avatarUrl || 'https://via.placeholder.com/40';
+  chatAvatar.src = group.avatarUrl || 'Images/yuji-cat.jpg';
   groupChatName.classList.remove('hidden');
 
   localStorage.setItem('currentGroupID', group.channelID);
@@ -1319,11 +1383,13 @@ function displayGroupMessages(messages) {
   messagesContainer.innerHTML = '';
 
   if (!Array.isArray(messages) || messages.length === 0) {
-    messagesContainer.innerHTML = '<p>No messages found</p>';
+    messagesContainer.innerHTML = '<p style="color: white; text-align: center; font-size: 24px;">No messages found</p>';
     return;
   }
 
   let lastMessageDate = null;
+  let lastSenderId = null;
+  let lastReceiverName = null;
   const currentUserID = parseInt(localStorage.getItem('userID')); 
 
   messages.reverse().forEach((message) => {
@@ -1354,18 +1420,22 @@ function displayGroupMessages(messages) {
     }
 
     const isSender = message.user_id === currentUserID;
+    const isSameSenderAsLastMessage = message.user_id === lastSenderId;
+    const isLatestMessageFromUser = !isSameSenderAsLastMessage;
+
+    const avatarWidth = '40px';
 
     messageElement.innerHTML = `
       <div style="display: flex; flex-direction: ${isSender ? 'row-reverse' : 'row'}; margin-bottom: 10px; align-items: flex-end;">
-        <!-- Sender's Avatar -->
-        <div style="margin-${isSender ? 'left' : 'right'}: 10px;">
-          <img src="${message.senderAvatar || 'https://via.placeholder.com/40'}" style="border-radius: 50%; width: 30px; height: 30px;">
+        <!-- Receiver's Avatar Placeholder (Only for the latest message from the receiver) -->
+        <div style="margin-${isSender ? 'left' : 'right'}: 10px; width: ${isSender ? '0px' : avatarWidth};">
+          ${!isSender && isLatestMessageFromUser ? `<img src="${message.senderAvatar || 'Images/spongebob-avatar.jpeg'}" style="border-radius: 50%; width: 30px; height: 30px;">` : ''}
         </div>
 
         <!-- Message Content and Bubble -->
-        <div style="display: flex; flex-direction: column; max-width: 75%; word-wrap: break-word;">
-          <!-- Receiver's Name (Only for the Receiver) -->
-          ${!isSender ? `
+        <div style="display: flex; flex-direction: column; max-width: 75%; word-wrap: break-word; ${isSender ? 'margin-left: 0;' : 'margin-right: 0;'}">
+          <!-- Receiver's Name (Only for the Receiver and not for consecutive messages from the same user) -->
+          ${!isSender && message.senderName !== lastReceiverName ? `
             <div style="font-size: 0.9rem; color: white; font-weight: bold; margin-bottom: 5px; margin-left: 10px;">
               ${message.senderName}
             </div>
@@ -1394,9 +1464,13 @@ function displayGroupMessages(messages) {
     `;
 
     messagesContainer.appendChild(messageElement);
+    lastSenderId = message.user_id;
+    lastReceiverName = message.senderName;
   });
+
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
+
 
 async function sendGroupMessage(groupID, content) {
   try {
