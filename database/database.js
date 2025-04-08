@@ -929,3 +929,10 @@ export async function getUser(username) {
     console.error("Database query error:", error);
   }
 }
+
+//update save profile
+export async function updateSaveProfile(username, bio, photo) {
+  const query = `UPDATE Users SET Bio = ?, Photo = ? WHERE Username = ?`;
+  const [result] = await pool.execute(query, [bio, photo, username]);
+  return result;
+}

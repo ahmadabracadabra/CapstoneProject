@@ -44,3 +44,4 @@ SELECT `GroupID`, `Name` FROM `Groups` WHERE `CreatorID` = 1;
 
 -- Select messages that contain a specific keyword (`'research'`)
 SELECT `MessageText` FROM `Message` WHERE `MessageText` LIKE '%research%';
+

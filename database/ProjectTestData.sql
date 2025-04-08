@@ -76,3 +76,4 @@ INSERT INTO `Message` (`MessageID`, `Timestamp`, `SenderID`, `MessageText`, `Gro
 (8, '2025-01-27 13:30:00', 8, 'We need to finalize the economics group project soon. Let’s meet tomorrow to go over the details.', 8, '2025-01-27 13:30:00'),
 (9, '2025-01-28 15:10:00', 9, 'Environmental science quiz is coming up. Can we meet for a last-minute review session?', 9, '2025-01-28 15:10:00'),
 (10, '2025-01-29 09:20:00', 10, 'I’ll finalize my ethics essay today. Let’s discuss it tomorrow in the forum.', 10, '2025-01-29 09:20:00');
+
