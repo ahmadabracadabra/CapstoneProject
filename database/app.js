@@ -919,7 +919,7 @@ app.get('/profile/:username', async (req, res) => {
     res.json({
       username: user.Username,
       bio: user.Bio || "",
-      photoPath: user.Photo || ""
+      photo: user.Photo || ""
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch profile" });
@@ -950,13 +950,13 @@ app.put('/profile/:username', async (req, res) => {
   }
 
   try {
-    const result = await updateSaveProfile(username, bio, photoPath || null);
+    const result = await updateSaveProfile(username, bio, photo|| null);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "User not found or update failed" });
     }
 
-    res.json({ message: "Profile updated successfully", username, bio, photoPath });
+    res.json({ message: "Profile updated successfully", username, bio, photo });
   } catch (error) {
     console.error("Error updating profile:", error);
     res.status(500).json({ error: "Failed to update profile" });
