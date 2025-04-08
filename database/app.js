@@ -62,7 +62,8 @@ import {
     fetchTransactions,
     createTransaction,
     deleteTransaction,
-    saveProfile
+    saveProfile,
+    updateSaveProfile
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -905,6 +906,63 @@ app.post('/profile', async (req, res) => {
 
 
 });
+//update profile
+app.get('/profile/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await fetchUserByUsername(username);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({
+      username: user.Username,
+      bio: user.Bio || "",
+      photoPath: user.Photo || ""
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch profile" });
+  }
+});
+
+app.post('/profile', async (req, res) => {
+  const { username, bio, photo } = req.body;
+
+  if (!username || !bio) {
+    return res.status(400).json({ error: "Username and bio are required" });
+  }
+
+  try {
+    const result = await updateSaveProfile(username, bio, photo || null);
+    res.status(201).json({ message: "Profile saved successfully", result });
+  } catch (error) {
+    console.error("Failed to save profile:", error);
+    res.status(500).json({ error: "Failed to save profile" });
+  }
+});
+app.put('/profile/:username', async (req, res) => {
+  const { bio, photo } = req.body;
+  const { username } = req.params;
+
+  if (!bio) {
+    return res.status(400).json({ error: "Bio is required" });
+  }
+
+  try {
+    const result = await updateSaveProfile(username, bio, photoPath || null);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found or update failed" });
+    }
+
+    res.json({ message: "Profile updated successfully", username, bio, photoPath });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
 
 // Error handler
 app.use((err, req, res, next) => {
