@@ -59,7 +59,10 @@ import {
     createGroupChat,
     getGroupMessages,
     getUserGroupChats,
-    userProfile
+    saveProfile,
+    fetchTransactions,
+    createTransaction,
+    deleteTransaction
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -480,6 +483,56 @@ app.put('/assignments/:id/status', authenticateToken, async (req, res) => {
     }
 });
 
+//BUDGETING
+// Fetch all transactions for a user
+app.get('/transactions', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const transactions = await fetchTransactions(userId);
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch transactions" });
+  }
+});
+
+
+// Create a new transaction
+app.post('/transactions', authenticateToken, async (req, res) => {
+  try {
+      const { transactionDate, category, item, type, amount } = req.body;
+      
+      if (!transactionDate || !category || !item || !type || !amount) {
+          return res.status(400).json({ error: "All fields are required" });
+      }
+
+      const userId = req.user.id;
+
+      const newTransaction = await createTransaction(transactionDate, category, item, type, amount, userId);
+      res.status(201).json({ message: "Transaction created successfully", transaction: newTransaction });
+  } catch (error) {
+      console.error("Failed to create transaction:", error);
+      res.status(500).json({ error: "Failed to create transaction", details: error.message });
+  }
+});
+
+// Delete a transaction
+app.delete('/transactions/:id', authenticateToken, async (req, res) => {
+  try {
+      const transactionId = req.params.id;
+      const userId = req.user.id;
+
+      const result = await deleteTransaction(transactionId, userId);
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ error: "Transaction not found or you don't have permission to delete it" });
+      }
+
+      res.json({ message: "Transaction deleted successfully" });
+  } catch (error) {
+      res.status(500).json({ error: "Failed to delete transaction" });
+  }
+});
+
 // FRIENDS
 // Send Friend Request
 app.post('/friend-request/send', authenticateToken, async (req, res) => {
@@ -842,7 +895,7 @@ app.post('/profile', async (req, res) => {
     return res.status(400).json ({error: "Need a username or bio"});
   }
     try {
-      await userProfile (username, bio)
+      await saveProfile (username, bio)
       res.json({success: true, username, bio});
     }
     catch (error) {
