@@ -360,7 +360,7 @@ DROP TABLE IF EXISTS `Notification`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Notification` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `type` enum('message','missed_call','other') NOT NULL,
+  `type` enum('message', 'missed_call', 'other', 'friend_request', 'group_message') NOT NULL,
   `content` text NOT NULL,
   `is_read` tinyint(1) DEFAULT '0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,

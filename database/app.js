@@ -53,6 +53,9 @@ import {
     updateMessageStatus,
     createNotification,
     markNotificationAsRead,
+    getNotificationsByUser,
+    clearAllNotifications,
+    getGroupMembers,
     sendGroupMessage,
     leaveGroup,
     getMessages,
@@ -536,13 +539,18 @@ app.delete('/transactions/:id', authenticateToken, async (req, res) => {
 
 // FRIENDS
 // Send Friend Request
-app.post('/friend-request/send', authenticateToken, async (req, res) => {
+  app.post('/friend-request/send', authenticateToken, async (req, res) => {
     try {
-      const { receiverID } = req.body; 
-      const creatorID = req.user.id; 
-  
+      const { receiverID } = req.body;
+      const creatorID = req.user.id;
+
       const result = await sendFriendRequest(creatorID, receiverID);
-      res.json(result);
+
+      // Create a notification for the receiver
+      const notificationContent = `User ${req.user.username} has sent you a friend request.`;
+      await createNotification('friend_request', notificationContent, receiverID);
+
+      res.json(result); 
     } catch (error) {
       res.status(500).json({ error: "Failed to send friend request" });
     }
@@ -637,20 +645,27 @@ app.get('/messages/:friendID', authenticateToken, async (req, res) => {
 });
   
 // Send a message
-app.post('/message/send', authenticateToken, async (req, res) => {
+  app.post('/message/send', authenticateToken, async (req, res) => {
     try {
-        const { receiverID, content } = req.body;
-        const senderID = req.user.id;
+      const { receiverID, content } = req.body;
+      const senderID = req.user.id;
 
-        if (!content || !receiverID) {
-            return res.status(400).json({ error: "Receiver ID and content are required." });
-        }
-        const result = await sendMessage(senderID, receiverID, content);
-        res.json(result);
+      if (!content || !receiverID) {
+        return res.status(400).json({ error: "Receiver ID and content are required." });
+      }
+      
+      const result = await sendMessage(senderID, receiverID, content);
+
+      // Create a notification for the receiver
+      const notificationContent = `You have received a new message from ${req.user.username}.`;
+      await createNotification('message', notificationContent, receiverID);
+
+      res.json(result); 
     } catch (error) {
-        res.status(500).json({ error: "Failed to send message" });
+      res.status(500).json({ error: "Failed to send message" });
     }
-});
+  });
+
   
 //NEEDS OPTIMIZATIOn VVVV
   // Upload a message attachment
@@ -678,6 +693,8 @@ app.post('/message/send', authenticateToken, async (req, res) => {
     }
   });
   
+  //NOTIFICATIONS
+
   // Create a notification
   app.post('/notification/create', authenticateToken, async (req, res) => {
     try {
@@ -700,6 +717,39 @@ app.post('/message/send', authenticateToken, async (req, res) => {
       res.json(result);
     } catch (error) {
       res.status(500).json({ error: "Failed to mark notification as read" });
+    }
+  });
+
+  app.get('/notifications', authenticateToken, async (req, res) => {
+    try {
+      const userID = req.user.id;
+  
+      const page = parseInt(req.query.page) || 1;  
+      const limit = parseInt(req.query.limit) || 5;  
+  
+      const offset = (page - 1) * limit;
+  
+      const notifications = await getNotificationsByUser(userID, limit, offset);
+  
+      res.json({
+        page,
+        limit,
+        data: notifications
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to retrieve notifications" });
+    }
+  });
+  
+
+  app.post('/notifications/clear-all', authenticateToken, async (req, res) => {
+    const { userID } = req.body;
+    
+    try {
+      const result = await clearAllNotifications(userID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to clear all notifications" });
     }
   });
   
@@ -732,19 +782,19 @@ app.get('/group/list', authenticateToken, async (req, res) => {
       res.status(500).json({ error: "Failed to fetch user's group chats" });
     }
   });
-  
-  // Send a group message
+ 
+// Send a group message
   app.post('/group-message/send', authenticateToken, async (req, res) => {
     try {
       const { channelID, content } = req.body;
       const userID = req.user.id;
-  
+
       console.log('Received data:', { channelID, content, userID }); // debugging
-  
+
       if (!channelID || !content) {
         return res.status(400).json({ error: 'Missing required fields' });
       }
-  
+
       const result = await sendGroupMessage(channelID, userID, content);
       res.json(result);
     } catch (error) {

@@ -567,7 +567,7 @@ export async function sendMessage(senderID, receiverID, content) {
 }
 
 //NEEDS WORK VVV
-// Upload a message attachment
+// Upload a message attachment PROB DELETE
 export async function uploadAttachment(messageID, filePath, fileType, fileSize) {
   try {
     const result = await pool.query(
@@ -587,7 +587,7 @@ export async function uploadAttachment(messageID, filePath, fileType, fileSize) 
   }
 }
 
-// Update message status
+// Update message status PROB DELETE
 export async function updateMessageStatus(messageID, userID, status) {
   try {
     const result = await pool.query(
@@ -646,6 +646,43 @@ export async function markNotificationAsRead(notificationID) {
   } catch (error) {
     console.error("Database query error:", error);
     return { message: "Error marking notification as read." };
+  }
+}
+
+// Get all notifications for a specific user
+export async function getNotificationsByUser(userID, limit, offset) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT id, type, content, is_read, created_at 
+       FROM Notification 
+       WHERE UserID = ? AND is_read = 0 
+       ORDER BY created_at DESC
+       LIMIT ? OFFSET ?`,
+      [userID, limit, offset]
+    );
+    
+    return rows;
+  } catch (error) {
+    console.error("Database query error:", error);
+    throw new Error("Error retrieving notifications.");
+  }
+}
+
+export async function clearAllNotifications(userID) {
+  try {
+    const result = await pool.query(
+      `DELETE FROM Notification WHERE UserID = ?`,
+      [userID]
+    );
+
+    if (result.affectedRows === 0) {
+      return { message: "No notifications found to clear." };
+    }
+
+    return { message: "All notifications cleared." };
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error clearing notifications." };
   }
 }
 
@@ -786,6 +823,24 @@ export async function leaveGroup(channelID, userID) {
   } catch (error) {
     console.error("Database query error:", error);
     return { message: "Error leaving group." };
+  }
+}
+
+// Function to get group members by channel_id
+export async function getGroupMembers(channelID) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT user_id FROM group_membership WHERE channel_id = ?`,
+      [channelID]
+    );
+
+    if (rows.length === 0) {
+      return [];
+    }
+    return rows.map(row => row.user_id);
+  } catch (error) {
+    console.error('Error fetching group members:', error);
+    throw new Error('Error fetching group members');
   }
 }
 
