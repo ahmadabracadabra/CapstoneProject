@@ -940,33 +940,27 @@ export async function addMeetingParticipant(meetingId, userId, joinedAt, leftAt)
   }
 }
 
-
-// profile
-
-export async function saveProfile (username, bio, photo) {
+// Profile
+export async function updateSaveProfile(bio, profilePicUrl, username) {
   try {
-    const query = ` INSERT INTO userProfile (username, bio, photo) VALUES (?, ?, ?)   `;
-    const [result] = await pool.query(query, [username, bio, photo]);
-    console.log("Profile saved:", result);
-  }
-  catch (error) {
-    console.error("Database query error:", error);
-  }
-}
-// Fetch profile
-export async function getUser(username) {
-  try {
-    const [rows] = await pool.query("SELECT * FROM userProfile WHERE username = ?", [username]);
-    console.log(rows);
-  }
-  catch (error) {
-    console.error("Database query error:", error);
+    bio = bio !== undefined ? bio : null;
+    profilePicUrl = profilePicUrl !== undefined ? profilePicUrl : null;
+    const query = `UPDATE Users SET bio = ?, profilePicUrl = ? WHERE Username = ?`;
+    const [result] = await pool.execute(query, [bio, profilePicUrl, username]);
+    return result;
+  } catch (error) {
+    console.error("Error updating profile:", error);
   }
 }
 
-//update save profile
-export async function updateSaveProfile(username, bio, photo) {
-  const query = `UPDATE Users SET Bio = ?, Photo = ? WHERE Username = ?`;
-  const [result] = await pool.execute(query, [bio, photo, username]);
-  return result;
+export async function getUserProfile(id) {
+  try {
+    const query = 'SELECT bio, profilePicUrl FROM Users WHERE userid = ?';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0] || null;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    throw error;  
+  }
 }
+
