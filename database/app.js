@@ -956,6 +956,18 @@ app.post('/profile/update', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/profile/:id', async (req, res) => {
+  try {
+    const user = await getUserProfile(req.params.id); 
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
 
 // Error handler
 app.use((err, req, res, next) => {

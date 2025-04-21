@@ -943,13 +943,18 @@ export async function addMeetingParticipant(meetingId, userId, joinedAt, leftAt)
 // Profile
 export async function updateSaveProfile(bio, profilePicUrl, username) {
   try {
-    bio = bio !== undefined ? bio : null;
-    profilePicUrl = profilePicUrl !== undefined ? profilePicUrl : null;
+    bio = (bio !== undefined && bio !== null) ? bio : null;
+    profilePicUrl = (profilePicUrl !== undefined && profilePicUrl !== null) ? profilePicUrl : null;
     const query = `UPDATE Users SET bio = ?, profilePicUrl = ? WHERE Username = ?`;
     const [result] = await pool.execute(query, [bio, profilePicUrl, username]);
-    return result;
+    if (result && result.affectedRows) {
+      return result;
+    } else {
+      throw new Error('No rows were affected. Please check if the username exists.');
+    }
   } catch (error) {
     console.error("Error updating profile:", error);
+    throw error;  
   }
 }
 
