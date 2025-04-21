@@ -394,6 +394,7 @@ id="drawer-navigation"
           />
           <div>
             <p id="chat-friend-name" class="text-lg font-semibold text-gray-900 dark:text-white"></p>
+            <p id="chat-members" class="text-sm text-gray-300"></p>
             <p id="chat-status" class="text-xs text-gray-500 dark:text-gray-400"></p>
           </div>
         </div>
@@ -769,7 +770,8 @@ function openChat(friend) {
   const chatHeader = document.getElementById('chat-header');
   const chatFriendName = document.getElementById('chat-friend-name');
   const chatAvatar = document.getElementById('chat-avatar');
-  
+  const memberList = document.getElementById('chat-members');
+  memberList.textContent = ''; 
   chatFriendName.textContent = friend.username;
   chatAvatar.src = friend.avatarUrl || 'Images/minion-icon.jpg';
   chatHeader.classList.remove('hidden');
@@ -1312,19 +1314,26 @@ async function fetchGroupChats() {
 }
 
 
-
 function openGroupChat(group) {
   const groupChatName = document.getElementById('chat-header');
   const groupName = document.getElementById('chat-friend-name');
   const chatAvatar = document.getElementById('chat-avatar');
-  
+  const memberList = document.getElementById('chat-members'); 
   groupName.textContent = group.channel_name;
   chatAvatar.src = group.avatarUrl || 'Images/yuji-cat.jpg';
+  const membersArray = Array.isArray(group.members) ? group.members : [group.members];
+  console.log("Group members:", membersArray);
+  if (membersArray.length > 0) {
+    const names = membersArray.join(', ');
+    memberList.textContent = `Members: ${names}`;
+  } else {
+    memberList.textContent = ''; 
+  }
   groupChatName.classList.remove('hidden');
 
   localStorage.setItem('currentGroupID', group.channelID);
-  localStorage.removeItem('currentChatID'); 
-  loadGroupChatHistory(group.channelID);  
+  localStorage.removeItem('currentChatID');
+  loadGroupChatHistory(group.channelID);
 }
 
 

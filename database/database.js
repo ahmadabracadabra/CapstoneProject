@@ -566,47 +566,6 @@ export async function sendMessage(senderID, receiverID, content) {
   }
 }
 
-//NEEDS WORK VVV
-// Upload a message attachment PROB DELETE
-export async function uploadAttachment(messageID, filePath, fileType, fileSize) {
-  try {
-    const result = await pool.query(
-      `INSERT INTO message_attachments (message_id, file_path, file_type, file_size)
-       VALUES (?, ?, ?, ?)`,
-      [messageID, filePath, fileType, fileSize]
-    );
-
-    if (result.affectedRows === 0) {
-      return { message: "Failed to upload attachment." };
-    }
-
-    return { message: "Attachment uploaded successfully." };
-  } catch (error) {
-    console.error("Database query error:", error);
-    return { message: "Error uploading attachment." };
-  }
-}
-
-// Update message status PROB DELETE
-export async function updateMessageStatus(messageID, userID, status) {
-  try {
-    const result = await pool.query(
-      `INSERT INTO message_status (message_id, user_id, status)
-       VALUES (?, ?, ?)
-       ON DUPLICATE KEY UPDATE status = ?`,
-      [messageID, userID, status, status]
-    );
-
-    if (result.affectedRows === 0) {
-      return { message: "Failed to update message status." };
-    }
-
-    return { message: "Message status updated successfully." };
-  } catch (error) {
-    console.error("Database query error:", error);
-    return { message: "Error updating message status." };
-  }
-}
 
 // Create a notification
 export async function createNotification(type, content, userID) {
@@ -745,16 +704,20 @@ export async function getUserGroupChats(userID) {
   try {
     const [rows] = await pool.query(
       `SELECT 
-         c.channel_id AS channelID,
-         c.channel_name,
-         c.description,
-         c.created_at,
-         GROUP_CONCAT(u.username) AS members
-       FROM group_membership gm
-       JOIN channels c ON gm.channel_id = c.channel_id
-       JOIN users u ON gm.user_id = u.userid
-       WHERE gm.user_id = ?
-       GROUP BY c.channel_id`,
+          c.channel_id AS channelID,
+          c.channel_name,
+          c.description,
+          c.created_at,
+          GROUP_CONCAT(u.username ORDER BY u.username ASC) AS members
+        FROM group_membership gm
+        JOIN channels c ON gm.channel_id = c.channel_id
+        JOIN users u ON gm.user_id = u.userid
+        WHERE gm.channel_id IN (
+          SELECT channel_id 
+          FROM group_membership 
+          WHERE user_id = ?
+        )
+        GROUP BY c.channel_id;`,
       [userID]
     );
 
@@ -843,6 +806,22 @@ export async function getGroupMembers(channelID) {
     throw new Error('Error fetching group members');
   }
 }
+
+export async function getGroupByID(channelID) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT channel_id AS channelID, channel_name
+       FROM channels
+       WHERE channel_id = ?`, 
+      [channelID]
+    );
+    return rows[0];  
+  } catch (error) {
+    console.error("Error fetching group by ID:", error);
+    throw error;
+  }
+}
+
 
 //OUTDATED VVVV
 // Fetch all meeting messages

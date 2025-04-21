@@ -49,8 +49,6 @@ import {
     searchUsers,
     removeFriend,
     sendMessage,
-    uploadAttachment,
-    updateMessageStatus,
     createNotification,
     markNotificationAsRead,
     getNotificationsByUser,
@@ -62,6 +60,7 @@ import {
     createGroupChat,
     getGroupMessages,
     getUserGroupChats,
+    getGroupByID,
     fetchTransactions,
     createTransaction,
     deleteTransaction,
@@ -666,35 +665,7 @@ app.get('/messages/:friendID', authenticateToken, async (req, res) => {
     }
   });
 
-  
-//NEEDS OPTIMIZATIOn VVVV
-  // Upload a message attachment
-  app.post('/message/attachment/upload', authenticateToken, async (req, res) => {
-    try {
-      const { messageID, filePath, fileType, fileSize } = req.body;
-  
-      const result = await uploadAttachment(messageID, filePath, fileType, fileSize);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to upload attachment" });
-    }
-  });
-  
-  // Update message status
-  app.post('/message/status/update', authenticateToken, async (req, res) => {
-    try {
-      const { messageID, status } = req.body;
-      const userID = req.user.id;
-  
-      const result = await updateMessageStatus(messageID, userID, status);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to update message status" });
-    }
-  });
-  
   //NOTIFICATIONS
-
   // Create a notification
   app.post('/notification/create', authenticateToken, async (req, res) => {
     try {
@@ -784,24 +755,40 @@ app.get('/group/list', authenticateToken, async (req, res) => {
   });
  
 // Send a group message
-  app.post('/group-message/send', authenticateToken, async (req, res) => {
-    try {
-      const { channelID, content } = req.body;
-      const userID = req.user.id;
+app.post('/group-message/send', authenticateToken, async (req, res) => {
+  try {
+    const { channelID, content } = req.body;
+    const senderID = req.user.id;
 
-      console.log('Received data:', { channelID, content, userID }); // debugging
+    console.log('Received data:', { channelID, content, senderID });
 
-      if (!channelID || !content) {
-        return res.status(400).json({ error: 'Missing required fields' });
-      }
-
-      const result = await sendGroupMessage(channelID, userID, content);
-      res.json(result);
-    } catch (error) {
-      console.error('Error in sending group message:', error);
-      res.status(500).json({ error: "Failed to send group message" });
+    if (!channelID || !content) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
-  });
+
+    // Send the group message
+    const result = await sendGroupMessage(channelID, senderID, content);
+
+    // Fetch group members
+    const groupMembers = await getGroupMembers(channelID);
+
+    const group = await getGroupByID(channelID);  
+    const channelName = group.channel_name;  
+
+    // Notify all members 
+    for (const memberID of groupMembers) {
+      if (memberID !== senderID) {
+        const notificationContent = `New message in group ${channelName}`;
+        await createNotification('message', notificationContent, memberID);
+      }
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error in sending group message:', error);
+    res.status(500).json({ error: "Failed to send group message" });
+  }
+});
   
   
   app.get('/group/messages/:channelID', authenticateToken, async (req, res) => {
