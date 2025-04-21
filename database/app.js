@@ -546,7 +546,7 @@ app.delete('/transactions/:id', authenticateToken, async (req, res) => {
       const result = await sendFriendRequest(creatorID, receiverID);
 
       // Create a notification for the receiver
-      const notificationContent = `User ${req.user.username} has sent you a friend request.`;
+      const notificationContent = `${req.user.username} sent you a friend request.`;
       await createNotification('friend_request', notificationContent, receiverID);
 
       res.json(result); 
@@ -656,7 +656,7 @@ app.get('/messages/:friendID', authenticateToken, async (req, res) => {
       const result = await sendMessage(senderID, receiverID, content);
 
       // Create a notification for the receiver
-      const notificationContent = `You have received a new message from ${req.user.username}.`;
+      const notificationContent = `New message from ${req.user.username}.`;
       await createNotification('message', notificationContent, receiverID);
 
       res.json(result); 
@@ -778,7 +778,7 @@ app.post('/group-message/send', authenticateToken, async (req, res) => {
     // Notify all members 
     for (const memberID of groupMembers) {
       if (memberID !== senderID) {
-        const notificationContent = `New message in group ${channelName}`;
+        const notificationContent = `New message in ${channelName}.`;
         await createNotification('message', notificationContent, memberID);
       }
     }

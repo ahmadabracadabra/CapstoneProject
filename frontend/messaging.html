@@ -96,37 +96,35 @@
                 </svg>
               </button>
               <!-- Notifications -->
-              <button
+                <button
                 type="button"
                 data-dropdown-toggle="notification-dropdown"
-                class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-              >
+                class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative"
+                >
                 <span class="sr-only">View notifications</span>
                 <!-- Bell icon -->
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z"/>
                 </svg>
-              </button>
-              <!-- Dropdown menu -->
-              <div
-                class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
-                id="notification-dropdown"
-              >
-                <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300">
+                <!-- Notification Bubble -->
+                <span id="notification-bubble" class="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full" style="display: none;">3</span>
+                </button>
+                <!-- Dropdown menu -->
+                <div
+                class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none rounded-xl shadow-lg bg-[#101828] text-white border-[5px] border-[#1e2533]"
+                id="notification-dropdown">
+                <div class="block py-2 px-4 text-base font-medium text-center text-white">
                   Notifications
                 </div>
-                <div id="notification-list" class="max-h-60 overflow-y-auto">
+                <div id="notification-list" class="max-h-60 overflow-y-auto text-white">
                   <!-- Notifications will appear here -->
                 </div>
-
-                <!-- Clear All Button -->
                 <div class="py-2 px-4 text-center">
-                  <button id="clear-all-btn" class="text-red-500 hover:text-red-700">
+                  <button id="clear-all-btn" class="text-red-400 hover:text-red-600">
                     Clear All
                   </button>
                 </div>
-              </div>
-
+                </div>
               <!-- avatar --> 
               <button
                 type="button"
@@ -1325,7 +1323,7 @@ function openGroupChat(group) {
   console.log("Group members:", membersArray);
   if (membersArray.length > 0) {
     const names = membersArray.join(', ');
-    memberList.textContent = `Members: ${names}`;
+    memberList.innerHTML = `<span style="color: white;">Members: ${names}</span>`;
   } else {
     memberList.textContent = ''; 
   }
@@ -1516,28 +1514,45 @@ async function sendGroupMessage(groupID, content) {
 // Function to display notifications
 function displayNotifications(notifications) {
   const notificationList = document.getElementById('notification-list');
+  const notificationBadge = document.getElementById('notification-bubble'); // Notification bubble
   notificationList.innerHTML = ''; 
 
-  if (notifications.data.length === 0) {
-    notificationList.innerHTML = '<p>No new notifications</p>';
+  const unreadNotifications = notifications.data.filter(notification => !notification.read); 
+
+  if (unreadNotifications.length === 0) {
+    notificationList.innerHTML = '<p class="text-center text-white py-1">None</p>';
+    notificationBadge.style.display = 'none'; 
     return;
   }
 
+  notificationBadge.style.display = 'inline-flex'; 
+  notificationBadge.textContent = unreadNotifications.length;
   const notificationIDs = [];
 
-  notifications.data.forEach((notification) => {
+  unreadNotifications.forEach((notification) => {
     const notificationItem = document.createElement('div');
-    notificationItem.classList.add('notification-item', 'p-2', 'mb-2', 'border-b', 'border-gray-200', 'dark:border-gray-600');
+    notificationItem.classList.add(
+      'notification-item',
+      'p-2',
+      'mb-2',
+      'border-b',
+      'border-gray-200',
+      'dark:border-gray-600',
+      'text-white',
+      'flex', 
+      'items-center' 
+    );
+    notificationItem.style.backgroundColor = '#101828';
 
     const content = document.createElement('div');
     content.classList.add('content');
     content.textContent = notification.content;
 
     const markReadButton = document.createElement('button');
-    markReadButton.classList.add('text-blue-500', 'hover:text-blue-700', 'ml-2');
-    markReadButton.textContent = 'Mark as Read';
+    markReadButton.classList.add('text-blue-500', 'hover:text-blue-700', 'ml-4'); 
+    markReadButton.textContent = 'Mark Read';
     
-    markReadButton.onclick = () => markNotificationAsRead(notification.id, notificationItem);
+    markReadButton.onclick = () => markNotificationAsRead(notification.id, notificationItem, notifications.data);
 
     notificationItem.appendChild(content);
     notificationItem.appendChild(markReadButton);
@@ -1551,7 +1566,7 @@ function displayNotifications(notifications) {
 }
 
 // Function to mark a notification as read
-async function markNotificationAsRead(notificationID, notificationElement) {
+async function markNotificationAsRead(notificationID, notificationElement, allNotifications) {
   try {
     const token = localStorage.getItem('token');
     const response = await fetch('http://localhost:8080/notification/mark-read', {
@@ -1571,6 +1586,15 @@ async function markNotificationAsRead(notificationID, notificationElement) {
     alert(data.message); 
 
     notificationElement.remove();
+
+    const unreadNotifications = allNotifications.filter(notification => !notification.read);
+    const notificationBadge = document.getElementById('notification-bubble');
+    
+    notificationBadge.textContent = unreadNotifications.length;
+
+    if (unreadNotifications.length === 0) {
+      notificationBadge.style.display = 'none';
+    }
 
   } catch (error) {
     console.error('Error marking notification as read:', error);
