@@ -65,7 +65,9 @@ import {
     createTransaction,
     deleteTransaction,
     updateSaveProfile,
-    getUserProfile
+    getUserProfile,
+    updatePreferences,
+    getUserPreferences
 } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -966,6 +968,36 @@ app.get('/profile/:id', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
+
+// Update preferences route
+app.post('/preferences/update', authenticateToken, async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const { theme, fontSize, language } = req.body;
+
+    const result = await updatePreferences(userID, theme, fontSize, language);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error updating preferences:", error);
+    res.status(500).json({ error: "Failed to update preferences." });
+  }
+});
+
+app.get('/preferences', authenticateToken, async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const result = await getUserPreferences(userID);
+
+    if (result.error) {
+      return res.status(404).json({ error: result.error });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error in /preferences route:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

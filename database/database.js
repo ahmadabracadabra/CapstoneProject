@@ -969,3 +969,50 @@ export async function getUserProfile(id) {
   }
 }
 
+// Update a user's preferences
+export async function updatePreferences(userID, theme, fontSize, language) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT * FROM Preferences WHERE UserID = ?`,
+      [userID]
+    );
+
+    if (rows.length === 0) {
+      const insertResult = await pool.query(
+        `INSERT INTO Preferences (UserID, Theme, FontSize, Language)
+         VALUES (?, ?, ?, ?)`,
+        [userID, theme, fontSize, language]
+      );
+      return { message: 'Preferences created successfully.' };
+    } else {
+      const updateResult = await pool.query(
+        `UPDATE Preferences
+         SET Theme = ?, FontSize = ?, Language = ?
+         WHERE UserID = ?`,
+        [theme, fontSize, language, userID]
+      );
+      return { message: 'Preferences updated successfully.' };
+    }
+  } catch (error) {
+    console.error("Database query error:", error);
+    return { message: "Error updating preferences." };
+  }
+}
+
+export async function getUserPreferences(userID) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT Theme, FontSize, Language FROM Preferences WHERE UserID = ?`,
+      [userID]
+    );
+
+    if (rows.length === 0) {
+      return { error: "Preferences not found" };
+    }
+
+    return rows[0];
+  } catch (error) {
+    console.error("Database error fetching preferences:", error);
+    return { error: "Database error" };
+  }
+}

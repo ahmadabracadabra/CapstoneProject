@@ -6,52 +6,32 @@
   <title>Settings</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    (function () {
-      const theme = localStorage.getItem("theme");
-      const fontSize = localStorage.getItem("fontSize") || "base";
-      const doc = document.documentElement;
-
-      doc.classList.remove("dark", "text-sm", "text-base", "text-lg");
-      if (theme === "dark") {
-        doc.classList.add("dark");
-      } else if (theme === "system") {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          doc.classList.add("dark");
-        }
-      }
-      doc.classList.add(`text-${fontSize}`);
-    })();
-  </script>
 </head>
 <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white min-h-screen transition-colors duration-300">
 
   <!-- Header -->
   <header class="flex items-center gap-4 bg-[#1e2938] text-white px-6 py-4 shadow-md">
-    <button onclick="history.back()" class="text-white hover:text-gray-300 text-2xl">
-      &#8592;
-    </button>
-    <h1 class="text-2xl font-semibold">Settings</h1>
+    <button onclick="history.back()" class="text-white hover:text-gray-300 text-2xl">&#8592;</button>
+    <h1 class="text-2xl font-semibold" data-i18n="settings">Settings</h1>
   </header>
 
   <main class="p-8 space-y-8 max-w-xl">
-    <!-- Notifications Toggle -->
+
+    <!-- Language Selector -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-2">Notifications</h2>
-      <label class="flex items-center gap-4 cursor-pointer">
-        <input type="checkbox" id="notificationToggle" class="sr-only peer">
-        <div class="w-12 h-7 bg-gray-500 rounded-full peer-checked:bg-blue-600 relative transition-colors duration-300 ease-in-out">
-          <div class="absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out peer-checked:translate-x-5"></div>
-        </div>
-        <span class="text-sm text-gray-700 dark:text-gray-300">Enable Notifications</span>
-      </label>
+      <h2 class="text-xl font-semibold mb-2" data-i18n="language">Language</h2>
+      <select id="languageSelector" class="w-full p-2 rounded bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white">
+        <option value="en">English</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+      </select>
     </div>
 
     <!-- Theme Selector -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-2">Theme</h2>
+      <h2 class="text-xl font-semibold mb-2" data-i18n="theme">Theme</h2>
       <select id="themeSelector" class="w-full p-2 rounded bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white">
-        <option value="system">Default (System)</option>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
       </select>
@@ -59,78 +39,163 @@
 
     <!-- Font Size -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-2">Font Size</h2>
+      <h2 class="text-xl font-semibold mb-2" data-i18n="fontSize">Font Size</h2>
       <select id="fontSizeSelector" class="w-full p-2 rounded bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white">
-        <option value="sm">Small</option>
-        <option value="base">Medium</option>
-        <option value="lg">Large</option>
+        <option value="small">Small</option>
+        <option value="default">Medium</option>
+        <option value="large">Large</option>
       </select>
-    </div>
-
-    <!-- Daily Reminders -->
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-2">Daily Reminders</h2>
-      <label class="flex items-center gap-4 cursor-pointer">
-        <input type="checkbox" id="dailyReminderToggle" class="sr-only peer">
-        <div class="w-12 h-7 bg-gray-500 rounded-full peer-checked:bg-green-600 relative transition-colors duration-300 ease-in-out">
-          <div class="absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out peer-checked:translate-x-5"></div>
-        </div>
-        <span class="text-sm text-gray-700 dark:text-gray-300">Receive Daily Study Reminders</span>
-      </label>
     </div>
 
     <!-- Delete Account -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-4 text-red-500">Danger Zone</h2>
-      <button class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded" onclick="confirmDelete()">Delete Account</button>
+      <h2 class="text-xl font-semibold mb-4 text-red-500" data-i18n="dangerZone">Danger Zone</h2>
+      <button class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded" onclick="confirmDelete()" data-i18n="deleteAccount">Delete Account</button>
     </div>
   </main>
 
   <script>
+    const translations = {
+      en: {
+        settings: "Settings",
+        language: "Language",
+        theme: "Theme",
+        fontSize: "Font Size",
+        dangerZone: "Danger Zone",
+        deleteAccount: "Delete Account"
+      },
+      es: {
+        settings: "Configuración",
+        language: "Idioma",
+        theme: "Tema",
+        fontSize: "Tamaño de fuente",
+        dangerZone: "Zona de peligro",
+        deleteAccount: "Eliminar cuenta"
+      },
+      fr: {
+        settings: "Paramètres",
+        language: "Langue",
+        theme: "Thème",
+        fontSize: "Taille de la police",
+        dangerZone: "Zone dangereuse",
+        deleteAccount: "Supprimer le compte"
+      },
+      de: {
+        settings: "Einstellungen",
+        language: "Sprache",
+        theme: "Thema",
+        fontSize: "Schriftgröße",
+        dangerZone: "Gefahrenzone",
+        deleteAccount: "Konto löschen"
+      }
+    };
+
     document.addEventListener("DOMContentLoaded", async () => {
-      const notificationToggle = document.getElementById("notificationToggle");
       const themeSelector = document.getElementById("themeSelector");
       const fontSizeSelector = document.getElementById("fontSizeSelector");
-      const dailyReminderToggle = document.getElementById("dailyReminderToggle");
+      const languageSelector = document.getElementById("languageSelector");
+
+      if (themeSelector) {
+        themeSelector.addEventListener("change", () => {
+          applyTheme(themeSelector.value);
+          saveSettings();
+        });
+      }
+
+      if (fontSizeSelector) {
+        fontSizeSelector.addEventListener("change", () => {
+          applyFontSize(fontSizeSelector.value);
+          saveSettings();
+        });
+      }
+
+      if (languageSelector) {
+        languageSelector.addEventListener("change", () => {
+          const lang = languageSelector.value;
+          applyLanguage(lang);
+          saveSettings();
+        });
+      }
 
       await loadUserSettings();
-
-      notificationToggle.addEventListener("change", saveSettings);
-      themeSelector.addEventListener("change", () => {
-        applyTheme(themeSelector.value);
-        saveSettings();
-      });
-      fontSizeSelector.addEventListener("change", () => {
-        applyFontSize(fontSizeSelector.value);
-        saveSettings();
-      });
-      dailyReminderToggle.addEventListener("change", saveSettings);
     });
 
-    async function loadUserSettings() {
-      const token = localStorage.getItem("token");
-      const fontSizeSelector = document.getElementById("fontSizeSelector");
-      const localFontSize = localStorage.getItem("fontSize") || "base";
-      fontSizeSelector.value = localFontSize;
-      applyFontSize(localFontSize);
+    function applyLanguage(lang) {
+      const elements = document.querySelectorAll("[data-i18n]");
+      elements.forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (translations[lang] && translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+    }
 
-      if (!token) return;
+    async function loadUserSettings() {
+      const token = localStorage.getItem('token');
+      const fontSizeSelector = document.getElementById('fontSizeSelector');
+      const themeSelector = document.getElementById('themeSelector');
+      const languageSelector = document.getElementById('languageSelector');
+
+      if (!fontSizeSelector || !themeSelector || !languageSelector) {
+        console.error("One or more selectors are missing.");
+        return;
+      }
+
+      if (!token) {
+        console.log("No token found. Loading settings from localStorage...");
+        const localFontSize = localStorage.getItem('fontSize') || 'default';
+        const localTheme = localStorage.getItem('theme') || 'dark'; 
+        const localLanguage = localStorage.getItem('language') || 'en';
+
+        fontSizeSelector.value = localFontSize;
+        themeSelector.value = localTheme;
+        languageSelector.value = localLanguage;
+
+        applyFontSize(localFontSize);
+        applyLanguage(localLanguage);
+        applyTheme(localTheme);
+        return;
+      }
 
       try {
-        const res = await fetch("/api/settings", {
+        const res = await fetch("http://localhost:8080/preferences", {
           headers: { Authorization: `Bearer ${token}` }
         });
+
+        if (!res.ok) throw new Error("Failed to fetch user preferences");
+
         const settings = await res.json();
 
-        document.getElementById("notificationToggle").checked = settings.notifications_enabled;
-        document.getElementById("themeSelector").value = settings.theme || "system";
-        fontSizeSelector.value = settings.font_size || localFontSize;
-        document.getElementById("dailyReminderToggle").checked = settings.daily_reminder;
+        const theme = settings.theme || "dark"; 
+        const fontSize = settings.font_size || "default";
+        const language = settings.language || "en";
 
-        applyTheme(settings.theme || "system");
-        applyFontSize(settings.font_size || localFontSize);
+        fontSizeSelector.value = fontSize;
+        themeSelector.value = theme;
+        languageSelector.value = language;
+
+        applyFontSize(fontSize);
+        applyTheme(theme);
+        applyLanguage(language);
+
+        localStorage.setItem("theme", theme);
+        localStorage.setItem("fontSize", fontSize);
+        localStorage.setItem("language", language);
+
       } catch (error) {
-        console.error("Failed to load settings:", error);
+        console.error("Error loading settings from server:", error);
+        
+        const fallbackFontSize = localStorage.getItem('fontSize') || 'default';
+        const fallbackTheme = localStorage.getItem('theme') || 'dark'; 
+        const fallbackLanguage = localStorage.getItem('language') || 'en';
+
+        fontSizeSelector.value = fallbackFontSize;
+        themeSelector.value = fallbackTheme;
+        languageSelector.value = fallbackLanguage;
+
+        applyFontSize(fallbackFontSize);
+        applyTheme(fallbackTheme);
+        applyLanguage(fallbackLanguage);
       }
     }
 
@@ -138,18 +203,18 @@
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const settings = {
-        notificationsEnabled: document.getElementById("notificationToggle").checked,
-        theme: document.getElementById("themeSelector").value,
-        fontSize: document.getElementById("fontSizeSelector").value,
-        dailyReminder: document.getElementById("dailyReminderToggle").checked
-      };
+      const theme = document.getElementById("themeSelector")?.value || "dark";
+      const fontSize = document.getElementById("fontSizeSelector")?.value || "default";
+      const language = document.getElementById("languageSelector")?.value || "en";
 
-      localStorage.setItem("theme", settings.theme);
-      localStorage.setItem("fontSize", settings.fontSize);
+      const settings = { theme, fontSize, language };
+
+      localStorage.setItem("theme", theme);
+      localStorage.setItem("fontSize", fontSize);
+      localStorage.setItem("language", language);
 
       try {
-        await fetch("/api/settings", {
+        const res = await fetch("http://localhost:8080/preferences/update", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -157,28 +222,37 @@
           },
           body: JSON.stringify(settings)
         });
-      } catch (error) {
-        console.error("Failed to save settings:", error);
-      }
-    }
 
-    function applyTheme(theme) {
-      document.documentElement.classList.remove("dark");
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else if (theme === "system") {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          document.documentElement.classList.add("dark");
+        const result = await res.json();
+        if (res.ok) {
+          console.log("Settings successfully saved:", result);
+          applyTheme(theme); 
+        } else {
+          console.error("Failed to save settings:", result);
         }
+      } catch (error) {
+        console.error("Error saving settings:", error);
       }
-      localStorage.setItem("theme", theme);
     }
 
     function applyFontSize(size) {
-      const root = document.documentElement;
-      root.classList.remove("text-sm", "text-base", "text-lg");
-      root.classList.add(`text-${size}`);
-      localStorage.setItem("fontSize", size);
+      document.body.style.fontSize =
+        size === 'large' ? '18px' :
+        size === 'small' ? '12px' : '16px';
+    }
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.body.style.backgroundColor = '#121212';
+        document.body.style.color = '#ffffff';
+      } else if (theme === 'light') {
+        document.body.style.backgroundColor = '#ffffff';
+        document.body.style.color = '#000000';
+      } else {
+        console.warn(`Invalid theme: ${theme}. Defaulting to 'dark' theme.`);
+        document.body.style.backgroundColor = '#121212';
+        document.body.style.color = '#ffffff';
+      }
     }
 
     function confirmDelete() {
