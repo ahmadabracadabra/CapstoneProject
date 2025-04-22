@@ -5,9 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Budget Tracker</title>
         <link rel="stylesheet" href="budget.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        
     </head>
     <body>
         <div class="app-container">
+          <div class="top-section">
             <div class="input-container">
               <div class="header">
                 <h1>SADAS Budget Tracker</h1>
@@ -51,6 +54,12 @@
                   >
                 </div>
               </div>
+            </div>
+            </div>
+
+            <div class="chart-box">
+              <h2>Income vs Expense</h2>
+              <canvas id="doughnutChart"></canvas>
             </div>
           </div>
       

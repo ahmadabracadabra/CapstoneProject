@@ -6,8 +6,10 @@ class BudgetTracker {
       this.balanceElement = document.getElementById("balance");
   
       this.initEventListeners();
+      this.initChart();
       this.renderTransactions();
       this.updateBalance();
+      this.updateChart();
     }
   
     loadTransactions() {
@@ -52,6 +54,7 @@ class BudgetTracker {
       this.renderTransactions();
       this.updateBalance();
       this.clearForm();
+      this.updateChart();
     }
   
     renderTransactions() {
@@ -93,6 +96,7 @@ class BudgetTracker {
       this.saveTransactions();
       this.renderTransactions();
       this.updateBalance();
+      this.updateChart();
     }
   
     updateBalance() {
@@ -103,6 +107,45 @@ class BudgetTracker {
   
       this.balanceElement.textContent = `Balance: $${balance.toFixed(2)}`;
       this.balanceElement.style.color = balance >= 0 ? "#2ecc71" : "#e74c3c";
+    }
+
+    initChart() {
+      const ctx = document.getElementById("doughnutChart").getContext("2d");
+    
+      this.doughnutChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: ["Income", "Expense"],
+          datasets: [{
+            data: [0, 0],
+            backgroundColor: ["#2ecc71", "#e74c3c"],
+            borderWidth: 1,
+          }],
+        },
+        options: {
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                color: "#fff",
+              },
+            },
+          },
+        },
+      });
+    }
+    
+    updateChart() {
+      const income = this.transactions
+        .filter((t) => t.amount > 0)
+        .reduce((sum, t) => sum + t.amount, 0);
+    
+      const expense = this.transactions
+        .filter((t) => t.amount < 0)
+        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    
+      this.doughnutChart.data.datasets[0].data = [income, expense];
+      this.doughnutChart.update();
     }
   }
   

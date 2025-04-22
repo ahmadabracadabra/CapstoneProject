@@ -20,10 +20,17 @@
   
   .app-container {
     display: flex;
+    flex-direction: column;
     gap: 2rem;
     width: 100%;
     max-width: 1200px;
     margin: 2rem auto;
+  }
+
+  .top-section{
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
   }
   
   .input-container {
@@ -161,4 +168,27 @@
     #balance {
       font-size: 2rem;
     }
+  }
+
+  .chart-box {
+    flex: 1 1 100%;
+    background: var(--card-background);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-top: 2rem;
+    text-align: center;
+    color: white;
+    width: 50%;
+    align-self: center;
+  }
+  
+  .chart-box h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+  
+  #doughnutChart {
+    max-width: 300px;
+    margin: 0 auto;
   }
