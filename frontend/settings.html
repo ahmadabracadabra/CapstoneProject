@@ -52,42 +52,22 @@
       <h2 class="text-xl font-semibold mb-4 text-red-500" data-i18n="dangerZone">Danger Zone</h2>
       <button class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded" onclick="confirmDelete()" data-i18n="deleteAccount">Delete Account</button>
     </div>
+
+    <!-- Apply Button -->
+    <button onclick="saveSettings()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 text-lg rounded transition-all duration-200 ml-auto block">
+      Apply
+    </button>
+
+
+
   </main>
 
   <script>
     const translations = {
-      en: {
-        settings: "Settings",
-        language: "Language",
-        theme: "Theme",
-        fontSize: "Font Size",
-        dangerZone: "Danger Zone",
-        deleteAccount: "Delete Account"
-      },
-      es: {
-        settings: "Configuración",
-        language: "Idioma",
-        theme: "Tema",
-        fontSize: "Tamaño de fuente",
-        dangerZone: "Zona de peligro",
-        deleteAccount: "Eliminar cuenta"
-      },
-      fr: {
-        settings: "Paramètres",
-        language: "Langue",
-        theme: "Thème",
-        fontSize: "Taille de la police",
-        dangerZone: "Zone dangereuse",
-        deleteAccount: "Supprimer le compte"
-      },
-      de: {
-        settings: "Einstellungen",
-        language: "Sprache",
-        theme: "Thema",
-        fontSize: "Schriftgröße",
-        dangerZone: "Gefahrenzone",
-        deleteAccount: "Konto löschen"
-      }
+      en: { settings: "Settings", language: "Language", theme: "Theme", fontSize: "Font Size", dangerZone: "Danger Zone", deleteAccount: "Delete Account" },
+      es: { settings: "Configuración", language: "Idioma", theme: "Tema", fontSize: "Tamaño de fuente", dangerZone: "Zona de peligro", deleteAccount: "Eliminar cuenta" },
+      fr: { settings: "Paramètres", language: "Langue", theme: "Thème", fontSize: "Taille de la police", dangerZone: "Zone dangereuse", deleteAccount: "Supprimer le compte" },
+      de: { settings: "Einstellungen", language: "Sprache", theme: "Thema", fontSize: "Schriftgröße", dangerZone: "Gefahrenzone", deleteAccount: "Konto löschen" }
     };
 
     function applySettings(theme, fontSize, language) {
@@ -95,89 +75,54 @@
       applyFontSize(fontSize);
       applyLanguage(language);
 
-      const themeSelector = document.getElementById('themeSelector');
-      const fontSizeSelector = document.getElementById('fontSizeSelector');
-      const languageSelector = document.getElementById('languageSelector');
-
-      if (themeSelector) themeSelector.value = theme;
-      if (fontSizeSelector) fontSizeSelector.value = fontSize;
-      if (languageSelector) languageSelector.value = language;
+      document.getElementById("themeSelector").value = theme;
+      document.getElementById("fontSizeSelector").value = fontSize;
+      document.getElementById("languageSelector").value = language;
     }
 
     async function loadUserSettings() {
       const token = localStorage.getItem('token');
-      if (!token) {
-          window.location.href = '/login';
-          return;
-      }
+      if (!token) return window.location.href = '/login';
 
       try {
-          const response = await fetch('http://localhost:8080/preferences', {
-              method: 'GET',
-              headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-              }
-          });
+        const response = await fetch('http://localhost:8080/preferences', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
 
-          if (!response.ok) throw new Error('Failed to fetch user preferences');
+        if (!response.ok) throw new Error("Failed to fetch preferences");
 
-          const settings = await response.json();
-          console.log("Settings loaded from server:", settings);
+        const data = await response.json();
 
-          const theme = settings.theme || 'dark';
-          const fontSize = settings.font_size || 'default';
-          const language = settings.language || 'en';
+        const theme = data.theme || 'dark';
+        const fontSize = data.fontSize || 'default';
+        const language = data.language || 'en';
 
-          applySettings(theme, fontSize, language);
+        localStorage.setItem("theme", theme);
+        localStorage.setItem("fontSize", fontSize);
+        localStorage.setItem("language", language);
 
-          localStorage.setItem('theme', theme);
-          localStorage.setItem('fontSize', fontSize);
-          localStorage.setItem('language', language);
-
+        applySettings(theme, fontSize, language);
       } catch (error) {
-          console.error('Error fetching user preferences:', error);
-          applySettings('dark', 'default', 'en');
+        console.error("Error loading user settings:", error);
+
+        const theme = localStorage.getItem("theme") || "dark";
+        const fontSize = localStorage.getItem("fontSize") || "default";
+        const language = localStorage.getItem("language") || "en";
+        applySettings(theme, fontSize, language);
       }
-    }
-
-    async function initializeSettings() {
-        await loadUserSettings();
-
-        const themeSelector = document.getElementById("themeSelector");
-        const fontSizeSelector = document.getElementById("fontSizeSelector");
-        const languageSelector = document.getElementById("languageSelector");
-
-        if (themeSelector) {
-            themeSelector.addEventListener("change", () => {
-                applyTheme(themeSelector.value);
-                saveSettings();
-            });
-        }
-
-        if (fontSizeSelector) {
-            fontSizeSelector.addEventListener("change", () => {
-                applyFontSize(fontSizeSelector.value);
-                saveSettings();
-            });
-        }
-
-        if (languageSelector) {
-            languageSelector.addEventListener("change", () => {
-                const lang = languageSelector.value;
-                applyLanguage(lang);
-                saveSettings();
-            });
-        }
     }
 
     async function saveSettings() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const theme = document.getElementById("themeSelector")?.value || "dark";
-      const fontSize = document.getElementById("fontSizeSelector")?.value || "default";
-      const language = document.getElementById("languageSelector")?.value || "en";
+      const theme = document.getElementById("themeSelector").value;
+      const fontSize = document.getElementById("fontSizeSelector").value;
+      const language = document.getElementById("languageSelector").value;
 
       const settings = { theme, fontSize, language };
 
@@ -189,95 +134,76 @@
         const res = await fetch("http://localhost:8080/preferences/update", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify(settings)
         });
 
-        const result = await res.json();
-        if (res.ok) {
-          console.log("Settings successfully saved:", result);
-          applyTheme(theme);
-        } else {
-          console.error("Failed to save settings:", result);
-        }
+        if (!res.ok) throw new Error("Failed to save to database");
+
+        console.log("Settings saved successfully");
+        applySettings(theme, fontSize, language);
       } catch (error) {
         console.error("Error saving settings:", error);
       }
     }
 
     function applyFontSize(size) {
-      document.body.style.fontSize =
-        size === 'large' ? '18px' :
-        size === 'small' ? '12px' : '16px';
+      document.body.style.fontSize = size === 'large' ? '18px' : size === 'small' ? '12px' : '16px';
     }
 
     function applyTheme(theme) {
-  const header = document.querySelector("header");
-  const cards = document.querySelectorAll("main > div");
+      const header = document.querySelector("header");
+      const cards = document.querySelectorAll("main > div");
 
-  if (theme === "dark") {
-    document.body.style.backgroundColor = "#121212";
-    document.body.style.color = "#ffffff";
-
-    if (header) {
-      header.style.backgroundColor = "#1e2938";
-      header.style.color = "#ffffff";
+      if (theme === "dark") {
+        document.body.style.backgroundColor = "#121212";
+        document.body.style.color = "#ffffff";
+        if (header) header.style.backgroundColor = "#1e2938";
+        cards.forEach(c => { c.style.backgroundColor = "#2d3748"; c.style.color = "#ffffff"; });
+      } else {
+        document.body.style.backgroundColor = "#b6b6b8";
+        document.body.style.color = "#000000";
+        if (header) header.style.backgroundColor = "#f9f9f9";
+        cards.forEach(c => { c.style.backgroundColor = "#f9f9f9"; c.style.color = "#000000"; });
+      }
     }
 
-    cards.forEach(card => {
-      card.style.backgroundColor = "#2d3748"; 
-      card.style.color = "#ffffff";
-    });
-  } else if (theme === "light") {
-    document.body.style.backgroundColor = "#b6b6b8"; 
-    document.body.style.color = "#000000";
-
-    if (header) {
-      header.style.backgroundColor = "#f9f9f9"; 
-      header.style.color = "#000000";
-    }
-
-    cards.forEach(card => {
-      card.style.backgroundColor = "#f9f9f9"; 
-      card.style.color = "#000000";
-    });
-  } else {
-    console.warn(`Invalid theme: ${theme}. Defaulting to 'dark' theme.`);
-    applyTheme("dark");
-  }
-}
-
-
-    function applyLanguage(lang) {
-      const elements = document.querySelectorAll("[data-i18n]");
-      elements.forEach(el => {
+    function applyLanguage(language) {
+      const textElements = document.querySelectorAll("[data-i18n]");
+      textElements.forEach(el => {
         const key = el.getAttribute("data-i18n");
-        if (translations[lang] && translations[lang][key]) {
-          el.textContent = translations[lang][key];
-        }
+        el.textContent = translations[language][key] || key;
       });
     }
 
     function confirmDelete() {
-      if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-        const token = localStorage.getItem("token");
-        fetch("/api/account", {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(res => res.json())
-        .then(() => {
-          localStorage.clear();
-          alert("Account deleted.");
-          window.location.href = "/login.html";
-        })
-        .catch(err => console.error("Error deleting account:", err));
+      if (confirm("Are you sure you want to delete your account? This cannot be undone.")) {
+        console.log("Account deleted (not implemented)");
       }
     }
 
-    document.addEventListener("DOMContentLoaded", initializeSettings);
+
+    window.onload = loadUserSettings;
   </script>
+
+<script>
+  const theme = localStorage.getItem("theme") || "dark";
+  const fontSize = localStorage.getItem("fontSize") || "default";
+  const language = localStorage.getItem("language") || "en";
+
+  document.documentElement.style.fontSize = fontSize === 'large' ? '18px' : fontSize === 'small' ? '12px' : '16px';
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");
+    document.body.style.backgroundColor = "#121212";
+    document.body.style.color = "#ffffff";
+  } else {
+    document.documentElement.classList.remove("dark");
+    document.body.style.backgroundColor = "#b6b6b8";
+    document.body.style.color = "#000000";
+  }
+</script>
+
 </body>
 </html>

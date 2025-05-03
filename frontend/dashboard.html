@@ -3,34 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-    <!-- Theme loader -->
-    <script>
-      (function () {
-        const theme = localStorage.getItem("theme") || "system";
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        if (theme === "dark" || (theme === "system" && prefersDark)) {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
-      })();
-    </script>
-
-     <!-- Font Size Loader -->
-  <script>
-    (function () {
-      const fontSize = localStorage.getItem("fontSize") || "base";
-      document.documentElement.classList.remove("text-sm", "text-base", "text-lg");
-      document.documentElement.classList.add(`text-${fontSize}`);
-    })();
-  </script>
-  
     <!-- Tailwind + Flowbite -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
   
-    <title>Overview</title>
+    <title data-i18n="overview">Overview</title>
   </head>
  
 <body class="bg-gray-900 min-h-screen">
@@ -70,7 +47,7 @@
                     clip-rule="evenodd"
                   ></path>
                 </svg>
-                <span class="sr-only">Toggle sidebar</span>
+                <span class="sr-only" data-i18n="toggleSidebar">Toggle Sidebar</span>
               </button>
               <a href="" class="flex items-center justify-between mr-4">
                 <img
@@ -78,10 +55,10 @@
                   class="mr-3 h-8"
                   alt="Logo"
                 />
-                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SADAS</span>
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white" data-i18n="company">SADAS</span>
               </a>
               <form action="#" method="GET" class="hidden md:block md:pl-2">
-                <label for="topbar-search" class="sr-only">Search</label>
+                <label for="topbar-search" class="sr-only" data-i18n="search">Search</label>
                 <div class="relative md:w-64 md:w-96">
                   <div
                     class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"
@@ -116,7 +93,7 @@
                 aria-controls="drawer-navigation"
                 class="p-2 mr-1 text-gray-500 rounded-lg md:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
               >
-                <span class="sr-only">Toggle search</span>
+                <span class="sr-only" data-i18n="search">Toggle search</span>
                 <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path clip-rule="evenodd" fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"></path>
                 </svg>
@@ -127,7 +104,7 @@
               data-dropdown-toggle="notification-dropdown"
               class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative"
               >
-              <span class="sr-only">View notifications</span>
+              <span class="sr-only" data-i18n="viewNotifications">View notifications</span>
               <!-- Bell icon -->
               <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z"/>
@@ -139,14 +116,14 @@
               <div
               class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none rounded-xl shadow-lg bg-[#101828] text-white border-[5px] border-[#1e2533]"
               id="notification-dropdown">
-              <div class="block py-2 px-4 text-base font-medium text-center text-white">
+              <div class="block py-2 px-4 text-base font-medium text-center text-white" data-i18n="notifications">
                 Notifications
               </div>
               <div id="notification-list" class="max-h-60 overflow-y-auto text-white">
                 <!-- Notifications will appear here -->
               </div>
               <div class="py-2 px-4 text-center">
-                <button id="clear-all-btn" class="text-red-400 hover:text-red-600">
+                <button id="clear-all-btn" class="text-red-400 hover:text-red-600" data-i18n="clearAll">
                   Clear All
                 </button>
               </div>
@@ -159,7 +136,7 @@
                 aria-expanded="false"
                 data-dropdown-toggle="dropdown"
               >
-                <span class="sr-only">Open user menu</span>
+                <span class="sr-only" data-i18n="openUserMenu">Open User Menu</span>
                 <img
                   id="user-avatar"
                   class="w-8 h-8 rounded-full"
@@ -188,14 +165,14 @@
                 <li>
                   <a
                     href="profile.html" 
-                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white" data-i18n="profile"
                     >Profile</a
                   >
                 </li>
                 <li>
                   <a
                     href="settings.html"
-                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white" data-i18n="settings"
                     >Settings</a
                   >
                 </li>
@@ -206,7 +183,7 @@
                   <a
                     href="#"
                     id="logoutButton"
-                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-i18n="signOut"
                     >Sign Out</a
                   >
                 </li>
@@ -224,7 +201,7 @@ id="drawer-navigation"
 >
 <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
   <form action="#" method="GET" class="md:hidden mb-2">
-    <label for="sidebar-search" class="sr-only">Search</label>
+    <label for="sidebar-search" class="sr-only" data-i18n="search">Search</label>
     <div class="relative">
       <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
         <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -246,7 +223,7 @@ id="drawer-navigation"
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/>
         </svg>
-        <span class="ml-3">Overview</span>
+        <span class="ml-3" data-i18n="overview">Overview</span>
       </a>
     </li>
     <li>
@@ -254,15 +231,15 @@ id="drawer-navigation"
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/>
         </svg>
-        <span class="flex-1 ml-3 text-left whitespace-nowrap">Calendar</span>
+        <span class="flex-1 ml-3 text-left whitespace-nowrap" data-i18n="calendar">Calendar</span>
       </a>
     </li>
     <li>
-      <a href="#" class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+      <a href="lobby.html" class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 6H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Zm7 11-6-2V9l6-2v10Z"/>
         </svg>
-        <span class="flex-1 ml-3 text-left whitespace-nowrap">Video Chat</span>
+        <span class="flex-1 ml-3 text-left whitespace-nowrap" data-i18n="videochat">Video Chat</span>
       </a>
     </li>
     <li>
@@ -270,7 +247,7 @@ id="drawer-navigation"
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6l3 3v-3h2V9h-2M4 4h11v8H9l-3 3v-3H4V4Z"/>
         </svg>
-        <span class="flex-1 ml-3 whitespace-nowrap">Messages</span>
+        <span class="flex-1 ml-3 whitespace-nowrap" data-i18n="messages">Messages</span>
         <span class="inline-flex justify-center items-center w-5 h-5 text-xs font-semibold rounded-full text-primary-800 bg-primary-100 dark:bg-primary-200 dark:text-primary-800">
           
         </span>
@@ -284,7 +261,7 @@ id="drawer-navigation"
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="2" d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
         </svg>
-        <span class="ml-3">Settings</span>
+        <span class="ml-3" data-i18n="settings">Settings</span>
       </a>
     </li>
     
@@ -293,7 +270,7 @@ id="drawer-navigation"
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14v7M5 4.971v9.541c5.6-5.538 8.4 2.64 14-.086v-9.54C13.4 7.61 10.6-.568 5 4.97Z"/>
         </svg>
-        <span class="ml-3">Help</span>
+        <span class="ml-3" data-i18n="help">Help</span>
       </a>
     </li>
   </ul>
@@ -304,7 +281,7 @@ id="drawer-navigation"
   <div id="welcomeMessage" class="">
     <div class="w-full p-8 text-center bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
       <h5 id="welcomeText" class="mb-2 text-3xl font-bold text-gray-900 dark:text-white"></h5>
-      <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">Are you ready to get your day started?</p>
+      <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400" data-i18n="areYou">Are you ready to get your day started?</p>
       <div class="items-center justify-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">       
       </div>
     </div>
@@ -314,15 +291,14 @@ id="drawer-navigation"
       <!-- Tasks List -->
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[400px] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-xl font-semibold text-white">Tasks List</h3>
-          <button class="bg-gray-700 text-white text-sm px-3 py-1 rounded cursor-pointer">Urgent</button>
+          <h3 class="text-xl font-semibold text-white" data-i18n="taskList">Task List</h3>
+          <button class="bg-gray-700 text-white text-sm px-3 py-1 rounded cursor-pointer" data-i18n="urgent">Urgent</button>
         </div>
-        <p class="text-gray-400 mb-3">Hello, here are your tasks for the day:</p>
 
         <!-- Form to add tasks -->
         <form id="task-form" class="mb-4 flex">
           <input type="text" id="task-input" class="p-2 border rounded-l w-full text-black" placeholder="New Task">
-          <button type="submit" class="bg-blue-500 text-white p-2 rounded-r">Add</button>
+          <button type="submit" class="bg-blue-500 text-white p-2 rounded-r" data-i18n="add">Add</button>
         </form>
         <!-- Task list -->
         <ul id="task-list" class="space-y-3">
@@ -332,14 +308,14 @@ id="drawer-navigation"
 
       <!-- Upcoming Assignments -->
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[400px] overflow-y-auto">
-        <h3 class="text-xl font-medium dark:text-white">Upcoming Assignments</h3>
+        <h3 class="text-xl font-medium dark:text-white" data-i18n="upcoming">Upcoming Assignments</h3>
         <ul id="assignments-list" class="space-y-4 mt-4">
           <!-- Assignments will go here -->
         </ul>
       </div>
 
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[450px] overflow-y-auto flex flex-col justify-between">
-        <h3 class="text-xl font-medium mb-4 dark:text-white">Add New Assignment</h3>
+        <h3 class="text-xl font-medium mb-4 dark:text-white" data-i18n="addNew">Add New Assignment</h3>
         <form id="assignment-form" class="space-y-4 flex-1">
           <input type="text" id="title" placeholder="Assignment Title" class="w-full p-2 border rounded-md" required>
       
@@ -355,22 +331,22 @@ id="drawer-navigation"
           <!-- Flex container to align Status and Points next to each other -->
           <div class="flex space-x-4">
             <select id="status" class="flex-1 p-2 border rounded-md" required>
-              <option value="Unstarted">Unstarted</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
+              <option value="Unstarted" data-i18n="unstarted">Unstarted</option>
+              <option value="In Progress" data-i18n="inprogress">In Progress</option>
+              <option value="Done" data-i18n="done">Done</option>
             </select>
       
             <input type="number" id="points-possible" placeholder="Points Possible" class="flex-1 p-2 border rounded-md" required>
           </div>
       
-          <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md">Add Assignment</button>
+          <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md" data-i18n="add">Add</button>
         </form>
       </div>
       
 
       <!-- Upcoming Events -->
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[150px] overflow-y-auto">
-        <h2 class="text-lg font-semibold text-gray-700 dark:text-white">📅 Upcoming Events</h2>
+        <h2 class="text-lg font-semibold text-gray-700 dark:text-white" data-i18n="upcomingEvents">📅 Upcoming Events</h2>
         <ul class="mt-2 text-gray-600 dark:text-gray-300" id="events-list">
           <!-- Events inserted here -->
         </ul>
@@ -378,7 +354,7 @@ id="drawer-navigation"
 
       <!-- Daily Motivation -->
       <div class="bg-purple-100 dark:bg-purple-900 p-4 rounded-xl shadow-md h-[150px] overflow-y-auto">
-        <h2 class="text-lg font-semibold text-purple-700 dark:text-purple-300">✨ Daily Motivation</h2>
+        <h2 class="text-lg font-semibold text-purple-700 dark:text-purple-300" data-i18n="dailyMotivation" >✨ Daily Motivation</h2>
         <p id="quote" class="mt-2 text-purple-600 dark:text-purple-200 italic">
           <!-- The quote will be inserted here -->
         </p>
@@ -386,18 +362,18 @@ id="drawer-navigation"
 
       <!-- Timer -->
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md text-center h-[180px] overflow-y-auto">
-        <h2 class="text-lg font-semibold text-gray-700 dark:text-white">⏳ Study Timer</h2>
+        <h2 class="text-lg font-semibold text-gray-700 dark:text-white" data-i18n="studyTimer">⏳ Study Timer</h2>
         <p id="timer-display" class="text-4xl font-bold mt-2 text-gray-900 dark:text-gray-100">25:00</p>
         <div class="mt-4">
-          <button id="start-btn" class="bg-green-800 text-white px-4 py-2 rounded-lg mr-2">▶ Start</button>
-          <button id="pause-btn" class="bg-yellow-600 text-white px-4 py-2 rounded-lg mr-2">⏸ Pause</button>
-          <button id="reset-btn" class="bg-red-800 text-white px-4 py-2 rounded-lg">🔄 Reset</button>
+          <button id="start-btn" class="bg-green-800 text-white px-4 py-2 rounded-lg mr-2" data-i18n="start">▶ Start</button>
+          <button id="pause-btn" class="bg-yellow-600 text-white px-4 py-2 rounded-lg mr-2" data-i18n="pause">⏸ Pause</button>
+          <button id="reset-btn" class="bg-red-800 text-white px-4 py-2 rounded-lg" data-i18n="reset">🔄 Reset</button>
         </div>
       </div>
       <!-- Transaction Form Module -->
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[300px] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold text-white">Add Transaction</h3>
+            <h3 class="text-xl font-semibold text-white" data-i18n="addTrans">Add Transaction</h3>
         </div>
         <!-- Form to add transactions -->
         <form id="transactionForm" class="mb-4 flex flex-col space-y-4">
@@ -410,24 +386,24 @@ id="drawer-navigation"
             <div class="flex space-x-4">
                 <input type="number" id="amount" class="p-2 border rounded-md w-full text-black" placeholder="Amount" step="0.01" required>
                 <select id="type" class="p-2 border rounded-md w-full text-black" required>
-                    <option value="income">💸 Income</option>
-                    <option value="expense">💳 Expense</option>
+                    <option value="income" data-i18n="income">💸 Income</option>
+                    <option value="expense" data-i18n="expense">💳 Expense</option>
                 </select>
             </div>
 
             <input type="date" id="transactionDate" class="p-2 border rounded-md w-full text-black" required>
             <input type="hidden" id="userId" class="p-2 border rounded-md w-full text-black" value="12345" required> 
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded-md w-full">Add Transaction</button>
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded-md w-full" data-i18n="addTrans" >Add Transaction</button>
         </form>
       </div>
       <!-- Display Transactions Module -->
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[400px] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
           <!-- Transactions title -->
-          <h3 class="text-xl font-medium text-white">Transactions</h3>
+          <h3 class="text-xl font-medium text-white" data-i18n="trans">Transactions</h3>
           <!-- Total amount section -->
           <div class="flex items-center">
-            <h4 class="text-xl text-white font-semibold">Total: </h4>
+            <h4 class="text-xl text-white font-semibold"data-i18n="total">Total: </h4>
             <span id="totalAmount" class="text-xl text-white ml-2">0.00</span>
           </div>
         </div>
@@ -1324,6 +1300,7 @@ window.onload = function() {
 
       
  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>   
+ <script src="../backend/settings.js"></script>
 
 
 

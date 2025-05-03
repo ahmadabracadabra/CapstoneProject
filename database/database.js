@@ -1002,9 +1002,10 @@ export async function updatePreferences(userID, theme, fontSize, language) {
 export async function getUserPreferences(userID) {
   try {
     const [rows] = await pool.query(
-      `SELECT Theme, FontSize, Language FROM Preferences WHERE UserID = ?`,
+      `SELECT Theme AS theme, FontSize AS fontSize, Language AS language
+       FROM Preferences WHERE UserID = ?`,
       [userID]
-    );
+    );    
 
     if (rows.length === 0) {
       return { error: "Preferences not found" };
