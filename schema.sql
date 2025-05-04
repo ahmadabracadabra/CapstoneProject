@@ -54,7 +54,7 @@ CREATE TABLE `channels` (
   PRIMARY KEY (`channel_id`),
   KEY `creator_id` (`creator_id`),
   CONSTRAINT `channels_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,7 +106,7 @@ CREATE TABLE `DailyQuote` (
   `date` date NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `Event` (
   PRIMARY KEY (`id`),
   KEY `fk_event_user` (`UserID`),
   CONSTRAINT `fk_event_user` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,7 +148,7 @@ CREATE TABLE `FriendRequests` (
   KEY `ReceiverID` (`ReceiverID`),
   CONSTRAINT `friendrequests_ibfk_1` FOREIGN KEY (`CreatorID`) REFERENCES `Users` (`UserID`),
   CONSTRAINT `friendrequests_ibfk_2` FOREIGN KEY (`ReceiverID`) REFERENCES `Users` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -195,17 +195,17 @@ DROP TABLE IF EXISTS `group_message`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_message` (
-  `channel_id` int NOT NULL AUTO_INCREMENT,
-  `message_id` int NOT NULL,
+  `groupmessage_id` int NOT NULL AUTO_INCREMENT,
+  `channel_id` int NOT NULL,
   `user_id` int NOT NULL,
   `content` text NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`channel_id`),
-  KEY `message_id` (`message_id`),
+  PRIMARY KEY (`groupmessage_id`),
+  KEY `channel_id` (`channel_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `group_message_ibfk_1` FOREIGN KEY (`message_id`) REFERENCES `message` (`messageID`),
+  CONSTRAINT `group_message_ibfk_1` FOREIGN KEY (`channel_id`) REFERENCES `channels` (`channel_id`),
   CONSTRAINT `group_message_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -310,7 +310,7 @@ CREATE TABLE `message` (
   KEY `receiverID` (`receiverID`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`senderID`) REFERENCES `users` (`UserID`),
   CONSTRAINT `message_ibfk_2` FOREIGN KEY (`receiverID`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -360,7 +360,7 @@ DROP TABLE IF EXISTS `Notification`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Notification` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `type` enum('message', 'missed_call', 'other', 'friend_request', 'group_message') NOT NULL,
+  `type` enum('message','missed_call','other','friend_request','group_message') NOT NULL,
   `content` text NOT NULL,
   `is_read` tinyint(1) DEFAULT '0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -368,7 +368,26 @@ CREATE TABLE `Notification` (
   PRIMARY KEY (`id`),
   KEY `fk_notification_user` (`UserID`),
   CONSTRAINT `fk_notification_user` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `preferences`
+--
+
+DROP TABLE IF EXISTS `preferences`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `preferences` (
+  `PreferenceID` int NOT NULL AUTO_INCREMENT,
+  `UserID` int NOT NULL,
+  `Theme` enum('default','light','dark') DEFAULT 'dark',
+  `FontSize` enum('small','default','large') DEFAULT 'default',
+  `Language` enum('en','es','fr','de') DEFAULT 'en',
+  PRIMARY KEY (`PreferenceID`),
+  KEY `UserID` (`UserID`),
+  CONSTRAINT `preferences_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -386,7 +405,28 @@ CREATE TABLE `Task` (
   PRIMARY KEY (`id`),
   KEY `fk_task_user` (`UserID`),
   CONSTRAINT `fk_task_user` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `transactions`
+--
+
+DROP TABLE IF EXISTS `transactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `transactions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `transaction_date` date NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `item` varchar(255) NOT NULL,
+  `type` enum('income','expense') NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,9 +444,11 @@ CREATE TABLE `Users` (
   `FirstName` varchar(100) NOT NULL,
   `LastName` varchar(100) NOT NULL,
   `PasswordDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `bio` text,
+  `ProfilePicUrl` longtext,
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `Username` (`Username`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -418,4 +460,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-04 21:06:35
+-- Dump completed on 2025-05-03 22:57:53
