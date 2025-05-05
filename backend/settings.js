@@ -372,21 +372,53 @@ function applyFontSize(size) {
 }
 
 function applyTheme(theme) {
-  const header = document.querySelector("header");
-  const cards = document.querySelectorAll("main > div");
+  const html = document.documentElement;
+  const body = document.body;
 
-  if (theme === "dark") { 
-    document.documentElement.classList.add("dark");
-    document.body.style.backgroundColor = "#121212";
-    document.body.style.color = "#ffffff";
-    if (header) header.style.backgroundColor = "#1e2938";
-    cards.forEach(c => { c.style.backgroundColor = "#101828"; c.style.color = "#ffffff"; });
+  if (theme === 'light') {
+    html.classList.remove('dark');
+    body.classList.remove('bg-gray-900');
+    body.classList.add('bg-gray-200');
+
+    document.querySelectorAll('.dark\\:text-white').forEach(el => {
+      el.classList.remove('dark:text-white');
+      el.classList.add('text-black');
+    });
+
+    document.querySelectorAll('.dark\\:bg-gray-900').forEach(el => {
+      el.classList.remove('dark:bg-gray-900');
+      el.classList.add('bg-gray-200');
+    });
+
+    document.querySelectorAll('.dark\\:bg-gray-800').forEach(el => {
+      el.classList.remove('dark:bg-gray-800');
+      el.classList.add('bg-gray-100');
+    });
+
+    document.querySelectorAll('.dark\\:text-gray-400').forEach(el => {
+      el.classList.remove('dark:text-gray-400');
+      el.classList.add('text-black');
+    });
+
   } else {
-    document.documentElement.classList.remove("dark");
-    document.body.style.backgroundColor = "#b6b6b8";
-    document.body.style.color = "#000000";
-    if (header) header.style.backgroundColor = "#f9f9f9";
-    cards.forEach(c => { c.style.backgroundColor = "#f9f9f9"; c.style.color = "#000000"; });
+    html.classList.add('dark');
+    body.classList.remove('bg-gray-200');
+    body.classList.add('bg-gray-900');
+
+    document.querySelectorAll('.text-black').forEach(el => {
+      el.classList.remove('text-black');
+      el.classList.add('dark:text-white');
+    });
+
+    document.querySelectorAll('.bg-gray-200').forEach(el => {
+      el.classList.remove('bg-gray-200');
+      el.classList.add('dark:bg-gray-900');
+    });
+
+    document.querySelectorAll('.bg-gray-100').forEach(el => {
+      el.classList.remove('bg-gray-100');
+      el.classList.add('dark:bg-gray-800');
+    });
   }
 }
 

@@ -145,8 +145,7 @@
                 />
               </button>
               <!-- Dropdown menu -->
-              <div
-              class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+              <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
               id="dropdown"
               >
               <div class="py-3 px-4">
@@ -291,7 +290,7 @@
       <!-- Tasks List -->
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[400px] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-xl font-semibold text-white" data-i18n="taskList">Task List</h3>
+          <h3 class="text-xl font-medium dark:text-white" data-i18n="taskList">Task List</h3>
           <button class="bg-gray-700 text-white text-sm px-3 py-1 rounded cursor-pointer" data-i18n="urgent">Urgent</button>
         </div>
 
@@ -347,7 +346,7 @@
       <!-- Upcoming Events -->
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[150px] overflow-y-auto">
         <h2 class="text-lg font-semibold text-gray-700 dark:text-white" data-i18n="upcomingEvents">📅 Upcoming Events</h2>
-        <ul class="mt-2 text-gray-600 dark:text-gray-300" id="events-list">
+        <ul class="mt-2 text-gray-600 dark:text-white" id="events-list">
           <!-- Events inserted here -->
         </ul>
       </div>
@@ -363,7 +362,7 @@
       <!-- Timer -->
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md text-center h-[180px] overflow-y-auto">
         <h2 class="text-lg font-semibold text-gray-700 dark:text-white" data-i18n="studyTimer">⏳ Study Timer</h2>
-        <p id="timer-display" class="text-4xl font-bold mt-2 text-gray-900 dark:text-gray-100">25:00</p>
+        <p id="timer-display" class="text-4xl font-bold mt-2 dark:text-gray-900 dark:text-gray-100">25:00</p>
         <div class="mt-4">
           <button id="start-btn" class="bg-green-800 text-white px-4 py-2 rounded-lg mr-2" data-i18n="start">▶ Start</button>
           <button id="pause-btn" class="bg-yellow-600 text-white px-4 py-2 rounded-lg mr-2" data-i18n="pause">⏸ Pause</button>
@@ -373,7 +372,7 @@
       <!-- Transaction Form Module -->
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[300px] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold text-white" data-i18n="addTrans">Add Transaction</h3>
+            <h3 class="text-xl font-semibold dark:text-white" data-i18n="addTrans">Add Transaction</h3>
         </div>
         <!-- Form to add transactions -->
         <form id="transactionForm" class="mb-4 flex flex-col space-y-4">
@@ -400,10 +399,10 @@
       <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md h-[400px] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
           <!-- Transactions title -->
-          <h3 class="text-xl font-medium text-white" data-i18n="trans">Transactions</h3>
+          <h3 class="text-xl font-medium dark:text-white" data-i18n="trans">Transactions</h3>
           <!-- Total amount section -->
           <div class="flex items-center">
-            <h4 class="text-xl text-white font-semibold"data-i18n="total">Total: </h4>
+            <h4 class="text-xl dark:text-white font-semibold"data-i18n="total">Total: </h4>
             <span id="totalAmount" class="text-xl text-white ml-2">0.00</span>
           </div>
         </div>
