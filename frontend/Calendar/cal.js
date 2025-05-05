@@ -33,9 +33,12 @@ todayBtn.addEventListener("click", () => {
 });
 
 const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "january", "february", "march", "april",
+  "may", "june", "july", "august",
+  "september", "october", "november", "december"
 ];
+
+const lang = localStorage.getItem('language') || 'en';
 
 let eventsArr = [];
 
@@ -71,7 +74,7 @@ function initCalendar() {
 
   console.log(`Month: ${months[month]} ${year}, First Day: ${firstDay}, Last Day: ${lastDay}`);
 
-  date.innerHTML = `${months[month]} ${year}`;
+  date.innerHTML = `${window.translations[lang][months[month]]} ${year}`;
   let days = "";
 
   for (let x = day; x > 0; x--) {
@@ -145,9 +148,11 @@ gotoBtn.addEventListener("click", () => {
 function getActiveDay(date) {
   console.log(`Getting details for active day: ${date}`);
   const day = new Date(year, month, date);
-  eventDay.innerHTML = day.toLocaleDateString('en-US', { weekday: 'long' });
-  eventDate.innerHTML = `${date} ${months[month]} ${year}`;
+  const dayName = day.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase(); 
+  eventDay.innerHTML = window.translations[lang][dayName]; 
+  eventDate.innerHTML = `${date} ${window.translations[lang][months[month]]} ${year}`;
 }
+
 
 function updateEvents(date) {
   console.log(`Updating events for: ${date}`);
@@ -308,3 +313,4 @@ try {
     alert("There was an error adding the event.");
 }
 });
+

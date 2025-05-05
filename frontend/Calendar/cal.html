@@ -19,7 +19,7 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="cal.css" />
-    <title>Calendar with Events</title>
+    <title data-i18n="calWEvents" >Calendar with Events</title>
   </head>
   <body>
     <div class="container">
@@ -31,21 +31,21 @@
             <i class="fas fa-angle-right next"></i>
           </div>
           <div class="weekdays">
-            <div>Sun</div>
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div>Sat</div>
+            <div data-i18n="sun">Sun</div>
+            <div data-i18n="mon">Mon</div>
+            <div data-i18n="tue">Tue</div>
+            <div data-i18n="wed">Wed</div>
+            <div data-i18n="thu">Thu</div>
+            <div data-i18n="fri">Fri</div>
+            <div data-i18n="sat">Sat</div>
           </div>
           <div class="days"></div>
           <div class="goto-today">
             <div class="goto">
               <input type="text" placeholder="mm/yyyy" class="date-input" id="date-input" />
-              <button class="goto-btn">Go</button>
+              <button class="goto-btn" data-i18n="go">Go</button>
             </div>
-            <button class="today-btn">Today</button>
+            <button class="today-btn" data-i18n="today">Today</button>
           </div>
         </div>
       </div>
@@ -71,7 +71,7 @@
         </div>
         <div class="add-event-wrapper">
           <div class="add-event-header">
-            <div class="title">Add Event</div>
+            <div class="title" data-i18n="addEvent">Add Event</div>
             <i class="fas fa-times close"></i>
           </div>
           <div class="add-event-body">
@@ -96,7 +96,7 @@
             </div>
           </div>
           <div class="add-event-footer">
-            <button class="add-event-btn">Add Event</button>
+            <button class="add-event-btn" data-i18n="addEvent">Add Event</button>
           </div>
         </div>
       </div>
@@ -105,6 +105,8 @@
       </button>
     </div>
 
+    <script src="/backend/settings.js"></script>
     <script src="cal.js"></script>
+
   </body>
 </html>
