@@ -3,20 +3,22 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title >SADAS</title>
+    <title>SADAS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="landing.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   </head>
   <body>
-
+  
     <!-- NavBar start-->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
       <div class="container-fluid">
-    <a class="navbar-brand px-4" href="landingpage.html">
-      <img src="Images/graduating-student.png" width="55" height="50"> 
-      <span class="brand-title">SADAS</span>
-    </a>
+        <a class="navbar-brand px-4" href="landingpage.html">
+          <img src="Images/graduating-student.png" width="55" height="50"> 
+          <span class="brand-title">SADAS</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -35,7 +37,6 @@
               <a class="nav-link" href="contactus.html">Contact Us</a>
             </li>
           </ul>
-          <!-- Divider and Auth Buttons -->
           <div class="d-flex align-items-center ms-3 ps-3 border-start border-light gap-3">
             <a class="nav-link text-white" href="login.html">Log in</a>
             <a class="btn btn-outline-light" href="signup.html">Sign up</a>
@@ -44,142 +45,219 @@
       </div>
     </nav>
     
-    <!-- showcase -->
-    <section class="bg-dark text-light p-5 text-center">
-      <div class="container-fluid">
-        <div class="d-sm-flex align-items-center justify-content-between">
-          <div>
-            <h1>Welcome to SADAS</h1>
-            <p class="lead"> College life is exciting, but it can also be overwhelming. 
+    <!-- Showcase -->
+    <section class="bg-dark text-light p-5 text-start">
+      <div class="container px-5">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h1 class="display-3 fw-semibold">Enhance Your Academic Performance</h1>
+            <p class="lead">College life is exciting, but it can also be overwhelming. 
               That's why we created a platform designed to help you stay organized, connected, 
               and productive—all in one place.</p>
-            <a href="login.html">
-            <button type="button" class="btn btn-primary btn-lg">Get Started</button>
-            </a>
+            <div class="mt-3">
+              <a href="login.html" class="btn btn-primary btn-lg me-2">Get Started</a>
+              <button type="button" class="btn btn-outline-light btn-lg" data-bs-toggle="modal" data-bs-target="#demoModal">
+                View Demo
+              </button>
+            </div>
           </div>
-          <img class="img-fluid w-50 d-none d-sm-block" src="Images/undraw_personal-goals_f9bb.svg">
+          <div class="col-md-6 text-center">
+            <img class="img-fluid d-none d-sm-block" src="Images/undraw_personal-goals_f9bb.svg" alt="Goals Illustration">
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- boxes -->
-     <section class="p-5" id="features">
+    <!-- Modal -->
+    <div class="modal fade" id="demoModal" tabindex="-1" aria-labelledby="demoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-header">
+            <h5 class="modal-title" id="demoModalLabel">SADAS Demo</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <video controls width="100%">
+              <source src="Images/DemoVideo.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boxes -->
+    <section class="p-5" id="features">
       <div class="container">
-        <div class="row text-center g-4">
-          <div class="col-md">
-            <div class="card bg-dark text-light p-5">
-              <div class="card-body text-center">
-                <div class="h1 mb-3">
-                  <i class="bi bi-calendar-week-fill"> </i>
-                </div>
-                <h3 class="card-title mb-3">
-                  Calendar
-                </h3>
-                <p class="card-text">Stay on top of deadlines, exams, and events with our built-in calendar. 
-                  Easily schedule study sessions, set reminders, and never miss a deadline again!</p>
+        <div class="d-flex overflow-auto">
+          <!-- Calendar Card -->
+          <div class="card bg-dark text-light p-5 mx-3" style="flex: 0 0 33%; min-width: 300px;">
+            <div class="card-body text-center">
+              <div class="h1 mb-3">
+                <i class="bi bi-calendar-week-fill"> </i>
               </div>
+              <h3 class="card-title mb-3">Calendar</h3>
+              <p class="card-text">Stay on top of deadlines, exams, and events with our built-in calendar. Easily schedule study sessions, set reminders, and never miss a deadline again!</p>
             </div>
           </div>
-          <div class="col-md">
-            <div class="card bg-dark text-light p-5">
-              <div class="card-body text-center">
-                <div class="h1 mb-3">
-                  <i class="bi bi-camera-video-fill"> </i>
-                </div>
-                <h3 class="card-title mb-3">
-                  Video Calling
-                </h3>
-                <p class="card-text">Group projects and study sessions just got easier! Use our seamless video 
-                  calling feature to connect with classmates, tutors, or friends.</p>
+          
+          <!-- Video Calling Card -->
+          <div class="card bg-dark text-light p-5 mx-3" style="flex: 0 0 33%; min-width: 300px;">
+            <div class="card-body text-center">
+              <div class="h1 mb-3">
+                <i class="bi bi-camera-video-fill"> </i>
               </div>
+              <h3 class="card-title mb-3">Video Calling</h3>
+              <p class="card-text">Group projects and study sessions just got easier! Use our seamless video calling feature to connect with classmates, tutors, or friends.</p>
             </div>
           </div>
-          <div class="col-md">
-            <div class="card bg-dark text-light p-5">
-              <div class="card-body text-center">
-                <div class="h1 mb-3">
-                  <i class="bi bi-list-check"> </i>
-                </div>
-                <h3 class="card-title mb-3">
-                  List
-                </h3>
-                <p class="card-text">Keep your tasks, assignments, 
-                  and to-dos organized with our simple list-making tool. 
-                  Prioritize what matters most and check things off as you go!</p>
+
+          <!-- List Card -->
+          <div class="card bg-dark text-light p-5 mx-3" style="flex: 0 0 33%; min-width: 300px;">
+            <div class="card-body text-center">
+              <div class="h1 mb-3">
+                <i class="bi bi-list-check"> </i>
               </div>
+              <h3 class="card-title mb-3">List</h3>
+              <p class="card-text">Keep your tasks, assignments, and to-dos organized with our simple list-making tool. Prioritize what matters most and check things off as you go!</p>
+            </div>
+          </div>
+
+          <!-- Messaging Card -->
+          <div class="card bg-dark text-light p-5 mx-3" style="flex: 0 0 33%; min-width: 300px;">
+            <div class="card-body text-center">
+              <div class="h1 mb-3">
+                <i class="bi bi-chat-left-text-fill"> </i>
+              </div>
+              <h3 class="card-title mb-3">Messaging</h3>
+              <p class="card-text">Stay connected with friends, classmates, and professors through our messaging feature. Whether for quick questions or group chats, we've got you covered.</p>
+            </div>
+          </div>
+
+          <!-- Budgeting Card -->
+          <div class="card bg-dark text-light p-5 mx-3" style="flex: 0 0 33%; min-width: 300px;">
+            <div class="card-body text-center">
+              <div class="h1 mb-3">
+                <i class="bi bi-wallet-fill"> </i>
+              </div>
+              <h3 class="card-title mb-3">Budgeting</h3>
+              <p class="card-text">Manage your finances easily with our budgeting tool. Track expenses, set savings goals, and ensure you stay on top of your financial planning.</p>
             </div>
           </div>
         </div>
       </div>
-     </section>
+    </section>
 
-     <!-- about us -->
-      <section id="aboutUs" class="bg-dark text-light p-5 text-center">
+    <!-- Tools for Everyone -->
+    <section id="toolsForEveryone" class="bg-dark text-light p-5">
+      <div class="container">
+        <div class="row align-items-center justify-content-between">
+          <div class="col-md-6 order-md-1 mb-4 mb-md-0">
+            <h2 class="text-left">Tools for Everyone</h2>
+            <p class="lead text-left">Manage tasks, collaborate, and stay organized easily.</p>
+          </div>
+          
+          <!-- Icons -->
+          <div class="col-md-6 order-md-2 text-center">
+            <div class="row">
+              <div class="col-4">
+                <i class="bi bi-clock text-light" style="font-size: 2rem;"></i>
+                <h5 class="text-light">Study Timer</h5>
+              </div>
+              <div class="col-4">
+                <i class="bi bi-calendar-event text-light" style="font-size: 2rem;"></i>
+                <h5 class="text-light">Event Reminders</h5>
+              </div>
+              <div class="col-4">
+                <i class="bi bi-bell text-light" style="font-size: 2rem;"></i>
+                <h5 class="text-light">Notifications</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-12">
+            <img id="largeImage" class="img-fluid rounded-corners" src="Images/large-tools-image-1.svg" alt="Large Tools Showcase">
+          </div>
+        </div>
+      </div>
+    </section>
+
+      <!-- Video Calling Section -->
+      <section id="videoCalling" class="bg-white text-dark p-5">
         <div class="container">
           <div class="row align-items-center justify-content-between">
-            <div class="col-md">
-              <img class="img-fluid d-none d-sm-block" src="Images/undraw_team-collaboration_phnf.svg">
+            <div class="col-md-6 text-left mb-4 mb-md-0">
+              <h2>Seamless Video Calling</h2>
+              <p class="lead">Connect with friends, classmates, or tutors in real-time with high-quality video calls. Perfect for studying, group work, or virtual meetings.</p>
             </div>
-            <div class="col-md p-5">
-              <h2>About Us</h2>
-              <p class="lead">Welcome to SADAS, the ultimate hub for college students looking to navigate academic life, personal 
-              growth, and career success. Whether you're a freshman figuring out campus life or a senior preparing for the next big 
-              step, we've got your back.</p>
-              <p class="lead">We're all about making college life easier, more enjoyable, and stress-free.</p>
+
+            <!-- Icons -->
+            <div class="col-md-6 text-center">
+              <div class="row">
+                <div class="col-4">
+                  <i class="fas fa-desktop text-dark" style="font-size: 2rem;"></i>
+                  <h5 class="text-dark">Screen Sharing</h5>
+                </div>
+                <div class="col-4">
+                  <i class="fas fa-users text-dark" style="font-size: 2rem;"></i>
+                  <h5 class="text-dark">Join Rooms</h5>
+                </div>
+                <div class="col-4">
+                  <i class="fas fa-book text-dark" style="font-size: 2rem;"></i>
+                  <h5 class="text-dark">Studying</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-5 justify-content-center">
+            <div class="col-12 text-center">
+              <video class="img-fluid rounded-corners2" controls>
+                <source src="Images/videoDemo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+          <div class="row mt-5">
+            <div class="col-12 text-center">
+              <a href="login.html" class="btn btn-primary btn-lg">Start Now</a>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- contact us -->
-      <section id="contactUs" class="p-5 text-center">
-        <div class="container ">
-          <div class="row align-items-center justify-content-between">
-            <div class="col-md p-5">
-              <img class="img-fluid d-none d-sm-block w-100" src="Images/undraw_contact-us_kcoa.svg">
-            </div>
-            <div class="col-md ">
-              <h2>Contact Us</h2>
-              <p class="lead">Email: sada@gmail.com </p>
-              <p class="lead">Phone Number: </pclass></p>
-              <p class="lead">Address: </p>
-            </div>
-          </div>
+    <!-- Footer -->
+    <footer class="bg-dark text-light p-4 mt-5">
+      <div class="container text-center">
+        <p>&copy; 2025 SADAS. All rights reserved.</p>
+        <p>Designed by SADAS</p>
+        <div class="social-icons">
+          <a href="#" class="text-light mx-2"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-light mx-2"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="text-light mx-2"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-light mx-2"><i class="bi bi-linkedin"></i></a>
         </div>
-      </section>
+      </div>
+    </footer>
 
-      <!-- footer -->
-      <footer class="p-5 bg-dark text-light text-center">
-        <div class="container">
-          <p>&copy; 2025 SADAS</p>
-        </div>
+    <script>
+      let imageIndex = 0;
+      const images = [
+        "Images/dashboardss.png",
+        "Images/calendarss.png",
+        "Images/messagesss.png"
+      ];
 
-        <style>  
-         .card {
-          height: 400px; 
-          width: 400px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between; 
+      function changeImage() {
+        imageIndex = (imageIndex + 1) % images.length;
+        document.getElementById('largeImage').src = images[imageIndex];
       }
-      
-      .card-body {
-          flex-grow: 1; 
-      }
-      
-      .card .h1 {
-          font-size: 3rem; 
-      }
-      
-      .card-title {
-          font-size: 1.5rem;
-      }
-      
-      .card-text {
-          font-size: 1rem;
-          overflow-y: auto; 
-      }</style>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      setInterval(changeImage, 3000); 
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-rbs8JahzdXydsbGjkd3Gi19fgf0eqD4pwwAQsEoEoJ4RfnHNm2K21TZgOr1GxfnI" crossorigin="anonymous"></script>
   </body>
 </html>

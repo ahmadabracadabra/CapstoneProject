@@ -1,0 +1,35 @@
+
+.card {
+    height: 400px; 
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+.card-body {
+    flex-grow: 1; 
+}
+
+.card .h1 {
+    font-size: 3rem; 
+}
+
+.card-title {
+    font-size: 1.5rem;
+}
+
+.card-text {
+    font-size: 1rem;
+    overflow-y: auto; 
+}
+
+.rounded-corners {
+ border-radius: 15px; 
+ border: 5px solid white;
+}
+.rounded-corners2 {
+ border-radius: 15px; 
+ border: 5px solid rgb(28, 28, 28);
+}
+
