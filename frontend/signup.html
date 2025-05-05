@@ -59,15 +59,16 @@
                         <input type="text" id="username" class="form-control form-control-lg bg-light fs-6" placeholder="Username" required>
                     </div> 
 
-                    <!-- First Name and Last Name Inputs side by side -->
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <input type="text" id="firstName" class="form-control form-control-lg bg-light fs-6" placeholder="First Name" required>
-                        </div>
-                        <div class="col-6">
-                            <input type="text" id="lastName" class="form-control form-control-lg bg-light fs-6" placeholder="Last Name" required>
-                        </div>
-                    </div>
+<!-- First Name and Last Name Inputs side by side -->
+<div class="row mb-3">
+    <div class="col-6 px-1">
+        <input type="text" id="firstName" class="form-control form-control-lg bg-light fs-6 w-100" placeholder="First Name" required>
+    </div>
+    <div class="col-6 px-1">
+        <input type="text" id="lastName" class="form-control form-control-lg bg-light fs-6 w-100" placeholder="Last Name" required>
+    </div>
+</div>
+
 
                     <!-- Email Input -->
                     <div class="input-group mb-3">
@@ -98,61 +99,8 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('signupBtn').addEventListener('click', function(event) {
-            event.preventDefault();
 
-            //form input values
-            const username = document.getElementById('username').value;
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            // passwords match
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return;
-            }
-
-            // all fields are filled
-            if (!username || !firstName || !lastName || !email || !password || !confirmPassword) {
-                alert("All fields are required!");
-                return;
-            }
-
-            const signupData = {
-                username: username,
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: password
-            };
-
-            //fetch('http://3.83.241.175/:8080/signup', {
-            fetch('http://localhost:8080/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(signupData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                if (data.message === "User created successfully") {
-                    window.location.href = "login.html";
-                } else {
-                    alert("Error: " + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
-        });
-    </script>
-
+    <script src="../backend/signup.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
