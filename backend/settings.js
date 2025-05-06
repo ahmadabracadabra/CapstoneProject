@@ -406,9 +406,11 @@ function applyTheme(theme) {
     body.classList.add('bg-gray-900');
 
     document.querySelectorAll('.text-black').forEach(el => {
-      el.classList.remove('text-black');
-      el.classList.add('dark:text-white');
-    });
+      if (!(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')) {
+        el.classList.remove('text-black');
+        el.classList.add('dark:text-white');
+      }
+    });    
 
     document.querySelectorAll('.bg-gray-200').forEach(el => {
       el.classList.remove('bg-gray-200');

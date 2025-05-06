@@ -1,0 +1,48 @@
+.polaroid {
+    position: relative;
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 !important; 
+    width: 220px; 
+    height: 320px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 10px; 
+}
+
+  .polaroid:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .polaroid-img {
+    border-radius: 0 !important; 
+    object-fit: cover;
+    width: 100%;
+    height: 190px; 
+    margin-bottom: 10px;
+  }
+  
+  .polaroid .card-body {
+    text-align: center;
+  }
+  
+
+.sharp-corners {
+    border-radius: 0 !important; 
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  section {
+    width: 100%;
+  }
+
+  body {
+    background-color: #212529;
+  }

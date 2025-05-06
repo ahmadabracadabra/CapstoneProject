@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="aboutus.css">
     <link rel="stylesheet" href="stylesA.css">
   </head>
   <body>
@@ -45,91 +46,129 @@
       </div>
     </nav>
 
-<!-- Grey Bar Section  -->
-<div class="about-bar d-flex justify-content-center align-items-center">
-  <h2>About SADAS</h2>
-  <img src="Images/aboutus1.jpg" alt="Team Image">
-</div>
+    <!-- About Us Section -->
+    <section class="bg-dark text-white p-5 text-start">
+      <div class="container px-5 pt-5">
+        <div class="row align-items-center">
+          <!-- Text -->
+          <div class="col-md-6">
+            <h1 class="display-4 fw-semibold">About Us</h1>
+            <p class="lead">
+              Welcome to SADAS! We are a team of passionate developers and designers committed to 
+              building an innovative platform that helps college students stay organized and manage their 
+              responsibilities more effectively. This website was developed as our capstone project for our 
+              Software Engineering course at Saint Xavier University, providing us with 
+              valuable experience in team collaboration and hands-on exposure to tools and 
+              methodologies commonly used in full-stack development.
+            </p>
+          </div>
+          <!-- Image -->
+          <div class="col-md-6 text-center">
+            <img class="img-fluid d-none d-sm-block rounded" src="Images/sxulogo.png" alt="Team Image">
+          </div>
+        </div>
+      </div>
+    </section>
 
-<!-- About Us Section -->
-<div class="container py-5">
-  <div class="row">
-    <!-- About Us -->
-    <div class="col-md-6 d-flex flex-column justify-content-center">
-      <h2 class="text-center">About Us</h2>
-      <p class="text-center">Welcome to SADAS! We are a team of dedicated developers and designers working to create an innovative platform to help college students stay organized and manage their tasks more efficiently.</p>
-    </div>
+    <!-- Our Mission Section -->
+    <section class="bg-light text-dark p-5 text-start">
+      <div class="container px-5">
+        <div class="row align-items-center">
+          <!-- Image -->
+          <div class="col-md-6 text-center">
+            <img class="img-fluid d-none d-sm-block rounded" src="Images/undraw_team-collaboration_phnf.svg" alt="Web App Screenshot">
+          </div>
+          <!-- Text -->
+          <div class="col-md-6">
+            <h1 class="display-4 fw-semibold">Our Mission</h1>
+            <p class="lead">
+              Our mission is to empower college students by delivering a user-friendly web 
+              application that streamlines the management of academic tasks, personal responsibilities, 
+              budgeting, and reminders — all within a single platform. As students ourselves, we recognized 
+              the challenges of juggling multiple tools and platforms, and set out to create a 
+              comprehensive solution that consolidates essential features into one accessible, 
+              efficient space, minimizing the need for multiple accounts and reducing the frustration of 
+              scattered task management.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Our Mission -->
-    <div class="col-md-6 d-flex flex-column justify-content-center">
-      <h2 class="text-center">Our Mission</h2>
-      <p class="text-center">Our goal is to empower college students by providing a user-friendly web application that helps them manage their academic tasks, personal chores, budget, and reminders – all in one place.</p>
-    </div>
-  </div>
-</div>
 
-<!-- Meet Our Team  -->
-<div class="container py-5">
-  <div class="bg-secondary py-5">
-    <h2 class="text-center text-white mb-4">Meet Our Team</h2>
+<!-- Meet Our Team Section -->
+<section style="background-color: #212529; padding: 0;">
+  <div class="container py-5">
+    <h1 class="display-4 fw-semibold" style="color: white; text-align: center;">Meet Our Team</h1>
     <div class="row justify-content-center">
       <!-- Team Member 1 -->
-      <div class="col-md-2 col-6 mb-4">
-        <div class="card">
-          <img src="Images/person4.PNG" class="card-img-top rounded-circle mx-auto" alt="Team Member 1" style="width: 150px; height: 150px; object-fit: cover;">
+      <div class="col-auto mb-4">
+        <div class="card polaroid">
+          <img src="Images/daniel.PNG" class="card-img-top polaroid-img mx-auto" alt="Team Member 1">
           <div class="card-body text-center">
-            <h5 class="card-title">Daniel</h5>
-            <p class="card-text">Front-End Developer responsible for designing and implementing the user interface, ensuring a seamless and responsive experience for end users.</p>
+            <h5 class="card-title">Daniel Padilla</h5>
+            <p class="card-text">Front-End Developer</p>
           </div>
         </div>
       </div>
       <!-- Team Member 2 -->
-      <div class="col-md-2 col-6 mb-4">
-        <div class="card">
-          <img src="Images/person3.PNG" class="card-img-top rounded-circle mx-auto" alt="Team Member 2" style="width: 150px; height: 150px; object-fit: cover;">
+      <div class="col-auto mb-4">
+        <div class="card polaroid">
+          <img src="Images/aldo.jpg" class="card-img-top polaroid-img mx-auto" alt="Team Member 2">
           <div class="card-body text-center">
-            <h5 class="card-title">Aldo</h5>
-            <p class="card-text">Front-End Developer responsible for designing and implementing the user interface, ensuring a seamless and responsive experience for end users.</p>
+            <h5 class="card-title">Aldo Magana</h5>
+            <p class="card-text">Front-End Developer</p>
           </div>
         </div>
       </div>
       <!-- Team Member 3 -->
-      <div class="col-md-2 col-6 mb-4">
-        <div class="card">
-          <img src="Images/person5.PNG" class="card-img-top rounded-circle mx-auto" alt="Team Member 3" style="width: 150px; height: 150px; object-fit: cover;">
+      <div class="col-auto mb-4">
+        <div class="card polaroid">
+          <img src="Images/saralynn.jpg" class="card-img-top polaroid-img mx-auto" alt="Team Member 3">
           <div class="card-body text-center">
-            <h5 class="card-title">Saralynn</h5>
-            <p class="card-text">Lead Manager who oversees the project, leads meetings, and contributes to both back-end and front-end development.</p>
+            <h5 class="card-title">Saralynn Figueroa</h5>
+            <p class="card-text">Lead Manager</p>
           </div>
         </div>
       </div>
       <!-- Team Member 4 -->
-      <div class="col-md-2 col-6 mb-4">
-        <div class="card">
-          <img src="Images/person2.PNG" class="card-img-top rounded-circle mx-auto" alt="Team Member 4" style="width: 150px; height: 150px; object-fit: cover;">
+      <div class="col-auto mb-4">
+        <div class="card polaroid">
+          <img src="Images/ahmad.jpg" class="card-img-top polaroid-img mx-auto" alt="Team Member 4">
           <div class="card-body text-center">
-            <h5 class="card-title">Ahmad</h5>
-            <p class="card-text">Back-End Developers focused on creating and maintaining the server-side logic, databases, and application functionality.</p>
+            <h5 class="card-title">Ahmad Abraham</h5>
+            <p class="card-text">Back-End Developer</p>
           </div>
         </div>
       </div>
       <!-- Team Member 5 -->
-      <div class="col-md-2 col-6 mb-4">
-        <div class="card">
-          <img src="Images/Person1.PNG" class="card-img-top rounded-circle mx-auto" alt="Team Member 5" style="width: 150px; height: 150px; object-fit: cover;">
+      <div class="col-auto mb-4">
+        <div class="card polaroid">
+          <img src="Images/sebastian.jpg" class="card-img-top polaroid-img mx-auto" alt="Team Member 5">
           <div class="card-body text-center">
-            <h5 class="card-title">Sebastian</h5>
-            <p class="card-text">Back-End Developers focused on creating and maintaining the server-side logic, databases, and application functionality.</p>
+            <h5 class="card-title">Sebastian Szuba</h5>
+            <p class="card-text">Back-End Developer</p>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<!-- Footer -->
-<footer class="bg-dark text-light text-center py-3 mt-4">
-  &copy; 2025 SADAS. All Rights Reserved.
-</footer>
+</section>
+
+
+    <!-- Footer -->
+    <footer class="bg-light text-dark p-4 mt-5">
+      <div class="container text-center">
+        <p>&copy; 2025 SADAS. All rights reserved.</p>
+        <p>Designed by SADAS</p>
+        <div class="social-icons">
+          <a href="#" class="text-dark mx-2"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-dark mx-2"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="text-dark mx-2"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-dark mx-2"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+    </footer>
     
     </body>
 </html>
