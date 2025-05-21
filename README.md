@@ -11,11 +11,11 @@ The core vision was to build a digital environment that empowers users, especial
 
 ## Team Members
 
-* **\[Saralynn Figueroa]** – Project Manager
-* **\[Ahmad Abraham]** – Backend & Database Developer
-* **\[Daniel Padilla]** – Frontend Developer
-* **\[Aldo Magana]** – Frontend Developer
-* **\[Sebastian Szuba]** – Backend Developer
+* **\Saralynn Figueroa** – Project Manager
+* **\Ahmad Abraham** – Backend & Database Developer
+* **\Daniel Padilla** – Frontend Developer
+* **\Aldo Magana** – Frontend Developer
+* **\Sebastian Szuba** – Backend Developer
 
 
 ---
