@@ -52,7 +52,7 @@ All team members worked together on developing a complete website, combining fro
 1. **Clone the repository:**
 
    ```bash
-   git clone [repository-url]
+   git clone [https://github.com/ahmadabracadabra/CapstoneProject.git]
    ```
 
 2. **Install dependencies:**
@@ -93,5 +93,5 @@ All team members worked together on developing a complete website, combining fro
 
 ## Contact
 
-If you have any questions or feedback, please contact \[ahmadabra0621@gmail.com].
+If you have any questions or feedback, please contact ahmadabra0621@gmail.com.
 
