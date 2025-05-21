@@ -1,4 +1,4 @@
-# CMPSC-390-Group-4
+# SADAS - Student Productivity Dashboard
 
 ## About the Project 
 Our goal was to create a website primarily aimed at college students that consolidates the many tools students typically use across multiple apps into a single, easy-to-use platform. As the project progressed, we recognized that this platform could serve a wider audience beyond students, so we expanded our scope accordingly.
@@ -11,11 +11,11 @@ The core vision was to build a digital environment that empowers users, especial
 
 ## Team Members
 
-* **\Saralynn Figueroa** – Project Manager
-* **\Ahmad Abraham** – Backend & Database Developer
-* **\Daniel Padilla** – Frontend Developer
-* **\Aldo Magana** – Frontend Developer
-* **\Sebastian Szuba** – Backend Developer
+* **Saralynn Figueroa** – Project Manager
+* **Ahmad Abraham** – Backend & Database Developer
+* **Daniel Padilla** – Frontend Developer
+* **Aldo Magana** – Frontend Developer
+* **Sebastian Szuba** – Backend Developer
 
 
 ---
